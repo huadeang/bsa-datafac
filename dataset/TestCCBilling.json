@@ -1,0 +1,100 @@
+{
+	"name": "TestCCBilling",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ROW_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "CREATED",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_UPD",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "LAST_UPD_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCNT_NO",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCNT_CATEGORY",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCNT_SUB_CATEGORY",
+				"type": "varchar"
+			},
+			{
+				"name": "BILL_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "BILL_CYCLE",
+				"type": "varchar"
+			},
+			{
+				"name": "INVOICING_COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "PAYMENT_METHOD",
+				"type": "varchar"
+			},
+			{
+				"name": "MASTER_ACCNT_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUS_CD",
+				"type": "varchar"
+			},
+			{
+				"name": "BILLING_STATUS_CD",
+				"type": "varchar"
+			},
+			{
+				"name": "REGISTER_DT",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "ARPU",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "CREDIT_GRADE",
+				"type": "decimal",
+				"precision": 5,
+				"scale": 0
+			},
+			{
+				"name": "DEBT_NEGO_FLG",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "CREDIT",
+			"table": "TEST_CC_BILLING"
+		}
+	}
+}
