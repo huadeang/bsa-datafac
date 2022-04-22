@@ -1,0 +1,9 @@
+{
+	"name": "amtbsa",
+	"location": "eastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7725718d-0d36-42da-a67d-9993f47733da",
+		"tenantId": "2e0ede10-9612-4bc1-843f-34bd5c94a707"
+	}
+}

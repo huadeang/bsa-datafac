@@ -1,0 +1,30 @@
+{
+	"name": "CCResReviewTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "BA_NO",
+				"type": "varchar"
+			},
+			{
+				"name": "FLAG",
+				"type": "varchar"
+			},
+			{
+				"name": "DATE",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "cc_res_review"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

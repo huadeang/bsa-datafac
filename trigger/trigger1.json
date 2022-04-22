@@ -1,0 +1,25 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "ResReviewCreditLimit",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/credit-control/blobs/RES_Review_Credit_Limit",
+			"blobPathEndsWith": ".sync",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/90041d35-2f63-4619-a466-8e3057988612/resourceGroups/adb2c-rg/providers/Microsoft.Storage/storageAccounts/demoadb2c",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
