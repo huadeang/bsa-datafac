@@ -1,0 +1,17 @@
+{
+	"name": "LocalFileServer",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "G:\\credit-control",
+			"userId": "sangad",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiMmExOGZkYi0wODc4LTRjYjMtYmUxYi01M2RkNjgyNWE3ODUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfHostIntegration",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
