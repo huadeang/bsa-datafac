@@ -1,0 +1,23 @@
+{
+	"name": "DemoBillingFileServer",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\credit-control\\review",
+			"userId": "sangad",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "fileserverpassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "SelfHostIntegration",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
