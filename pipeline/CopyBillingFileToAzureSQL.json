@@ -311,6 +311,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": "https://www.google.com/search?q=success",
+					"connectVia": {
+						"referenceName": "SelfHostIntegration",
+						"type": "IntegrationRuntimeReference"
+					},
 					"method": "GET"
 				}
 			},
@@ -335,6 +339,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": "https://www.google.com/search?q=failed",
+					"connectVia": {
+						"referenceName": "SelfHostIntegration",
+						"type": "IntegrationRuntimeReference"
+					},
 					"method": "GET"
 				}
 			}
