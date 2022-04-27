@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "amtbsa"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlBillingDatabase_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"LocalFileServer_password": {
+			"value": ""
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://aksvault01.vault.azure.net/"
+		},
+		"DemoBillingFileServer_properties_typeProperties_host": {
+			"value": "C:\\credit-control\\review"
+		},
+		"DemoBillingFileServer_properties_typeProperties_userId": {
+			"value": "sangad"
+		},
+		"LocalFileServer_properties_typeProperties_host": {
+			"value": "C:\\credit-control"
+		},
+		"LocalFileServer_properties_typeProperties_userId": {
+			"value": "sangad"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
