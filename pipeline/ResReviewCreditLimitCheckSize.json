@@ -90,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('LookupSyncFile').output.size,0)",
+						"value": "@greater(activity('LookupSyncFile').output.firstRow.size,0)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
