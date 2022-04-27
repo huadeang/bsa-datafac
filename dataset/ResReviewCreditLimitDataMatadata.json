@@ -5,12 +5,20 @@
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"filleName": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "RES_Review_Credit_Limit_20220225_141502.sync",
+				"fileName": {
+					"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+					"type": "Expression"
+				},
 				"container": "credit-control"
 			},
 			"columnDelimiter": ",",
