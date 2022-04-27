@@ -58,7 +58,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filleName": {
-								"value": "@greater(activity('LookupSyncFile').output.size,0)",
+								"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
 								"type": "Expression"
 							}
 						}
@@ -90,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('GetFileMetadata').output.firstRow.size > 0",
+						"value": "@greater(activity('LookupSyncFile').output.size,0)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
