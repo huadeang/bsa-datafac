@@ -58,7 +58,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filleName": {
-								"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+								"value": "@greater(activity('LookupSyncFile').output.size,0)",
 								"type": "Expression"
 							}
 						}
@@ -68,6 +68,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
