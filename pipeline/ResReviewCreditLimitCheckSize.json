@@ -55,7 +55,13 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ResReviewCreditLimitDataMatadata",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filleName": {
+								"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"size"
