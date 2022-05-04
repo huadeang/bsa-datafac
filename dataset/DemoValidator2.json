@@ -15,6 +15,7 @@
 				"container": "credit-control"
 			},
 			"columnDelimiter": "|",
+			"rowDelimiter": "(\r,\n or \r\n or \r or \n)",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
