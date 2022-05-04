@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "RES_Review_Credit_Limit_20220225_141502.dat",
 				"folderPath": "demo",
 				"container": "credit-control"
 			}
