@@ -155,6 +155,20 @@
 								"enableStaging": false,
 								"enableSkipIncompatibleRow": true,
 								"validateDataConsistency": false,
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Info",
+										"enableReliableLogging": false
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "AzureBlobStorage3",
+											"type": "LinkedServiceReference"
+										},
+										"path": "credit-control/logs"
+									}
+								},
 								"translator": {
 									"type": "TabularTranslator",
 									"mappings": [
