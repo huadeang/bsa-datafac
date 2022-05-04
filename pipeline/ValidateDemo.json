@@ -202,6 +202,17 @@
 												"type": "String",
 												"physicalType": "varchar"
 											}
+										},
+										{
+											"source": {
+												"name": "CURRENT_DATE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CREATED",
+												"type": "DateTime",
+												"physicalType": "datetime2"
+											}
 										}
 									],
 									"typeConversion": true,
