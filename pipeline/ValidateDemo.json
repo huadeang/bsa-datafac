@@ -176,6 +176,13 @@
 												"type": "String",
 												"physicalType": "varchar"
 											}
+										},
+										{
+											"sink": {
+												"name": "ROW_ID",
+												"type": "String",
+												"physicalType": "varchar"
+											}
 										}
 									],
 									"typeConversion": true,
