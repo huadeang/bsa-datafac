@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Get Metadata1').output.columnCount,3)",
+						"value": "@equals(activity('Get Metadata1').output.structure,json('[\n        {\n            \"name\": \"Prop_0\",\n            \"type\": \"String\"\n        },\n        {\n            \"name\": \"Prop_1\",\n            \"type\": \"String\"\n        },\n        {\n            \"name\": \"Prop_2\",\n            \"type\": \"String\"\n        }\n    ]'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
