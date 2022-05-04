@@ -21,7 +21,8 @@
 					},
 					"fieldList": [
 						"structure",
-						"columnCount"
+						"columnCount",
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -102,7 +103,13 @@
 							"outputs": [
 								{
 									"referenceName": "TargetBinary",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@activity('Get Metadata1').output.itemName",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
