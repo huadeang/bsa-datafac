@@ -161,7 +161,7 @@
 												"ordinal": 1
 											},
 											"sink": {
-												"name": "ROW_ID",
+												"name": "ACCNT_NO",
 												"type": "String",
 												"physicalType": "varchar"
 											}
@@ -171,140 +171,6 @@
 												"type": "String",
 												"ordinal": 2
 											},
-											"sink": {
-												"name": "CREATED",
-												"type": "DateTime",
-												"physicalType": "datetime2"
-											}
-										},
-										{
-											"source": {
-												"type": "String",
-												"ordinal": 3
-											},
-											"sink": {
-												"name": "CREATED_BY",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "LAST_UPD",
-												"type": "DateTime",
-												"physicalType": "datetime2"
-											}
-										},
-										{
-											"sink": {
-												"name": "LAST_UPD_BY",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "ACCNT_NO",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "ACCNT_CATEGORY",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "ACCNT_SUB_CATEGORY",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "BILL_NAME",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "BILL_CYCLE",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "INVOICING_COMPANY",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "PAYMENT_METHOD",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "MASTER_ACCNT_ID",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "STATUS_CD",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "BILLING_STATUS_CD",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
-											"sink": {
-												"name": "REGISTER_DT",
-												"type": "DateTime",
-												"physicalType": "datetime2"
-											}
-										},
-										{
-											"sink": {
-												"name": "ARPU",
-												"type": "Decimal",
-												"physicalType": "decimal",
-												"scale": 7,
-												"precision": 22
-											}
-										},
-										{
-											"sink": {
-												"name": "CREDIT_GRADE",
-												"type": "Decimal",
-												"physicalType": "decimal",
-												"scale": 0,
-												"precision": 5
-											}
-										},
-										{
-											"sink": {
-												"name": "DEBT_NEGO_FLG",
-												"type": "String",
-												"physicalType": "varchar"
-											}
-										},
-										{
 											"sink": {
 												"name": "PAYMENT_FLAG",
 												"type": "String",
