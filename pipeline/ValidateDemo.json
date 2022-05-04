@@ -140,8 +140,16 @@
 								},
 								"sink": {
 									"type": "AzureSqlSink",
-									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": false,
+										"keys": [
+											"ACCNT_NO"
+										],
+										"interimSchemaName": "CREDIT"
+									},
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -153,7 +161,7 @@
 												"ordinal": 1
 											},
 											"sink": {
-												"name": "ACCNT_NO",
+												"name": "ROW_ID",
 												"type": "String",
 												"physicalType": "varchar"
 											}
@@ -164,9 +172,9 @@
 												"ordinal": 2
 											},
 											"sink": {
-												"name": "BILLING_STATUS_CD",
-												"type": "String",
-												"physicalType": "varchar"
+												"name": "CREATED",
+												"type": "DateTime",
+												"physicalType": "datetime2"
 											}
 										},
 										{
@@ -175,9 +183,132 @@
 												"ordinal": 3
 											},
 											"sink": {
+												"name": "CREATED_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
 												"name": "LAST_UPD",
 												"type": "DateTime",
 												"physicalType": "datetime2"
+											}
+										},
+										{
+											"sink": {
+												"name": "LAST_UPD_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "ACCNT_CATEGORY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "ACCNT_SUB_CATEGORY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "BILL_NAME",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "BILL_CYCLE",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "INVOICING_COMPANY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "PAYMENT_METHOD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "MASTER_ACCNT_ID",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "STATUS_CD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "BILLING_STATUS_CD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "REGISTER_DT",
+												"type": "DateTime",
+												"physicalType": "datetime2"
+											}
+										},
+										{
+											"sink": {
+												"name": "ARPU",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 7,
+												"precision": 22
+											}
+										},
+										{
+											"sink": {
+												"name": "CREDIT_GRADE",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 0,
+												"precision": 5
+											}
+										},
+										{
+											"sink": {
+												"name": "DEBT_NEGO_FLG",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"sink": {
+												"name": "PAYMENT_FLAG",
+												"type": "String",
+												"physicalType": "varchar"
 											}
 										}
 									],
