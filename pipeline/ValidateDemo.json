@@ -76,14 +76,19 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
-										"recursive": false,
-										"enablePartitionDiscovery": false
+										"recursive": true,
+										"wildcardFolderPath": "demo",
+										"wildcardFileName": {
+											"value": "@activity('Get Metadata1').output.itemName",
+											"type": "Expression"
+										},
+										"deleteFilesAfterCompletion": false
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "BinaryReadSettings"
 									}
 								},
 								"sink": {
@@ -96,7 +101,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DemoValidator2",
+									"referenceName": "BinarySource",
 									"type": "DatasetReference"
 								}
 							],
