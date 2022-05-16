@@ -101,114 +101,6 @@
 				}
 			},
 			{
-				"name": "Send Trigger To Logic App",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "Execute All Process",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://prod-15.eastasia.logic.azure.com:443/workflows/56d71c5c537340e9a4eaeaa2bf077cf9/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=g6M74X5kVzzFafIXxbgitAoLVnhlQjZK7ZvTgV8jBpE",
-					"method": "POST",
-					"body": {
-						"value": "@json('{\"msg\":\"start cc-review-update-payment-queue-dev\"}')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set inputPath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "If Configval is nul or Some Config val is Null",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "inputPath",
-					"value": {
-						"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val1",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileTypeInputFile",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set inputPath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileTypeInputFile",
-					"value": {
-						"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val4",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set prefixInputFile",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileTypeInputFile",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "prefixInputFile",
-					"value": {
-						"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val3",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set moveInputPath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set prefixInputFile",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "moveInputPath",
-					"value": {
-						"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val7",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "If Configval is nul or Some Config val is Null",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -225,6 +117,139 @@
 						"value": "@or(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),or(or(or(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null)),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null)),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null)))",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Set inputPath",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "inputPath",
+								"value": {
+									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val1",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileTypeInputFile",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set inputPath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileTypeInputFile",
+								"value": {
+									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val4",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set prefixInputFile",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileTypeInputFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "prefixInputFile",
+								"value": {
+									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val3",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set moveInputPath",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set prefixInputFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "moveInputPath",
+								"value": {
+									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val7",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute All Process",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Set moveInputPath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_FindFileInDir",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"inputPath": {
+										"value": "@variables('inputPath')",
+										"type": "Expression"
+									},
+									"prefixInputFile": {
+										"value": "@variables('prefixInputFile')",
+										"type": "Expression"
+									},
+									"fileTypeInputFile": {
+										"value": "@variables('fileTypeInputFile')",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@variables('SCHEMA')",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@variables('CREDIT_USER')",
+										"type": "Expression"
+									},
+									"FILE_TYPE": {
+										"value": "@variables('FILE_TYPE')",
+										"type": "Expression"
+									},
+									"LOV_TYPE_REVIEW": {
+										"value": "@variables('REVIEW_TYPE')",
+										"type": "Expression"
+									},
+									"moveInputPath": {
+										"value": "@variables('moveInputPath')",
+										"type": "Expression"
+									},
+									"CC_TEMP_FILE_DETAIL": {
+										"value": "@variables('TEMP_FILE_DETAIL_CREATED_BY')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "insert error when config val error",
@@ -255,64 +280,6 @@
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "Execute All Process",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Set moveInputPath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_FindFileInDir",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"inputPath": {
-							"value": "@variables('inputPath')",
-							"type": "Expression"
-						},
-						"prefixInputFile": {
-							"value": "@variables('prefixInputFile')",
-							"type": "Expression"
-						},
-						"fileTypeInputFile": {
-							"value": "@variables('fileTypeInputFile')",
-							"type": "Expression"
-						},
-						"SCHEMA": {
-							"value": "@variables('SCHEMA')",
-							"type": "Expression"
-						},
-						"CREDIT_USER": {
-							"value": "@variables('CREDIT_USER')",
-							"type": "Expression"
-						},
-						"FILE_TYPE": {
-							"value": "@variables('FILE_TYPE')",
-							"type": "Expression"
-						},
-						"LOV_TYPE_REVIEW": {
-							"value": "@variables('REVIEW_TYPE')",
-							"type": "Expression"
-						},
-						"moveInputPath": {
-							"value": "@variables('moveInputPath')",
-							"type": "Expression"
-						},
-						"CC_TEMP_FILE_DETAIL": {
-							"value": "@variables('TEMP_FILE_DETAIL_CREATED_BY')",
-							"type": "Expression"
-						}
-					}
 				}
 			}
 		],
