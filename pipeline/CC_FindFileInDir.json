@@ -1,0 +1,166 @@
+{
+	"name": "CC_FindFileInDir",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get All FIle in Config directory",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "LocalFileMasterPath",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"exists"
+					],
+					"storeSettings": {
+						"type": "FileServerReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Filter file Sync",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get All FIle in Config directory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get All FIle in Config directory').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter file Sync",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter file Sync').output.Value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute ProcessFileSync",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ProcessFileSync",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileName": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"inputPath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"LOV_TYPE_REVIEW": {
+										"value": "@pipeline().parameters.LOV_TYPE_REVIEW",
+										"type": "Expression"
+									},
+									"FILE_TYPE": {
+										"value": "@pipeline().parameters.FILE_TYPE",
+										"type": "Expression"
+									},
+									"moveInputPath": {
+										"value": "@pipeline().parameters.moveInputPath",
+										"type": "Expression"
+									},
+									"CC_TEMP_FILE_DETAIL": {
+										"value": "@pipeline().parameters.CC_TEMP_FILE_DETAIL",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"inputPath": {
+				"type": "string"
+			},
+			"prefixInputFile": {
+				"type": "string"
+			},
+			"fileTypeInputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"FILE_TYPE": {
+				"type": "string"
+			},
+			"LOV_TYPE_REVIEW": {
+				"type": "string"
+			},
+			"moveInputPath": {
+				"type": "string"
+			},
+			"CC_TEMP_FILE_DETAIL": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
