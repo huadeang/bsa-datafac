@@ -639,7 +639,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(length(activity('Lookup FIle Dat').output.value)),'record -> count process ',string(sub(length(activity('Lookup FIle Dat').output.value),2)),' record.''',\n\t' WHERE REVIEW_ID =''',pipeline().parameters.reviewId,''';')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''S'',',\n\t' DESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(length(activity('Lookup FIle Dat').output.value)),'record -> count process ',string(sub(length(activity('Lookup FIle Dat').output.value),2)),' record.''',\n\t' WHERE REVIEW_ID =''',pipeline().parameters.reviewId,''';')",
 								"type": "Expression"
 							}
 						}
