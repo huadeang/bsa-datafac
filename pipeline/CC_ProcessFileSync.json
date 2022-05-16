@@ -188,6 +188,10 @@
 									"CC_TEMP_FILE_DETAIL": {
 										"value": "@pipeline().parameters.CC_TEMP_FILE_DETAIL",
 										"type": "Expression"
+									},
+									"reviewId": {
+										"value": "@variables('reviewId')",
+										"type": "Expression"
 									}
 								}
 							}

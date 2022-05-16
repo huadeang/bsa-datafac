@@ -629,6 +629,9 @@
 			},
 			"CC_TEMP_FILE_DETAIL": {
 				"type": "string"
+			},
+			"reviewId": {
+				"type": "string"
 			}
 		},
 		"variables": {
