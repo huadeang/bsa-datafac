@@ -328,11 +328,11 @@
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "BA_PAYMENT_DATA_FAC"
+				"defaultValue": "DATA_FAC_UPDATE_PAYMENT"
 			},
 			"FILE_TYPE": {
 				"type": "String",
-				"defaultValue": "REQUEST_FILE_BA_PAYMENT"
+				"defaultValue": "REQUEST_FILE_UPDATE_PAYMENT"
 			},
 			"SCHEMA": {
 				"type": "String",
