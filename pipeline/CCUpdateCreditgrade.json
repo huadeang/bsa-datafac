@@ -1,5 +1,5 @@
 {
-	"name": "CreditControlUpdateCreditgrade",
+	"name": "CCUpdateCreditgrade",
 	"properties": {
 		"activities": [
 			{
