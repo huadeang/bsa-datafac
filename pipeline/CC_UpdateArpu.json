@@ -328,7 +328,7 @@
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "ARPU_DATA_FAC"
+				"defaultValue": "DATA_FAC_ARPU"
 			},
 			"FILE_TYPE": {
 				"type": "String",
