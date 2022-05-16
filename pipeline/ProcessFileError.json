@@ -1,0 +1,59 @@
+{
+	"name": "ProcessFileError",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute arpu",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "createFileError",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FILE_TYPE": "RESPONSE_FILE_ARPU",
+						"CREDIT_USER": "ARPU_DATA_FAC"
+					}
+				}
+			},
+			{
+				"name": "Execute ba payment",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "createFileError",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FILE_TYPE": "RESPONSE_FILE_BA_PAYMENT",
+						"CREDIT_USER": "BA_PAYMENT_DATA_FAC"
+					}
+				}
+			},
+			{
+				"name": "Execute credit grade",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "createFileError",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FILE_TYPE": "RESPONSE_FILE_CREDIT_GRADE",
+						"CREDIT_USER": "CREDIT_GRADE_DATA_FAC"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
