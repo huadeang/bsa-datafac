@@ -85,7 +85,8 @@
 						}
 					},
 					"fieldList": [
-						"size"
+						"size",
+						"exists"
 					],
 					"storeSettings": {
 						"type": "FileServerReadSettings",
@@ -98,7 +99,7 @@
 				}
 			},
 			{
-				"name": "If file size equal",
+				"name": "If file size equal or Not exist",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -111,7 +112,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('fileDatSize'), string(string(activity('Get File size Dat').output.size)))",
+						"value": "@or(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -237,41 +238,6 @@
 						"value": "@split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1]",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "update file dat data not mapping file not found",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Get File size Dat",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',pipeline().parameters.fileName,'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
-								"type": "Expression"
-							}
-						}
-					]
 				}
 			},
 			{
