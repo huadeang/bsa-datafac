@@ -1,5 +1,5 @@
 {
-	"name": "LocalFileToWrite",
+	"name": "CCLocalFileToWrite",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
