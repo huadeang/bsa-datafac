@@ -355,6 +355,10 @@
 			"lovName": {
 				"type": "String",
 				"defaultValue": "sff_cc_arpu"
+			},
+			"REVIEW_TYPE": {
+				"type": "String",
+				"defaultValue": "sff_cc_arpu_data_fac"
 			}
 		},
 		"annotations": []
