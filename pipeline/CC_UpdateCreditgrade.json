@@ -328,7 +328,7 @@
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "CREDIT_GRADE_DATA_FAC"
+				"defaultValue": "DATA_FAC_CREDIT_GRADE"
 			},
 			"FILE_TYPE": {
 				"type": "String",
