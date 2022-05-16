@@ -303,46 +303,6 @@
 				}
 			},
 			{
-				"name": "Set ExceptionMessage",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Clear Data Temp Table Detail",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "exceptionErrorMessage",
-					"value": {
-						"value": "@activity('Clear Data Temp Table Detail').output.Error.Message",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set ExceptionMessage_copy1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Clear Data Temp Table",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "exceptionErrorMessage",
-					"value": {
-						"value": "@activity('Clear Data Temp Table').output.Error.Message",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "If Have Exception",
 				"type": "IfCondition",
 				"dependsOn": [
