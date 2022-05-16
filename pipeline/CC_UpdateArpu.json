@@ -360,7 +360,7 @@
 			},
 			"REVIEW_TYPE": {
 				"type": "String",
-				"defaultValue": "sff_cc_credit_grade_data_fac"
+				"defaultValue": "sff_cc_arpu_data_fac"
 			}
 		},
 		"annotations": []
