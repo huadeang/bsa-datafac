@@ -171,7 +171,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -187,7 +187,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTableFileTempDetail",
+						"referenceName": "CCTableFileTempDetail",
 						"type": "DatasetReference"
 					}
 				]
@@ -371,7 +371,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -387,7 +387,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -456,7 +456,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -472,7 +472,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -508,7 +508,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -550,7 +550,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "LocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
