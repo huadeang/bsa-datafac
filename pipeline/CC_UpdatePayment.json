@@ -301,7 +301,7 @@
 							"type": "Expression"
 						},
 						"LOV_TYPE_REVIEW": {
-							"value": "@variables('FILE_TYPE')",
+							"value": "@variables('REVIEW_TYPE')",
 							"type": "Expression"
 						},
 						"moveInputPath": {
@@ -355,6 +355,10 @@
 			"lovName": {
 				"type": "String",
 				"defaultValue": "sff_cc_review_cl_res"
+			},
+			"REVIEW_TYPE": {
+				"type": "String",
+				"defaultValue": "sff_cc_review_cl_res_data_fac"
 			}
 		},
 		"annotations": []
