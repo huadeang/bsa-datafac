@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTableFileTempDetail",
+	"name": "CCTableFileTempDetail",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase1",
