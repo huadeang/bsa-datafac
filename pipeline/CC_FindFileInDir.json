@@ -53,7 +53,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get All FIle in Config directory').output.childItems",
+						"value": "@activity('Get All FIle in Config directory').output.childItem",
 						"type": "Expression"
 					},
 					"condition": {
