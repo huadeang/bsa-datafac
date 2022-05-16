@@ -53,7 +53,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get All FIle in Config directory').output.childItem",
+						"value": "@activity('Get All FIle in Config directory').output.childItems",
 						"type": "Expression"
 					},
 					"condition": {
@@ -156,7 +156,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileSync ',activity('Execute ProcessFileSync').output.Error.Message,''');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileSync ',replace(activity('Execute ProcessFileSync').Error.Message,'''','\"'),''');')",
 											"type": "Expression"
 										}
 									}
