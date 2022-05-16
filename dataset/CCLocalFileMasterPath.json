@@ -1,5 +1,5 @@
 {
-	"name": "LocalFileMasterPath",
+	"name": "CCLocalFileMasterPath",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
