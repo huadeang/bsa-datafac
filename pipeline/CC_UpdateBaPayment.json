@@ -1,5 +1,5 @@
 {
-	"name": "CCUpdateBaPayment",
+	"name": "CC_UpdateBaPayment",
 	"properties": {
 		"activities": [
 			{
