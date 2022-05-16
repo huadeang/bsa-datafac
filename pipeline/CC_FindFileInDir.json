@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "LocalFileMasterPath",
+						"referenceName": "CCLocalFileMasterPath",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
