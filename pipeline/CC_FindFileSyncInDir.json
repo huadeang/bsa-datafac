@@ -1,5 +1,5 @@
 {
-	"name": "CC_FindFileInDir",
+	"name": "CC_FindFileSyncInDir",
 	"properties": {
 		"activities": [
 			{
