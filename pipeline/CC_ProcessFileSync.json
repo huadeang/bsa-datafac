@@ -116,7 +116,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "insert file dat data not mapping",
+							"name": "update file dat data not mapping",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
