@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT FILE_NAME_ARCHIVE,OUTPUT_PATH  FROM ',variables('SCHEMA'),'.CC_TEMP_FILE WHERE STATUS = ''S'' AND FILE_TYPE = ''',pipeline().parameters.FILE_TYPE,''';')",
+							"value": "@concat('SELECT FILE_ID,FILE_NAME,OUTPUT_PATH  FROM ',variables('SCHEMA'),'.CC_TEMP_FILE WHERE STATUS = ''S'' AND FILE_TYPE = ''',pipeline().parameters.FILE_TYPE,''';')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -53,12 +53,19 @@
 						{
 							"name": "Set outPutFileName",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set fileId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "outputFileName",
 								"value": {
-									"value": "@if(equals(trim(coalesce(item().FILE_NAME_ARCHIVE,'')),''),null,item().FILE_NAME_ARCHIVE)",
+									"value": "@if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME)",
 									"type": "Expression"
 								}
 							}
@@ -117,7 +124,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "@concat('SELECT COALESCE(TRIM(FILE_LINE)+''|''+TRIM(ERROR_MSG),TRIM(FILE_LINE)) AS FILE_LINE  FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL WHERE FILE_ID IN(SELECT FILE_ID FROM ',variables('SCHEMA'),'.CC_TEMP_FILE WHERE STATUS = ''S'' AND FILE_TYPE = ''',pipeline().parameters.FILE_TYPE,'''  AND FILE_NAME_ARCHIVE = ''',item().FILE_NAME_ARCHIVE,''')  ORDER BY FILE_LINE ')",
+													"value": "@concat('SELECT COALESCE(TRIM(FILE_LINE)+''|''+TRIM(ERROR_MSG),TRIM(FILE_LINE)) AS FILE_LINE  FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL WHERE FILE_ID =',variables('fileId'),'  ORDER BY FILE_LINE ')",
 													"type": "Expression"
 												},
 												"queryTimeout": "02:00:00",
@@ -300,25 +307,21 @@
 												"type": "Expression"
 											}
 										}
-									},
-									{
-										"name": "Some Config Val is Empty",
-										"type": "Fail",
-										"dependsOn": [
-											{
-												"activity": "insert error when config val error",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"userProperties": [],
-										"typeProperties": {
-											"message": "Some Config Val is Empty",
-											"errorCode": "500"
-										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set fileId",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileId",
+								"value": {
+									"value": "@if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID)",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -345,6 +348,9 @@
 				"type": "String"
 			},
 			"outputPath": {
+				"type": "String"
+			},
+			"fileId": {
 				"type": "String"
 			}
 		},
