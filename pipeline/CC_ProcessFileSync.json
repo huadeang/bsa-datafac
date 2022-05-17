@@ -186,10 +186,6 @@
 										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
 									},
-									"CC_TEMP_FILE_DETAIL": {
-										"value": "@pipeline().parameters.CC_TEMP_FILE_DETAIL",
-										"type": "Expression"
-									},
 									"reviewId": {
 										"value": "@variables('reviewId')",
 										"type": "Expression"
@@ -344,9 +340,6 @@
 				"type": "string"
 			},
 			"moveInputPath": {
-				"type": "string"
-			},
-			"CC_TEMP_FILE_DETAIL": {
 				"type": "string"
 			}
 		},
