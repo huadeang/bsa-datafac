@@ -413,6 +413,11 @@
 				"type": "string"
 			}
 		},
+		"variables": {
+			"resId": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
