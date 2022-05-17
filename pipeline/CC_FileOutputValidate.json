@@ -210,7 +210,52 @@
 										]
 									},
 									{
-										"value": "createFileAndFileArchive"
+										"value": "createFileAndFileArchive",
+										"activities": [
+											{
+												"name": "Execute CreateFileAndArchiveFile",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "CC_CreateFileOutputAndArchive",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"SCHEMA": {
+															"value": "@pipeline().parameters.SCHEMA",
+															"type": "Expression"
+														},
+														"CREDIT_USER": {
+															"value": "@pipeline().parameters.CREDIT_USER",
+															"type": "Expression"
+														},
+														"fileType": {
+															"value": "@variables('fileType')",
+															"type": "Expression"
+														},
+														"fileName": {
+															"value": "@variables('fileName')",
+															"type": "Expression"
+														},
+														"outputPath": {
+															"value": "@variables('outputPath')",
+															"type": "Expression"
+														},
+														"fileId": {
+															"value": "@variables('fileId')",
+															"type": "Expression"
+														},
+														"fileNameArchive": {
+															"value": "@variables('fileNameArchive')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
 									},
 									{
 										"value": "createFileAndNotCreateFileArchive",
