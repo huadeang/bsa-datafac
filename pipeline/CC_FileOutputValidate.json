@@ -1,5 +1,5 @@
 {
-	"name": "CC_CreateFileOutput",
+	"name": "CC_FileOutputValidate",
 	"properties": {
 		"activities": [
 			{
@@ -12,33 +12,185 @@
 						"value": "@pipeline().parameters.fileErrorList",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
-							"name": "insert response file onprocess",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
+							"name": "Set fileId",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileType",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
 							"typeProperties": {
-								"scripts": [
+								"variableName": "fileId",
+								"value": {
+									"value": "@string(if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If Some val is Null",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set fileOutputpath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@or(or(or(equals(if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID),null),equals(if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME),null)),equals(if(equals(trim(coalesce(item().OUTPUT_PATH,'')),''),null,item().OUTPUT_PATH),null)),equals(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE),null))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
 									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tFILE_NAME) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',item().FILE_TYPE,''',\n\t''O'',''',item().FILE_NAME,''');')",
-											"type": "Expression"
+										"name": "Execute create file output",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "CC_CreateFileOutput",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"SCHEMA": {
+													"value": "@pipeline().parameters.SCHEMA",
+													"type": "Expression"
+												},
+												"CREDIT_USER": {
+													"value": "@pipeline().parameters.CREDIT_USER",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@variables('fileName')",
+													"type": "Expression"
+												},
+												"outputPath": {
+													"value": "@variables('outputPath')",
+													"type": "Expression"
+												},
+												"fileId": {
+													"value": "@variables('fileId')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "insert error when config val error",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Set errorMsg",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase1",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',variables('errorMessage'),' data not found.'');')",
+														"type": "Expression"
+													}
+												}
+											]
+										}
+									},
+									{
+										"name": "Set errorMsg",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "errorMessage",
+											"value": {
+												"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
+												"type": "Expression"
+											}
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set fileOutputpath",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "outputPath",
+								"value": {
+									"value": "@string(if(equals(trim(coalesce(item().OUTPUT_PATH,'')),''),null,item().OUTPUT_PATH))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@string(if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileType",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileType",
+								"value": {
+									"value": "@string(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE))",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -54,6 +206,26 @@
 			},
 			"SCHEMA": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"resId": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"fileId": {
+				"type": "String"
+			},
+			"outputPath": {
+				"type": "String"
+			},
+			"errorMessage": {
+				"type": "String"
+			},
+			"fileType": {
+				"type": "String"
 			}
 		},
 		"annotations": []

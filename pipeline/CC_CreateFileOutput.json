@@ -1,0 +1,76 @@
+{
+	"name": "CC_CreateFileOutput",
+	"properties": {
+		"activities": [
+			{
+				"name": "insert response file onprocess",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tFILE_NAME) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.fileType,''',\n\t''O'',''',pipeline().parameters.fileName,''');')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set resId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "insert response file onprocess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "resId",
+					"value": {
+						"value": "@string(first(first(activity('insert response file onprocess').output.resultSets).rows).RES_ID)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"fileType": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			},
+			"outputPath": {
+				"type": "string"
+			},
+			"fileId": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
