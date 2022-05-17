@@ -53,7 +53,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_CreateFileError",
+									"referenceName": "CC_CreateFileOutput",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
