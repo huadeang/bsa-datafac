@@ -39,7 +39,7 @@
 							{
 								"name": "CREATED_BY",
 								"value": {
-									"value": "@pipeline().parameters.CC_TEMP_FILE_DETAIL",
+									"value": "@pipeline().parameters.CREDIT_USER",
 									"type": "Expression"
 								}
 							},
@@ -778,9 +778,6 @@
 				"type": "string"
 			},
 			"fileSyncName": {
-				"type": "string"
-			},
-			"CC_TEMP_FILE_DETAIL": {
 				"type": "string"
 			},
 			"reviewId": {
