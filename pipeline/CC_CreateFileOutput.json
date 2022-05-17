@@ -344,6 +344,10 @@
 											"countRecord": {
 												"value": "@activity('Lookup file detail').output.count",
 												"type": "Expression"
+											},
+											"resId": {
+												"value": "@variables('resId')",
+												"type": "Expression"
 											}
 										}
 									}
