@@ -125,7 +125,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(activity('Lookup file detail').output.count),' record'';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(activity('Lookup file detail').output.count),' record'';')",
 											"type": "Expression"
 										}
 									}
@@ -317,7 +317,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Query response detail ',string(activity('Lookup file detail').output.count),' record | create file ',pipeline().parameters.fileName,' in path ',pipeline().parameters.outputPath,' complete'';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Query response detail ',string(activity('Lookup file detail').output.count),' record | create file ',pipeline().parameters.fileName,' in path ',pipeline().parameters.outputPath,' complete'';')",
 											"type": "Expression"
 										}
 									}
@@ -352,7 +352,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',activity('create file output').Error.Message,''';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',activity('create file output').Error.Message,''';')",
 											"type": "Expression"
 										}
 									}
