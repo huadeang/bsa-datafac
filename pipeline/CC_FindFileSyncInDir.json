@@ -63,8 +63,8 @@
 				}
 			},
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
+				"name": "If not Have file input",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "Filter file Sync",
@@ -75,12 +75,11 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@activity('Filter file Sync').output.Value",
+					"expression": {
+						"value": "@empty(activity('Filter file Sync').output.Value)",
 						"type": "Expression"
 					},
-					"isSequential": true,
-					"activities": [
+					"ifFalseActivities": [
 						{
 							"name": "Execute ProcessFileSync",
 							"type": "ExecutePipeline",
@@ -93,10 +92,6 @@
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"fileName": {
-										"value": "@item().name",
-										"type": "Expression"
-									},
 									"inputPath": {
 										"value": "@pipeline().parameters.inputPath",
 										"type": "Expression"
@@ -120,6 +115,10 @@
 									"moveInputPath": {
 										"value": "@pipeline().parameters.moveInputPath",
 										"type": "Expression"
+									},
+									"fileNameList": {
+										"value": "@activity('Filter file Sync').output.Value",
+										"type": "Expression"
 									}
 								}
 							}
@@ -131,7 +130,7 @@
 								{
 									"activity": "Execute ProcessFileSync",
 									"dependencyConditions": [
-										"Failed"
+										"Succeeded"
 									]
 								}
 							],
@@ -153,6 +152,36 @@
 										"type": "Query",
 										"text": {
 											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileSync ',replace(activity('Execute ProcessFileSync').Error.Message,'''','\"'),''');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "insert review process file sync not have input file",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''S'',''File prefix : ',pipeline().parameters.prefixInputFile,' data not found in path ',pipeline().parameters.inputPath,''');')",
 											"type": "Expression"
 										}
 									}

@@ -3,204 +3,24 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read File Sync",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set reviewId",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
+				"name": "For Each file Sync",
+				"type": "ForEach",
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileName",
-								"type": "Expression"
-							}
-						}
-					},
-					"firstRowOnly": true
-				}
-			},
-			{
-				"name": "Get File size Dat",
-				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "Set For Each File Dat Sizer",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@variables('fileDatName')",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"size",
-						"exists"
-					],
-					"storeSettings": {
-						"type": "FileServerReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "DelimitedTextReadSettings"
-					}
-				}
-			},
-			{
-				"name": "If file size equal and Not exist",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Get File size Dat",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
+					"items": {
+						"value": "@pipeline().parameters.fileNameList",
 						"type": "Expression"
 					},
-					"ifFalseActivities": [
+					"activities": [
 						{
-							"name": "update file dat data not mapping",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',pipeline().parameters.fileName,'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Execute ProcessFileDat",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "CC_ProcessFileDat",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"fileDatName": {
-										"value": "@variables('fileDatName')",
-										"type": "Expression"
-									},
-									"SCHEMA": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"FILE_TYPE": {
-										"value": "@pipeline().parameters.FILE_TYPE",
-										"type": "Expression"
-									},
-									"CREDIT_USER": {
-										"value": "@pipeline().parameters.CREDIT_USER",
-										"type": "Expression"
-									},
-									"inputPath": {
-										"value": "@pipeline().parameters.inputPath",
-										"type": "Expression"
-									},
-									"moveInputPath": {
-										"value": "@pipeline().parameters.moveInputPath",
-										"type": "Expression"
-									},
-									"fileSyncName": {
-										"value": "@pipeline().parameters.fileName",
-										"type": "Expression"
-									},
-									"reviewId": {
-										"value": "@variables('reviewId')",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "insert review ExceptionError",
-							"type": "Script",
+							"name": "Read File Sync",
+							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Execute ProcessFileDat",
+									"activity": "Set reviewId",
 									"dependencyConditions": [
-										"Failed"
+										"Succeeded"
 									]
 								}
 							],
@@ -212,6 +32,268 @@
 								"secureInput": false
 							},
 							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "FileServerReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "CCLocalFileMasterNotSplit",
+									"type": "DatasetReference",
+									"parameters": {
+										"filePath": {
+											"value": "@pipeline().parameters.inputPath",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@pipeline().parameters.fileName",
+											"type": "Expression"
+										}
+									}
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "Get File size Dat",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Setfor file Dat Name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "CCLocalFileMasterNotSplit",
+									"type": "DatasetReference",
+									"parameters": {
+										"filePath": {
+											"value": "@pipeline().parameters.inputPath",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@variables('fileDatName')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"size",
+									"exists"
+								],
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						},
+						{
+							"name": "If file size equal and Not exist",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get File size Dat",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "update file dat data not mapping",
+										"type": "Script",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase1",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',pipeline().parameters.fileName,'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
+														"type": "Expression"
+													}
+												}
+											]
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Execute ProcessFileDat",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "CC_ProcessFileDat",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"fileDatName": {
+													"value": "@variables('fileDatName')",
+													"type": "Expression"
+												},
+												"SCHEMA": {
+													"value": "@pipeline().parameters.SCHEMA",
+													"type": "Expression"
+												},
+												"FILE_TYPE": {
+													"value": "@pipeline().parameters.FILE_TYPE",
+													"type": "Expression"
+												},
+												"CREDIT_USER": {
+													"value": "@pipeline().parameters.CREDIT_USER",
+													"type": "Expression"
+												},
+												"inputPath": {
+													"value": "@pipeline().parameters.inputPath",
+													"type": "Expression"
+												},
+												"moveInputPath": {
+													"value": "@pipeline().parameters.moveInputPath",
+													"type": "Expression"
+												},
+												"fileSyncName": {
+													"value": "@pipeline().parameters.fileName",
+													"type": "Expression"
+												},
+												"reviewId": {
+													"value": "@variables('reviewId')",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "insert review ExceptionError",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Execute ProcessFileDat",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase1",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileDat ',replace(activity('Execute ProcessFileDat').Error.Message,'''','\"'),''');')",
+														"type": "Expression"
+													}
+												}
+											]
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Setfor file Dat Name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set For Each File Dat Sizer",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileDatName",
+								"value": {
+									"value": "@split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set For Each File Dat Sizer",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Read File Sync",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileDatSize",
+								"value": {
+									"value": "@split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1]",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "insert review process file sync",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
 							"linkedServiceName": {
 								"referenceName": "AzureSqlDatabase1",
 								"type": "LinkedServiceReference"
@@ -221,109 +303,38 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileDat ',replace(activity('Execute ProcessFileDat').Error.Message,'''','\"'),''');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''P'',''Process :',pipeline().parameters.fileName,''');')",
 											"type": "Expression"
 										}
 									}
 								]
 							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Setfor file Dat Name",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Read File Sync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileDatName",
-					"value": {
-						"value": "@split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set For Each File Dat Sizer",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Setfor file Dat Name",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileDatSize",
-					"value": {
-						"value": "@split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1]",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "insert review process file sync",
-				"type": "Script",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
+						},
 						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''P'',''Process :',pipeline().parameters.fileName,''');')",
-								"type": "Expression"
+							"name": "Set reviewId",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "insert review process file sync",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "reviewId",
+								"value": {
+									"value": "@string(first(first(activity('insert review process file sync').output.resultSets).rows).REVIEW_ID)",
+									"type": "Expression"
+								}
 							}
 						}
 					]
 				}
-			},
-			{
-				"name": "Set reviewId",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert review process file sync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "reviewId",
-					"value": {
-						"value": "@string(first(first(activity('insert review process file sync').output.resultSets).rows).REVIEW_ID)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
-			"fileName": {
-				"type": "string"
-			},
 			"inputPath": {
 				"type": "string"
 			},
@@ -341,6 +352,9 @@
 			},
 			"moveInputPath": {
 				"type": "string"
+			},
+			"fileNameList": {
+				"type": "array"
 			}
 		},
 		"variables": {
