@@ -256,7 +256,7 @@
 												}
 											},
 											{
-												"name": "insert review ExceptionError_copy1",
+												"name": "insert response file ExceptionError_copy1",
 												"type": "Script",
 												"dependsOn": [
 													{
@@ -335,7 +335,7 @@
 												}
 											},
 											{
-												"name": "insert review ExceptionError",
+												"name": "insert response file ExceptionError",
 												"type": "Script",
 												"dependsOn": [
 													{
