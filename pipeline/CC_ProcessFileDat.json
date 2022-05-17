@@ -67,15 +67,15 @@
 						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
-							"maxConcurrentConnections": {
-								"value": "@activity('Lookup FIle Dat').output.count",
-								"type": "Expression"
-							},
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": {
+								"value": "@activity('Lookup FIle Dat').output.count",
+								"type": "Expression"
+							}
 						}
 					},
 					"sink": {
