@@ -131,7 +131,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@empty(activity('Lookup file detail').output.value)",
+						"value": "@equals(pipeline().parameters.fileNameArchive,string(null) )",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -322,19 +322,27 @@
 												"type": "Expression"
 											},
 											"fileType": {
-												"value": "@variables('fileType')",
+												"value": "@pipeline().parameters.fileType",
 												"type": "Expression"
 											},
 											"fileName": {
-												"value": "@variables('fileName')",
+												"value": "@pipeline().parameters.fileName",
 												"type": "Expression"
 											},
 											"outputPath": {
-												"value": "@variables('outputPath')",
+												"value": "@pipeline().parameters.outputPath",
 												"type": "Expression"
 											},
 											"fileId": {
-												"value": "@variables('fileId')",
+												"value": "@pipeline().parameters.fileId",
+												"type": "Expression"
+											},
+											"fileNameArchive": {
+												"value": "@pipeline().parameters.fileNameArchive",
+												"type": "Expression"
+											},
+											"countRecord": {
+												"value": "@activity('Lookup file detail').output.count",
 												"type": "Expression"
 											}
 										}
