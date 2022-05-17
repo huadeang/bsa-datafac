@@ -67,6 +67,10 @@
 						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
+							"maxConcurrentConnections": {
+								"value": "@activity('Lookup FIle Dat').output.count",
+								"type": "Expression"
+							},
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
