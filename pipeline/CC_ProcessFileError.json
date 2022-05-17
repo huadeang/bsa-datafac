@@ -3,57 +3,155 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute arpu",
-				"type": "ExecutePipeline",
+				"name": "get file Error Temp file",
+				"type": "Lookup",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_CreateFileError",
-						"type": "PipelineReference"
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM CREDIT_DEV.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE 'RESPONSE_FILE%'\nORDER BY CREATED;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"FILE_TYPE": "RESPONSE_FILE_ARPU",
-						"CREDIT_USER": "ARPU_DATA_FAC"
-					}
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
-				"name": "Execute ba payment",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"name": "If not Have file input",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "get file Error Temp file",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_CreateFileError",
-						"type": "PipelineReference"
+					"expression": {
+						"value": "@empty(activity('get file Error Temp file').output.value)",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"FILE_TYPE": "RESPONSE_FILE_BA_PAYMENT",
-						"CREDIT_USER": "BA_PAYMENT_DATA_FAC"
-					}
-				}
-			},
-			{
-				"name": "Execute credit grade",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_CreateFileError",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"FILE_TYPE": "RESPONSE_FILE_CREDIT_GRADE",
-						"CREDIT_USER": "CREDIT_GRADE_DATA_FAC"
-					}
+					"ifFalseActivities": [
+						{
+							"name": "Execute Create file error",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_CreateFileError",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileErrorList": {
+										"value": "@activity('get file Error Temp file').output.value",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@variables('CREDIT_USER')",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@variables('SCHEMA')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "insert review ExceptionError",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Execute Create file error",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''RESPONSE_FILE'',\n\t''E'',''',activity('Execute Create file error').Error.Message,''');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "insert review process file sync not have input file",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''RESPONSE_FILE'',\n\t''S'',''Query response file data not found'');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					]
 				}
 			}
 		],
+		"variables": {
+			"SCHEMA": {
+				"type": "String",
+				"defaultValue": "CREDIT_DEV"
+			},
+			"CREDIT_USER": {
+				"type": "String",
+				"defaultValue": "CREDIT"
+			}
+		},
 		"annotations": []
 	}
 }
