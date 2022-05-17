@@ -215,13 +215,13 @@
 							"value": "createFileAndNotArchive",
 							"activities": [
 								{
-									"name": "Execute CreateFileAndArchiveFile",
+									"name": "Execute createFileAndNotArchive",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_CreateFileOutputAndArchive",
+											"referenceName": "CC_CreateFileOutputNotArchive",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -250,10 +250,6 @@
 												"value": "@pipeline().parameters.fileId",
 												"type": "Expression"
 											},
-											"fileNameArchive": {
-												"value": "@pipeline().parameters.fileNameArchive",
-												"type": "Expression"
-											},
 											"countRecord": {
 												"value": "@activity('Lookup file detail').output.count",
 												"type": "Expression"
@@ -266,7 +262,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Execute CreateFileAndArchiveFile",
+											"activity": "Execute createFileAndNotArchive",
 											"dependencyConditions": [
 												"Failed"
 											]
