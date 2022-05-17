@@ -1,5 +1,5 @@
 {
-	"name": "CC_CreateFileError",
+	"name": "CC_CreateFileOutput",
 	"properties": {
 		"activities": [
 			{
@@ -34,7 +34,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''RESPONSE_FILE'',\n\t''S'',''Query response file data not found'');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tFILE_NAME) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.SCHEMA,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.SCHEMA,''',\n\t''',item().FILE_TYPE,''',\n\t''O'',''',item().FILE_NAME,''');')",
 											"type": "Expression"
 										}
 									}
@@ -54,24 +54,6 @@
 			},
 			"SCHEMA": {
 				"type": "string"
-			}
-		},
-		"variables": {
-			"SCHEMA": {
-				"type": "String",
-				"defaultValue": "CREDIT_DEV"
-			},
-			"outputFileName": {
-				"type": "String"
-			},
-			"configErrorMsg": {
-				"type": "String"
-			},
-			"outputPath": {
-				"type": "String"
-			},
-			"fileId": {
-				"type": "String"
 			}
 		},
 		"annotations": []
