@@ -48,7 +48,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(or(or(equals(if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID),null),equals(if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME),null)),equals(if(equals(trim(coalesce(item().OUTPUT_PATH,'')),''),null,item().OUTPUT_PATH),null)),equals(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE),null))",
+									"value": "@or(or(or(equals(variables('fileId'),string(null)),equals(variables('fileName'),string(null))),equals(variables('outputPath'),string(null))),equals(variables('fileType'),string(null)))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
