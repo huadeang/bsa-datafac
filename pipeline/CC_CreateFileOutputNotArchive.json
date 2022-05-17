@@ -277,7 +277,7 @@
 			"fileId": {
 				"type": "string"
 			},
-			"count": {
+			"countRecord": {
 				"type": "string"
 			}
 		},
