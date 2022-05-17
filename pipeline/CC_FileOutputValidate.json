@@ -187,12 +187,32 @@
 						{
 							"name": "Set fileType",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set fileAchriveName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "fileType",
 								"value": {
 									"value": "@string(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileAchriveName",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameArchive",
+								"value": {
+									"value": "@string(if(equals(trim(coalesce(item().FILE_NAME_ARCHIVE,'')),''),null,item().FILE_NAME_ARCHIVE))",
 									"type": "Expression"
 								}
 							}
@@ -229,6 +249,9 @@
 				"type": "String"
 			},
 			"fileType": {
+				"type": "String"
+			},
+			"fileNameArchive": {
 				"type": "String"
 			}
 		},
