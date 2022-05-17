@@ -76,6 +76,10 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"writeBatchSize": {
+							"value": "@activity('Lookup FIle Dat').output.count",
+							"type": "Expression"
+						},
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
