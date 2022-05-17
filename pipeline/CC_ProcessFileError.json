@@ -74,7 +74,7 @@
 							}
 						},
 						{
-							"name": "insert review ExceptionError",
+							"name": "insert response file ExceptionError",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -111,7 +111,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "insert review process file sync not have input file",
+							"name": "insert response file not have input file",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
