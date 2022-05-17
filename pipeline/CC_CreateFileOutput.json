@@ -298,7 +298,7 @@
 							"value": "createFileAndFileArchive",
 							"activities": [
 								{
-									"name": "Execute create file output",
+									"name": "Execute createFileAndFileArchive",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
@@ -349,7 +349,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Execute create file output",
+											"activity": "Execute createFileAndFileArchive",
 											"dependencyConditions": [
 												"Failed"
 											]
