@@ -218,6 +218,146 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Clear temp file detail",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Creste file Success",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Clear temp file",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Clear temp file detail",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Creste file Success",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "create file output",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Query response detail ',string(activity('Lookup file detail').output.count),' record | create file ',pipeline().parameters.fileName,' in path ',pipeline().parameters.outputPath,' complete'';')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Creste file Error",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "create file output",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',activity('create file output').Error.Message,''';')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
 						}
 					],
 					"ifTrueActivities": [
