@@ -131,17 +131,6 @@
 							},
 							{
 								"source": {
-									"name": "FILE_ID",
-									"type": "String"
-								},
-								"sink": {
-									"name": "FILE_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
-								}
-							},
-							{
-								"source": {
 									"type": "String",
 									"physicalType": "String",
 									"ordinal": 1
@@ -150,6 +139,17 @@
 									"name": "FILE_LINE",
 									"type": "String",
 									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FILE_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FILE_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
 								}
 							},
 							{
