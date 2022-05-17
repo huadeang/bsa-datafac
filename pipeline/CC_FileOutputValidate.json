@@ -51,94 +51,15 @@
 									"value": "@or(or(or(equals(if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID),null),equals(if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME),null)),equals(if(equals(trim(coalesce(item().OUTPUT_PATH,'')),''),null,item().OUTPUT_PATH),null)),equals(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE),null))",
 									"type": "Expression"
 								},
-								"ifFalseActivities": [
-									{
-										"name": "Execute create file output",
-										"type": "ExecutePipeline",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "CC_CreateFileOutput",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"SCHEMA": {
-													"value": "@pipeline().parameters.SCHEMA",
-													"type": "Expression"
-												},
-												"CREDIT_USER": {
-													"value": "@pipeline().parameters.CREDIT_USER",
-													"type": "Expression"
-												},
-												"fileType": {
-													"value": "@variables('fileType')",
-													"type": "Expression"
-												},
-												"fileName": {
-													"value": "@variables('fileName')",
-													"type": "Expression"
-												},
-												"outputPath": {
-													"value": "@variables('outputPath')",
-													"type": "Expression"
-												},
-												"fileId": {
-													"value": "@variables('fileId')",
-													"type": "Expression"
-												}
-											}
-										}
-									}
-								],
 								"ifTrueActivities": [
 									{
-										"name": "insert error when config val error",
-										"type": "Script",
-										"dependsOn": [
-											{
-												"activity": "Set errorMsg",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"policy": {
-											"timeout": "7.00:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"linkedServiceName": {
-											"referenceName": "AzureSqlDatabase1",
-											"type": "LinkedServiceReference"
-										},
-										"typeProperties": {
-											"scripts": [
-												{
-													"type": "Query",
-													"text": {
-														"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',variables('errorMessage'),' data not found.'');')",
-														"type": "Expression"
-													}
-												}
-											]
-										}
-									},
-									{
-										"name": "Set errorMsg",
+										"name": "Set switchCaseVal_copy2",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"userProperties": [],
 										"typeProperties": {
-											"variableName": "errorMessage",
-											"value": {
-												"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
-												"type": "Expression"
-											}
+											"variableName": "switchCaseValue",
+											"value": "createErrorMesage"
 										}
 									}
 								]
@@ -216,6 +137,170 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Switch case for execute",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "If fileNameArchive Have value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@variables('switchCaseValue')",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "createErrorMesage",
+										"activities": [
+											{
+												"name": "insert error when config val error",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "Set errorMsg",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "AzureSqlDatabase1",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',variables('errorMessage'),' data not found.'');')",
+																"type": "Expression"
+															}
+														}
+													]
+												}
+											},
+											{
+												"name": "Set errorMsg",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "errorMessage",
+													"value": {
+														"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "createFileAndFileArchive"
+									},
+									{
+										"value": "createFileAndNotCreateFileArchive",
+										"activities": [
+											{
+												"name": "Execute create file output",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "CC_CreateFileOutputNotArchive",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"SCHEMA": {
+															"value": "@pipeline().parameters.SCHEMA",
+															"type": "Expression"
+														},
+														"CREDIT_USER": {
+															"value": "@pipeline().parameters.CREDIT_USER",
+															"type": "Expression"
+														},
+														"fileType": {
+															"value": "@variables('fileType')",
+															"type": "Expression"
+														},
+														"fileName": {
+															"value": "@variables('fileName')",
+															"type": "Expression"
+														},
+														"outputPath": {
+															"value": "@variables('outputPath')",
+															"type": "Expression"
+														},
+														"fileId": {
+															"value": "@variables('fileId')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "If fileNameArchive Have value",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "If Some val is Null",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@not(equals(variables('fileNameArchive'),string(null)))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Set switchCaseVal_copy1",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "switchCaseValue",
+											"value": "createFileAndNotCreateFileArchive"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Set switchCaseVal",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "switchCaseValue",
+											"value": "createFileAndFileArchive"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
@@ -252,6 +337,9 @@
 				"type": "String"
 			},
 			"fileNameArchive": {
+				"type": "String"
+			},
+			"switchCaseValue": {
 				"type": "String"
 			}
 		},
