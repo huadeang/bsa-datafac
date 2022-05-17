@@ -1114,7 +1114,7 @@
 									"typeProperties": {
 										"variableName": "fileId",
 										"value": {
-											"value": "@string(if(equals(trim(coalesce(item().FILE_ID,'')),''),null,item().FILE_ID))",
+											"value": "@string(if(equals(trim(coalesce(string(item().FILE_ID),'')),''),null,string(item().FILE_ID)))",
 											"type": "Expression"
 										}
 									}
