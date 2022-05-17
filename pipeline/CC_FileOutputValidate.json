@@ -72,6 +72,10 @@
 													"value": "@pipeline().parameters.CREDIT_USER",
 													"type": "Expression"
 												},
+												"fileType": {
+													"value": "@variables('fileType')",
+													"type": "Expression"
+												},
 												"fileName": {
 													"value": "@variables('fileName')",
 													"type": "Expression"
