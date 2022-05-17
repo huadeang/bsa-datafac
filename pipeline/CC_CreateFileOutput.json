@@ -1,0 +1,417 @@
+{
+	"name": "CC_CreateFileOutput",
+	"properties": {
+		"activities": [
+			{
+				"name": "insert response file onprocess",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tFILE_NAME) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.fileType,''',\n\t''O'',''',pipeline().parameters.fileName,''');')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set resId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "insert response file onprocess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "resId",
+					"value": {
+						"value": "@string(first(first(activity('insert response file onprocess').output.resultSets).rows).RES_ID)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup file detail",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set resId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT COALESCE(FILE_LINE+''|''+ERROR_MSG ,FILE_LINE) AS errorLine, STATUS AS status \n        FROM CREDIT_DEV.CC_TEMP_FILE_DETAIL \n        WHERE FILE_ID = ',pipeline().parameters.fileId,' ORDER BY FILE_DTL_ID;')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "If not Have input",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup file detail",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('Lookup file detail').output.value)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set switchcase not have input",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "switchCaseVal",
+								"value": "update error message"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If not Have Archive",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If not Have input",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('Lookup file detail').output.value)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set switchcase createFileAndFileArchive",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "switchCaseVal",
+								"value": "createFileAndFileArchive"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set switchcase createFileAndNotArchive",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "switchCaseVal",
+								"value": "createFileAndNotArchive"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Switch case for execute",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "If not Have Archive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@variables('switchCaseVal')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "update error message",
+							"activities": [
+								{
+									"name": "Update RESPONSE_FILE not have input file",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''Query response file detail(file id = ',pipeline().parameters.fileId,' ) data not found'' WHERE RES_ID =',variables('resId'),';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						},
+						{
+							"value": "createFileAndNotArchive",
+							"activities": [
+								{
+									"name": "Execute CreateFileAndArchiveFile",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_CreateFileOutputAndArchive_copy1",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"fileType": {
+												"value": "@variables('fileType')",
+												"type": "Expression"
+											},
+											"fileName": {
+												"value": "@variables('fileName')",
+												"type": "Expression"
+											},
+											"outputPath": {
+												"value": "@variables('outputPath')",
+												"type": "Expression"
+											},
+											"fileId": {
+												"value": "@variables('fileId')",
+												"type": "Expression"
+											},
+											"fileNameArchive": {
+												"value": "@pipeline().parameters.fileNameArchive",
+												"type": "Expression"
+											},
+											"countRecord": {
+												"value": "@activity('Lookup file detail').output.count",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "insert response file ExceptionError_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Execute CreateFileAndArchiveFile",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''',string(activity('Execute CreateFileAndArchiveFile').Error),''');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						},
+						{
+							"value": "createFileAndFileArchive",
+							"activities": [
+								{
+									"name": "Execute create file output",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_CreateFileOutputAndArchive_copy1",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"fileType": {
+												"value": "@variables('fileType')",
+												"type": "Expression"
+											},
+											"fileName": {
+												"value": "@variables('fileName')",
+												"type": "Expression"
+											},
+											"outputPath": {
+												"value": "@variables('outputPath')",
+												"type": "Expression"
+											},
+											"fileId": {
+												"value": "@variables('fileId')",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "insert response file ExceptionError",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Execute create file output",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''',string(activity('Execute create file output').Error),''');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"fileType": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			},
+			"outputPath": {
+				"type": "string"
+			},
+			"fileId": {
+				"type": "string"
+			},
+			"fileNameArchive": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"resId": {
+				"type": "String"
+			},
+			"switchCaseVal": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
