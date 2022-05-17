@@ -254,7 +254,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+						"activity": "Clean Up File line Null",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -753,6 +753,41 @@
 							"type": "Query",
 							"text": {
 								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E''',\n\t' WHERE REVIEW_ID =''',pipeline().parameters.reviewId,''';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Clean Up File line Null",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL '\n    ,'WHERE FILE_ID = ',variables('tempFileDatId'),' AND FILE_LINE ISNULL();')",
 								"type": "Expression"
 							}
 						}
