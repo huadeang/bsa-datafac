@@ -130,7 +130,7 @@
 								{
 									"activity": "Execute ProcessFileSync",
 									"dependencyConditions": [
-										"Succeeded"
+										"Failed"
 									]
 								}
 							],
