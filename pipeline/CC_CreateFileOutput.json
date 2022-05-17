@@ -221,7 +221,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_CreateFileOutputAndArchive_copy1",
+											"referenceName": "CC_CreateFileOutputAndArchive",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -308,7 +308,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_CreateFileOutputAndArchive_copy1",
+											"referenceName": "CC_CreateFileOutputAndArchive",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
