@@ -2174,7 +2174,7 @@
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@concat(split(pipeline().parameters.fileSyncName,'.')[0],'_',variables('fileProcessTime'),'.',split(pipeline().parameters.fileSyncName,'.')[1])",
+										"value": "@concat(variables('fileSyncNotExension'),'_',variables('fileProcessTime'),'.',variables('fileSyncExension'))",
 										"type": "Expression"
 									}
 								}
@@ -2385,7 +2385,7 @@
 						"typeProperties": {
 							"variableName": "fileNameArchive",
 							"value": {
-								"value": "@concat(split(pipeline().parameters.fileDatName,'.')[0],'_',variables('fileProcessTime'),'.',split(pipeline().parameters.fileDatName,'.')[1])",
+								"value": "@concat(variables('fileDatNameNotExension'),'_',variables('fileProcessTime'),'.',variables('fileDatExension'))",
 								"type": "Expression"
 							}
 						}
@@ -2428,7 +2428,14 @@
 					{
 						"name": "Lookup FIle Dat",
 						"type": "Lookup",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set fileDatExension",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2570,6 +2577,79 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Set fileDatNameNotExtension",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileSyncExension",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileDatNameNotExension",
+							"value": {
+								"value": "@if(greater(length(split(pipeline().parameters.fileDatName,'.')),2),join(take(split(pipeline().parameters.fileDatName,'.'),sub(length(split(pipeline().parameters.fileDatName,'.')),1)),'.'),split(pipeline().parameters.fileDatName,'.')[0])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileDatExension",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileDatNameNotExtension",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileDatExension",
+							"value": {
+								"value": "@split(pipeline().parameters.fileDatName,'.')[sub(length(split(pipeline().parameters.fileDatName,'.')),1)]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileSyncNameNotExtension",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileSyncNotExension",
+							"value": {
+								"value": "@if(greater(length(split(pipeline().parameters.fileSyncName,'.')),2),join(take(split(pipeline().parameters.fileSyncName,'.'),sub(length(split(pipeline().parameters.fileSyncName,'.')),1)),'.'),split(pipeline().parameters.fileSyncName,'.')[0])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileSyncExension",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileSyncNameNotExtension",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileSyncExension",
+							"value": {
+								"value": "@split(pipeline().parameters.fileSyncName,'.')[sub(length(split(pipeline().parameters.fileSyncName,'.')),1)]",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -2610,6 +2690,18 @@
 						"type": "String"
 					},
 					"tempFileDatId": {
+						"type": "String"
+					},
+					"fileDatNameNotExension": {
+						"type": "String"
+					},
+					"fileDatExension": {
+						"type": "String"
+					},
+					"fileSyncNotExension": {
+						"type": "String"
+					},
+					"fileSyncExension": {
 						"type": "String"
 					}
 				},
