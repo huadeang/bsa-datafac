@@ -270,6 +270,12 @@
 											"dependencyConditions": [
 												"Failed"
 											]
+										},
+										{
+											"activity": "Set error exception",
+											"dependencyConditions": [
+												"Succeeded"
+											]
 										}
 									],
 									"policy": {
@@ -294,6 +300,26 @@
 												}
 											}
 										]
+									}
+								},
+								{
+									"name": "Set error exception",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute createFileAndNotArchive",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "fileNameArchive",
+										"value": {
+											"value": "@string(activity('Execute createFileAndNotArchive'))",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -412,7 +438,7 @@
 			"fileId": {
 				"type": "string"
 			},
-			"fileNameArchive": {
+			"exceptionError": {
 				"type": "string"
 			}
 		},
@@ -421,6 +447,9 @@
 				"type": "String"
 			},
 			"switchCaseVal": {
+				"type": "String"
+			},
+			"fileNameArchive": {
 				"type": "String"
 			}
 		},
