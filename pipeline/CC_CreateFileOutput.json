@@ -266,12 +266,6 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Execute createFileAndNotArchive",
-											"dependencyConditions": [
-												"Failed"
-											]
-										},
-										{
 											"activity": "Set error exception",
 											"dependencyConditions": [
 												"Succeeded"
@@ -295,7 +289,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''')",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
 													"type": "Expression"
 												}
 											}
@@ -383,9 +377,9 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Execute createFileAndFileArchive",
+											"activity": "Set error exception_copy1",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -406,11 +400,31 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''',string(activity('Execute createFileAndFileArchive').Error),''');')",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
 													"type": "Expression"
 												}
 											}
 										]
+									}
+								},
+								{
+									"name": "Set error exception_copy1",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute createFileAndFileArchive",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "exceptionMessage",
+										"value": {
+											"value": "@substring(replace(string(activity('Execute createFileAndFileArchive')),'''',''''''),0,499)",
+											"type": "Expression"
+										}
 									}
 								}
 							]
