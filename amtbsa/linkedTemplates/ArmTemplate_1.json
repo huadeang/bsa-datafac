@@ -1916,7 +1916,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E''',\n\t''', DESCRIPTION = ''', activity('Copy data to CC_TEMP_FILE_DETAIL').Error.Message,'''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
+										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E''',\n\t''', DESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Copy data to CC_TEMP_FILE_DETAIL')),'''','''''')),0,499),'''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
 										"type": "Expression"
 									}
 								}
@@ -2356,7 +2356,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Copy data to CC_TEMP_FILE_DETAIL')),'''','''''')),0,499),'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
 										"type": "Expression"
 									}
 								}
@@ -3971,7 +3971,7 @@
 											"typeProperties": {
 												"variableName": "exceptionMessage",
 												"value": {
-													"value": "@substring(replace(string(activity('Execute createFileAndNotArchive')),'''',''''''),0,499)",
+													"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndNotArchive')),'''','''''')),0,499)",
 													"type": "Expression"
 												}
 											}
@@ -4082,7 +4082,7 @@
 											"typeProperties": {
 												"variableName": "exceptionMessage",
 												"value": {
-													"value": "@substring(replace(string(activity('Execute createFileAndFileArchive')),'''',''''''),0,499)",
+													"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndFileArchive')),'''','''''')),0,499)",
 													"type": "Expression"
 												}
 											}
