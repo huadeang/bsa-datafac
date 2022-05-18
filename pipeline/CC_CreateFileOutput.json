@@ -311,7 +311,7 @@
 									"typeProperties": {
 										"variableName": "exceptionMessage",
 										"value": {
-											"value": "@substring(replace(string(activity('Execute createFileAndNotArchive')),'''',''''''),0,499)",
+											"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndNotArchive')),'''','''''')),0,499)",
 											"type": "Expression"
 										}
 									}
