@@ -847,7 +847,7 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileDatNameNotExension",
+					"variableName": "fileSyncNotExension",
 					"value": {
 						"value": "@if(greater(length(split(pipeline().parameters.fileSyncName,'.')),2),join(take(split(pipeline().parameters.fileSyncName,'.'),sub(length(split(pipeline().parameters.fileSyncName,'.')),1)),'.'),split(pipeline().parameters.fileSyncName,'.')[0])",
 						"type": "Expression"
@@ -867,7 +867,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileDatExension",
+					"variableName": "fileSyncExension",
 					"value": {
 						"value": "@split(pipeline().parameters.fileSyncName,'.')[sub(length(split(pipeline().parameters.fileSyncName,'.')),1)]",
 						"type": "Expression"
