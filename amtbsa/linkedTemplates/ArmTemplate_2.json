@@ -28,6 +28,7 @@
 								"value": "@pipeline().parameters.fileNameList",
 								"type": "Expression"
 							},
+							"isSequential": true,
 							"activities": [
 								{
 									"name": "Read File Sync",
