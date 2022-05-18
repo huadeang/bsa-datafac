@@ -1699,41 +1699,6 @@
 											}
 										}
 									}
-								},
-								{
-									"name": "insert review ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute ProcessFileSync",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileSync ',replace(activity('Execute ProcessFileSync').Error.Message,'''','\"'),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
 								}
 							],
 							"ifTrueActivities": [
@@ -3002,13 +2967,13 @@
 												}
 											},
 											{
-												"name": "insert review ExceptionError",
+												"name": "update review End Process Error",
 												"type": "Script",
 												"dependsOn": [
 													{
-														"activity": "Execute ProcessFileDat",
+														"activity": "Set error exception",
 														"dependencyConditions": [
-															"Failed"
+															"Succeeded"
 														]
 													}
 												],
@@ -3029,11 +2994,31 @@
 														{
 															"type": "Query",
 															"text": {
-																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'','' CC_FindFileDat ',replace(activity('Execute ProcessFileDat').Error.Message,'''','\"'),''');')",
+																"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',variables('exceptionError'),'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
 																"type": "Expression"
 															}
 														}
 													]
+												}
+											},
+											{
+												"name": "Set error exception",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "Execute ProcessFileDat",
+														"dependencyConditions": [
+															"Failed"
+														]
+													}
+												],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "exceptionError",
+													"value": {
+														"value": "@substring(replace(string(activity('Execute ProcessFileDat')),'''',''''''),0,499)",
+														"type": "Expression"
+													}
 												}
 											}
 										]
@@ -3189,6 +3174,9 @@
 						"type": "String"
 					},
 					"fileinputName": {
+						"type": "String"
+					},
+					"exceptionError": {
 						"type": "String"
 					}
 				},
@@ -3452,41 +3440,6 @@
 												"type": "Expression"
 											}
 										}
-									}
-								},
-								{
-									"name": "insert review ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute All Process",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('REVIEW_TYPE'),''',\n\t''E'','' CC_UpdateCreditGradeException ',replace(activity('Execute All Process').Error.Message,'''','\"'),''');')",
-													"type": "Expression"
-												}
-											}
-										]
 									}
 								}
 							],
@@ -3829,41 +3782,6 @@
 											}
 										}
 									}
-								},
-								{
-									"name": "insert review ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute All Process",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('REVIEW_TYPE'),''',\n\t''E'','' CC_UpdateCreditGradeException ',replace(activity('Execute All Process').Error.Message,'''','\"'),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
 								}
 							],
 							"ifTrueActivities": [
@@ -4204,41 +4122,6 @@
 												"type": "Expression"
 											}
 										}
-									}
-								},
-								{
-									"name": "insert review ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute All Process",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('REVIEW_TYPE'),''',\n\t''E'','' CC_UpdateCreditGradeException ',replace(activity('Execute All Process').Error.Message,'''','\"'),''');')",
-													"type": "Expression"
-												}
-											}
-										]
 									}
 								}
 							],
