@@ -335,6 +335,12 @@
 													"dependencyConditions": [
 														"Failed"
 													]
+												},
+												{
+													"activity": "Set error exception",
+													"dependencyConditions": [
+														"Succeeded"
+													]
 												}
 											],
 											"policy": {
@@ -359,6 +365,26 @@
 														}
 													}
 												]
+											}
+										},
+										{
+											"name": "Set error exception",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Execute createFileAndNotArchive",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "fileNameArchive",
+												"value": {
+													"value": "@string(activity('Execute createFileAndNotArchive'))",
+													"type": "Expression"
+												}
 											}
 										}
 									]
@@ -490,6 +516,9 @@
 						"type": "String"
 					},
 					"switchCaseVal": {
+						"type": "String"
+					},
+					"fileNameArchive": {
 						"type": "String"
 					}
 				},
@@ -979,7 +1008,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
+										"value": "@concat('UPDATE1 ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
 										"type": "Expression"
 									}
 								}
@@ -1350,41 +1379,6 @@
 															"type": "Expression"
 														}
 													}
-												}
-											},
-											{
-												"name": "insert response file ExceptionError",
-												"type": "Script",
-												"dependsOn": [
-													{
-														"activity": "Execute CreateFileOutPut",
-														"dependencyConditions": [
-															"Failed"
-														]
-													}
-												],
-												"policy": {
-													"timeout": "7.00:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"linkedServiceName": {
-													"referenceName": "AzureSqlDatabase1",
-													"type": "LinkedServiceReference"
-												},
-												"typeProperties": {
-													"scripts": [
-														{
-															"type": "Query",
-															"text": {
-																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''',string(activity('Execute CreateFileOutPut').Error),''');')",
-																"type": "Expression"
-															}
-														}
-													]
 												}
 											}
 										],
@@ -2725,41 +2719,6 @@
 											}
 										}
 									}
-								},
-								{
-									"name": "insert response file ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute Create file error",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''RESPONSE_FILE'',\n\t''E'',''',string(activity('Execute Create file error').Error),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
 								}
 							],
 							"ifTrueActivities": [
@@ -2807,6 +2766,9 @@
 					"CREDIT_USER": {
 						"type": "String",
 						"defaultValue": "CREDIT"
+					},
+					"errorException": {
+						"type": "String"
 					}
 				},
 				"annotations": []

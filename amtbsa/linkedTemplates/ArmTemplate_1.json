@@ -1326,7 +1326,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
+										"value": "@concat('UPDATE1 ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
 										"type": "Expression"
 									}
 								}
@@ -3930,6 +3930,12 @@
 													"dependencyConditions": [
 														"Failed"
 													]
+												},
+												{
+													"activity": "Set error exception",
+													"dependencyConditions": [
+														"Succeeded"
+													]
 												}
 											],
 											"policy": {
@@ -3954,6 +3960,26 @@
 														}
 													}
 												]
+											}
+										},
+										{
+											"name": "Set error exception",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Execute createFileAndNotArchive",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "fileNameArchive",
+												"value": {
+													"value": "@string(activity('Execute createFileAndNotArchive'))",
+													"type": "Expression"
+												}
 											}
 										}
 									]
@@ -4085,6 +4111,9 @@
 						"type": "String"
 					},
 					"switchCaseVal": {
+						"type": "String"
+					},
+					"fileNameArchive": {
 						"type": "String"
 					}
 				},
