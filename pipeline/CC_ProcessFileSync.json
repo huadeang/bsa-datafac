@@ -255,7 +255,7 @@
 										"typeProperties": {
 											"variableName": "exceptionError",
 											"value": {
-												"value": "@substring(replace(string(activity('Execute ProcessFileDat')),'''',''''''),0,499)",
+												"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute ProcessFileDat')),'''','''''')),0,499)",
 												"type": "Expression"
 											}
 										}
