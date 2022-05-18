@@ -438,7 +438,7 @@
 			"fileId": {
 				"type": "string"
 			},
-			"exceptionError": {
+			"fileNameArchive": {
 				"type": "string"
 			}
 		},

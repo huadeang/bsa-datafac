@@ -87,6 +87,10 @@
 												"fileId": {
 													"value": "@variables('fileId')",
 													"type": "Expression"
+												},
+												"fileNameArchive": {
+													"value": "@variables('fileNameArchive')",
+													"type": "Expression"
 												}
 											}
 										}
