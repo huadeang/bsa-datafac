@@ -262,7 +262,7 @@
 									}
 								},
 								{
-									"name": "insert response file ExceptionError_copy1",
+									"name": "insert response file ExceptionError 1",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -295,7 +295,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',string(activity('Execute createFileAndNotArchive').Error),'''')",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''')",
 													"type": "Expression"
 												}
 											}
@@ -315,9 +315,9 @@
 									],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "fileNameArchive",
+										"variableName": "exceptionMessage",
 										"value": {
-											"value": "@string(activity('Execute createFileAndNotArchive'))",
+											"value": "@substring(replace(string(activity('Execute createFileAndNotArchive')),'''',''''''),0,499)",
 											"type": "Expression"
 										}
 									}
@@ -449,7 +449,7 @@
 			"switchCaseVal": {
 				"type": "String"
 			},
-			"fileNameArchive": {
+			"exceptionMessage": {
 				"type": "String"
 			}
 		},
