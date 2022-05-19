@@ -124,7 +124,7 @@
 					{
 						"activity": "Creste file Success",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
