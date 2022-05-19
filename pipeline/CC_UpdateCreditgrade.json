@@ -241,6 +241,10 @@
 									"moveInputPath": {
 										"value": "@variables('moveInputPath')",
 										"type": "Expression"
+									},
+									"FILE_UPDATE_TYPE": {
+										"value": "@variables('FILE_UPDATE_TYPE')",
+										"type": "Expression"
 									}
 								}
 							}
@@ -318,6 +322,10 @@
 			"REVIEW_TYPE": {
 				"type": "String",
 				"defaultValue": "sff_cc_credit_grade_data_fac"
+			},
+			"FILE_UPDATE_TYPE": {
+				"type": "String",
+				"defaultValue": "credit grade"
 			}
 		},
 		"annotations": []
