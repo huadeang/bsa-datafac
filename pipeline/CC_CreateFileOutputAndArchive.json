@@ -194,7 +194,7 @@
 					{
 						"activity": "create file output archive",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
