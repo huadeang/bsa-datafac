@@ -201,6 +201,10 @@
 												"reviewId": {
 													"value": "@variables('reviewId')",
 													"type": "Expression"
+												},
+												"FILE_UPDATE_TYPE": {
+													"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+													"type": "Expression"
 												}
 											}
 										}
@@ -396,6 +400,9 @@
 			},
 			"fileNameList": {
 				"type": "array"
+			},
+			"FILE_UPDATE_TYPE": {
+				"type": "string"
 			}
 		},
 		"variables": {
