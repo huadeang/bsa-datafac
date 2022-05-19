@@ -1148,7 +1148,8 @@
 							},
 							"fieldList": [
 								"exists",
-								"size"
+								"size",
+								"columnCount"
 							],
 							"storeSettings": {
 								"type": "FileServerReadSettings",
@@ -1181,7 +1182,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "AzureSqlSource",
+								"type": "DelimitedTextSource",
 								"additionalColumns": [
 									{
 										"name": "COLUMN",
@@ -1191,12 +1192,18 @@
 										}
 									}
 								],
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT COALESCE(FILE_LINE+''|''+ERROR_MSG ,FILE_LINE) AS errorLine, STATUS AS status \n        FROM CREDIT_DEV.CC_TEMP_FILE_DETAIL \n        WHERE FILE_ID = ',pipeline().parameters.fileId,' ORDER BY FILE_DTL_ID;')",
-									"type": "Expression"
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": false,
+									"enablePartitionDiscovery": false
 								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": {
+										"value": "@sub(activity('Get Metadata file created').output.columnCount,1)",
+										"type": "Expression"
+									}
+								}
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -1215,9 +1222,7 @@
 								"mappings": [
 									{
 										"source": {
-											"name": "errorLine",
-											"type": "String",
-											"physicalType": "varchar"
+											"name": "COLUMN"
 										},
 										"sink": {
 											"type": "String",
@@ -1235,9 +1240,18 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "AzureSqlMaster",
+								"referenceName": "CCLocalFileMasterNotSplit",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									}
+								}
 							}
 						],
 						"outputs": [
