@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM CREDIT_DEV.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE 'RESPONSE_FILE_UPDATE_PAYMENT'\nORDER BY CREATED;",
+						"sqlReaderQuery": "SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM CREDIT_DEV.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE 'RESPONSE_FILE%'\nORDER BY CREATED;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
