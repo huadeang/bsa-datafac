@@ -1182,7 +1182,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "DelimitedTextSource",
+								"type": "AzureSqlSource",
 								"additionalColumns": [
 									{
 										"name": "COLUMN",
@@ -1192,18 +1192,12 @@
 										}
 									}
 								],
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": false,
-									"enablePartitionDiscovery": false
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT TOP(1) STATUS AS status \n        FROM CREDIT_DEV.CC_TEMP_FILE_DETAIL \n        WHERE FILE_ID = ',pipeline().parameters.fileId,' ORDER BY FILE_DTL_ID;')",
+									"type": "Expression"
 								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": {
-										"value": "@sub(activity('Get Metadata file created').output.columnCount,1)",
-										"type": "Expression"
-									}
-								}
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -1240,18 +1234,9 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "CCLocalFileMasterNotSplit",
+								"referenceName": "AzureSqlMaster",
 								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileName",
-										"type": "Expression"
-									}
-								}
+								"parameters": {}
 							}
 						],
 						"outputs": [
