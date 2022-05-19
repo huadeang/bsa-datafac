@@ -882,7 +882,7 @@
 									{
 										"name": "COLUMN",
 										"value": {
-											"value": "@concat(pipeline().parameters.fileName,'|',activity('Get Metadata file created').output?.size)",
+											"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
 											"type": "Expression"
 										}
 									}
@@ -1695,6 +1695,10 @@
 											"fileNameList": {
 												"value": "@activity('Filter file Sync').output.Value",
 												"type": "Expression"
+											},
+											"FILE_UPDATE_TYPE": {
+												"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+												"type": "Expression"
 											}
 										}
 									}
@@ -1760,6 +1764,9 @@
 						"type": "string"
 					},
 					"moveInputPath": {
+						"type": "string"
+					},
+					"FILE_UPDATE_TYPE": {
 						"type": "string"
 					}
 				},
@@ -2053,7 +2060,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''S''',\n\t', DESCRIPTION = ''Insert data on file update credit grade complete''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
+										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''S''',\n\t', DESCRIPTION = ''Insert data on file update ',pipeline().parameters.FILE_UPDATE_TYPE,' complete''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
 										"type": "Expression"
 									}
 								}
@@ -2679,6 +2686,9 @@
 					},
 					"reviewId": {
 						"type": "string"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "string"
 					}
 				},
 				"variables": {
@@ -3054,6 +3064,10 @@
 														"reviewId": {
 															"value": "@variables('reviewId')",
 															"type": "Expression"
+														},
+														"FILE_UPDATE_TYPE": {
+															"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+															"type": "Expression"
 														}
 													}
 												}
@@ -3253,6 +3267,9 @@
 					},
 					"fileNameList": {
 						"type": "array"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "string"
 					}
 				},
 				"variables": {
@@ -3527,8 +3544,8 @@
 												"value": "@variables('moveInputPath')",
 												"type": "Expression"
 											},
-											"CC_TEMP_FILE_DETAIL": {
-												"value": "@variables('TEMP_FILE_DETAIL_CREATED_BY')",
+											"FILE_UPDATE_TYPE": {
+												"value": "@variables('FILE_UPDATE_TYPE')",
 												"type": "Expression"
 											}
 										}
@@ -3615,6 +3632,10 @@
 					"REVIEW_TYPE": {
 						"type": "String",
 						"defaultValue": "sff_cc_arpu_data_fac"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "String",
+						"defaultValue": "arpu"
 					}
 				},
 				"annotations": []
@@ -3871,6 +3892,10 @@
 											"moveInputPath": {
 												"value": "@variables('moveInputPath')",
 												"type": "Expression"
+											},
+											"FILE_UPDATE_TYPE": {
+												"value": "@variables('FILE_UPDATE_TYPE')",
+												"type": "Expression"
 											}
 										}
 									}
@@ -3952,6 +3977,10 @@
 					"REVIEW_TYPE": {
 						"type": "String",
 						"defaultValue": "sff_cc_credit_grade_data_fac"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "String",
+						"defaultValue": "credit grade"
 					}
 				},
 				"annotations": []
@@ -4209,8 +4238,8 @@
 												"value": "@variables('moveInputPath')",
 												"type": "Expression"
 											},
-											"CC_TEMP_FILE_DETAIL": {
-												"value": "@variables('TEMP_FILE_DETAIL_CREATED_BY')",
+											"FILE_UPDATE_TYPE": {
+												"value": "@variables('FILE_UPDATE_TYPE')",
 												"type": "Expression"
 											}
 										}
@@ -4297,6 +4326,10 @@
 					"REVIEW_TYPE": {
 						"type": "String",
 						"defaultValue": "sff_cc_review_cl_res_data_fac"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "String",
+						"defaultValue": "payment"
 					}
 				},
 				"annotations": []

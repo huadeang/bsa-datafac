@@ -1187,7 +1187,7 @@
 									{
 										"name": "COLUMN",
 										"value": {
-											"value": "@concat(pipeline().parameters.fileName,'|',activity('Get Metadata file created').output?.size)",
+											"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
 											"type": "Expression"
 										}
 									}
@@ -1880,7 +1880,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''S''',\n\t', DESCRIPTION = ''Insert data on file update credit grade complete''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
+										"value": "@concat('UPDATE\n\t',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''S''',\n\t', DESCRIPTION = ''Insert data on file update ',pipeline().parameters.FILE_UPDATE_TYPE,' complete''',\n\t' WHERE FILE_ID =',variables('tempFileDatId'),';')",
 										"type": "Expression"
 									}
 								}
@@ -2505,6 +2505,9 @@
 						"type": "string"
 					},
 					"reviewId": {
+						"type": "string"
+					},
+					"FILE_UPDATE_TYPE": {
 						"type": "string"
 					}
 				},
