@@ -360,9 +360,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "errorLine",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "COLUMN"
 								},
 								"sink": {
 									"type": "String",
