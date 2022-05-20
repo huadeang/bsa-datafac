@@ -4303,7 +4303,7 @@
 					},
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DEV"
+						"defaultValue": "CREDIT_UAT"
 					},
 					"TEMP_FILE_DETAIL_CREATED_BY": {
 						"type": "String",
@@ -7261,16 +7261,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SelfHostIntegration')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CC_trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -7307,6 +7297,16 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_UpdateCreditgrade')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SelfHostIntegration')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
 		}
 	]
 }
