@@ -2098,6 +2098,44 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_FindFileSyncInDir')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "CC_UpdateCreditgrade",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2022-05-20T08:39:00",
+						"timeZone": "SE Asia Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								8
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_UpdateCreditgrade')]"
+			]
 		}
 	]
 }
