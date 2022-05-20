@@ -1051,6 +1051,9 @@
 					},
 					"errorException": {
 						"type": "String"
+					},
+					"RESPONST_TYPE": {
+						"type": "String"
 					}
 				},
 				"annotations": []
