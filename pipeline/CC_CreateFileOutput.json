@@ -148,39 +148,6 @@
 					},
 					"cases": [
 						{
-							"value": "update error message",
-							"activities": [
-								{
-									"name": "Update RESPONSE_FILE not have input file",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = ',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),',\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,'''\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''Query response file detail(file id = ',pipeline().parameters.fileId,' ) data not found'' WHERE RES_ID =',variables('resId'),';')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							]
-						},
-						{
 							"value": "createFileAndNotArchive",
 							"activities": [
 								{
