@@ -87,42 +87,11 @@
 				}
 			},
 			{
-				"name": "If not Have input",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Lookup file detail",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@empty(activity('Lookup file detail').output.value)",
-						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "Set switchcase not have input",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "switchCaseVal",
-								"value": "update error message"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "If not Have Archive",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If not Have input",
+						"activity": "Lookup file detail",
 						"dependencyConditions": [
 							"Succeeded"
 						]
