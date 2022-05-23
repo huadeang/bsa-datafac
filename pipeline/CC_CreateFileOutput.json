@@ -105,265 +105,214 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Set switchcase createFileAndFileArchive",
-							"type": "SetVariable",
+							"name": "Execute createFileAndFileArchive",
+							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "switchCaseVal",
-								"value": "createFileAndFileArchive"
+								"pipeline": {
+									"referenceName": "CC_CreateFileOutputAndArchive",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"fileType": {
+										"value": "@pipeline().parameters.fileType",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"fileId": {
+										"value": "@pipeline().parameters.fileId",
+										"type": "Expression"
+									},
+									"fileNameArchive": {
+										"value": "@pipeline().parameters.fileNameArchive",
+										"type": "Expression"
+									},
+									"countRecord": {
+										"value": "@activity('Lookup file detail').output.count",
+										"type": "Expression"
+									},
+									"resId": {
+										"value": "@variables('resId')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "insert response file ExceptionError",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Set error exception_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Set error exception_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute createFileAndFileArchive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "exceptionMessage",
+								"value": {
+									"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndFileArchive')),'''','''''')),0,499)",
+									"type": "Expression"
+								}
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Set switchcase createFileAndNotArchive",
-							"type": "SetVariable",
+							"name": "Execute createFileAndNotArchive",
+							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "switchCaseVal",
-								"value": "createFileAndNotArchive"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Switch case for execute",
-				"type": "Switch",
-				"dependsOn": [
-					{
-						"activity": "If not Have Archive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"on": {
-						"value": "@variables('switchCaseVal')",
-						"type": "Expression"
-					},
-					"cases": [
-						{
-							"value": "createFileAndNotArchive",
-							"activities": [
-								{
-									"name": "Execute createFileAndNotArchive",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_CreateFileOutputNotArchive",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"fileType": {
-												"value": "@pipeline().parameters.fileType",
-												"type": "Expression"
-											},
-											"fileName": {
-												"value": "@pipeline().parameters.fileName",
-												"type": "Expression"
-											},
-											"outputPath": {
-												"value": "@pipeline().parameters.outputPath",
-												"type": "Expression"
-											},
-											"fileId": {
-												"value": "@pipeline().parameters.fileId",
-												"type": "Expression"
-											},
-											"countRecord": {
-												"value": "@activity('Lookup file detail').output.count",
-												"type": "Expression"
-											},
-											"resId": {
-												"value": "@variables('resId')",
-												"type": "Expression"
-											}
-										}
-									}
+								"pipeline": {
+									"referenceName": "CC_CreateFileOutputNotArchive",
+									"type": "PipelineReference"
 								},
-								{
-									"name": "insert response file ExceptionError 1",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set error exception",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
+								"waitOnCompletion": true,
+								"parameters": {
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
 									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
 									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set error exception",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Execute createFileAndNotArchive",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "exceptionMessage",
-										"value": {
-											"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndNotArchive')),'''','''''')),0,499)",
-											"type": "Expression"
-										}
+									"fileType": {
+										"value": "@pipeline().parameters.fileType",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"fileId": {
+										"value": "@pipeline().parameters.fileId",
+										"type": "Expression"
+									},
+									"countRecord": {
+										"value": "@activity('Lookup file detail').output.count",
+										"type": "Expression"
+									},
+									"resId": {
+										"value": "@variables('resId')",
+										"type": "Expression"
 									}
 								}
-							]
+							}
 						},
 						{
-							"value": "createFileAndFileArchive",
-							"activities": [
+							"name": "insert response file ExceptionError 1",
+							"type": "Script",
+							"dependsOn": [
 								{
-									"name": "Execute createFileAndFileArchive",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_CreateFileOutputAndArchive",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"fileType": {
-												"value": "@pipeline().parameters.fileType",
-												"type": "Expression"
-											},
-											"fileName": {
-												"value": "@pipeline().parameters.fileName",
-												"type": "Expression"
-											},
-											"outputPath": {
-												"value": "@pipeline().parameters.outputPath",
-												"type": "Expression"
-											},
-											"fileId": {
-												"value": "@pipeline().parameters.fileId",
-												"type": "Expression"
-											},
-											"fileNameArchive": {
-												"value": "@pipeline().parameters.fileNameArchive",
-												"type": "Expression"
-											},
-											"countRecord": {
-												"value": "@activity('Lookup file detail').output.count",
-												"type": "Expression"
-											},
-											"resId": {
-												"value": "@variables('resId')",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "insert response file ExceptionError",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set error exception_copy1",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set error exception_copy1",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Execute createFileAndFileArchive",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "exceptionMessage",
-										"value": {
-											"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndFileArchive')),'''','''''')),0,499)",
+									"activity": "Set error exception",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('exceptionMessage'),'''  WHERE RES_ID =',variables('resId'),'')",
 											"type": "Expression"
 										}
 									}
+								]
+							}
+						},
+						{
+							"name": "Set error exception",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute createFileAndNotArchive",
+									"dependencyConditions": [
+										"Failed"
+									]
 								}
-							]
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "exceptionMessage",
+								"value": {
+									"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndNotArchive')),'''','''''')),0,499)",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
