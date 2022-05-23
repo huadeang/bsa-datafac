@@ -305,10 +305,6 @@
 				"type": "String",
 				"defaultValue": "CREDIT_DEV"
 			},
-			"TEMP_FILE_DETAIL_CREATED_BY": {
-				"type": "String",
-				"defaultValue": "CC_TEMP_FILE_DETAIL"
-			},
 			"moveInputPath": {
 				"type": "String"
 			},
