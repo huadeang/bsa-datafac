@@ -320,260 +320,6 @@
 				}
 			},
 			{
-				"name": "Copy File Sync To Achive",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Move Data Dat Succes",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileSyncName",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.moveInputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@concat(variables('fileSyncNotExension'),'_',variables('fileProcessTime'),'.',variables('fileSyncExension'))",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Copy File Dat To Achive",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Move Data Dat Succes",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.moveInputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@variables('fileNameArchive')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Delete File Dat To Achive",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "Copy File Dat To Achive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "FileServerReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
-				"name": "Delete File SyncTo Achive",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "Copy File Sync To Achive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileSyncName",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "FileServerReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "Set fileProcessTime",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -872,6 +618,152 @@
 						"value": "@split(pipeline().parameters.fileSyncName,'.')[sub(length(split(pipeline().parameters.fileSyncName,'.')),1)]",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Move FIle Sync",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Move Data Dat Succes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CC_MOVE_FILE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"inDir": {
+							"value": "@pipeline().parameters.inputPath",
+							"type": "Expression"
+						},
+						"outDir": {
+							"value": "@pipeline().parameters.moveInputPath",
+							"type": "Expression"
+						},
+						"inName": {
+							"value": "@pipeline().parameters.fileSyncName",
+							"type": "Expression"
+						},
+						"outName": {
+							"value": "@concat(variables('fileSyncNotExension'),'_',variables('fileProcessTime'),'.',variables('fileSyncExension'))",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Move FIle Dat",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Move Data Dat Succes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CC_MOVE_FILE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"inDir": {
+							"value": "@pipeline().parameters.inputPath",
+							"type": "Expression"
+						},
+						"outDir": {
+							"value": "@pipeline().parameters.moveInputPath",
+							"type": "Expression"
+						},
+						"inName": {
+							"value": "@pipeline().parameters.fileDatName",
+							"type": "Expression"
+						},
+						"outName": {
+							"value": "@variables('fileNameArchive')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "update review End Process Move file sync Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Move FIle Sync",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "update review End Process Move file dat Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Move FIle Dat",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
+								"type": "Expression"
+							}
+						}
+					]
 				}
 			}
 		],
