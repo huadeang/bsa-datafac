@@ -610,6 +610,72 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FILE_DTL_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "FILE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "FILE_LINE",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_UAT",
+					"table": "CC_TEMP_FILE_DETAIL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -846,72 +912,6 @@
 				"typeProperties": {
 					"schema": "CREDIT",
 					"table": "TEST_CC_BILLING"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "FILE_DTL_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "FILE_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "FILE_LINE",
-						"type": "varchar"
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "REMARK",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_UAT",
-					"table": "CC_TEMP_FILE_DETAIL"
 				}
 			},
 			"dependsOn": []
