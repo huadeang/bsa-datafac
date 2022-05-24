@@ -1,5 +1,5 @@
 {
-	"name": "CC_ProcessFileDat",
+	"name": "CC_ReviewProcessFileDat",
 	"properties": {
 		"activities": [
 			{
@@ -634,7 +634,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CC_MOVE_FILE",
+						"referenceName": "CC_ReviewMoveFile",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -672,7 +672,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CC_MOVE_FILE",
+						"referenceName": "CC_ReviewMoveFile",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,

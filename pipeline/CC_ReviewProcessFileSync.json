@@ -1,5 +1,5 @@
 {
-	"name": "CC_ProcessFileSync",
+	"name": "CC_ReviewProcessFileSync",
 	"properties": {
 		"activities": [
 			{
@@ -165,7 +165,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"pipeline": {
-												"referenceName": "CC_ProcessFileDat",
+												"referenceName": "CC_ReviewProcessFileDat",
 												"type": "PipelineReference"
 											},
 											"waitOnCompletion": true,

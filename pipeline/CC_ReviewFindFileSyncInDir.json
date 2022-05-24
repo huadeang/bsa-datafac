@@ -1,5 +1,5 @@
 {
-	"name": "CC_FindFileSyncInDir",
+	"name": "CC_ReviewFindFileSyncInDir",
 	"properties": {
 		"activities": [
 			{
@@ -87,7 +87,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ProcessFileSync",
+									"referenceName": "CC_ReviewProcessFileSync",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
