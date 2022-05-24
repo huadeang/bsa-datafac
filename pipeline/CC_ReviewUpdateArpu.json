@@ -1,5 +1,5 @@
 {
-	"name": "CC_UpdateArpu",
+	"name": "CC_ReviewUpdateArpu",
 	"properties": {
 		"activities": [
 			{
@@ -205,7 +205,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_FindFileSyncInDir",
+									"referenceName": "CC_ReviewFindFileSyncInDir",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
