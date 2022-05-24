@@ -49,24 +49,24 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Set inputPath",
+							"name": "Set outputPath",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "inputPath",
+								"variableName": "outputPath",
 								"value": {
-									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val1",
+									"value": "@activity('Get Config Value').output.firstRow.VAL2",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Set fileTypeInputFile",
+							"name": "Set prefixOutputFile",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set inputPath",
+									"activity": "Set outputPath",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -74,19 +74,19 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "fileTypeInputFile",
+								"variableName": "prefixOutputFile",
 								"value": {
-									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val4",
+									"value": "@activity('Get Config Value').output.firstRow.VAL5",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Set prefixInputFile",
+							"name": "Set fileTypeOutputFile",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set fileTypeInputFile",
+									"activity": "Set prefixOutputFile",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -94,88 +94,10 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "prefixInputFile",
+								"variableName": "fileTypeOutputFile",
 								"value": {
-									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val3",
+									"value": "@activity('Get Config Value').output.firstRow.VAL6",
 									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set moveInputPath",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set prefixInputFile",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "moveInputPath",
-								"value": {
-									"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val7",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Execute All Process",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "Set moveInputPath",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "CC_ReviewFindFileSyncInDir",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"inputPath": {
-										"value": "@variables('inputPath')",
-										"type": "Expression"
-									},
-									"prefixInputFile": {
-										"value": "@variables('prefixInputFile')",
-										"type": "Expression"
-									},
-									"fileTypeInputFile": {
-										"value": "@variables('fileTypeInputFile')",
-										"type": "Expression"
-									},
-									"SCHEMA": {
-										"value": "@variables('SCHEMA')",
-										"type": "Expression"
-									},
-									"CREDIT_USER": {
-										"value": "@variables('CREDIT_USER')",
-										"type": "Expression"
-									},
-									"FILE_TYPE": {
-										"value": "@variables('FILE_TYPE')",
-										"type": "Expression"
-									},
-									"LOV_TYPE_REVIEW": {
-										"value": "@variables('REVIEW_TYPE')",
-										"type": "Expression"
-									},
-									"moveInputPath": {
-										"value": "@variables('moveInputPath')",
-										"type": "Expression"
-									},
-									"FILE_UPDATE_TYPE": {
-										"value": "@variables('FILE_UPDATE_TYPE')",
-										"type": "Expression"
-									}
 								}
 							}
 						}
@@ -233,6 +155,15 @@
 			"CHANGE_TYPE": {
 				"type": "String",
 				"defaultValue": "CHANGE_TYPE_NULL"
+			},
+			"outputPath": {
+				"type": "String"
+			},
+			"prefixOutputFile": {
+				"type": "String"
+			},
+			"fileTypeOutputFile": {
+				"type": "String"
 			}
 		},
 		"annotations": []
