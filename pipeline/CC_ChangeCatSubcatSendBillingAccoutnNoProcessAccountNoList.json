@@ -48,6 +48,36 @@
 						"value": "@empty(activity('Get Account List').output.value)",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Insert CC_CHANGE_CAT_SUBCAT process",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Insert CC_CHANGE_CAT_SUBCAT if Empty",
@@ -99,6 +129,11 @@
 			},
 			"CHANGE_TYPE": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"changeId": {
+				"type": "String"
 			}
 		},
 		"annotations": []
