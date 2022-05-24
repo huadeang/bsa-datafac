@@ -298,7 +298,14 @@
 					{
 						"name": "Get Account List",
 						"type": "Lookup",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set changeId",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -343,54 +350,6 @@
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
-								{
-									"name": "Insert CC_CHANGE_CAT_SUBCAT process",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''P'',''Process send billing account number count ',string(activity('Get Account List').output.count),' record'');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set changeId",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "changeId",
-										"value": {
-											"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
-											"type": "Expression"
-										}
-									}
-								},
 								{
 									"name": "Get Metadata file created",
 									"type": "GetMetadata",
@@ -497,6 +456,7 @@
 								},
 								{
 									"name": "Update CC_CHANGE_CAT_SUBCAT error",
+									"description": "",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -523,7 +483,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
 													"type": "Expression"
 												}
 											}
@@ -558,7 +518,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
 													"type": "Expression"
 												}
 											}
@@ -570,7 +530,7 @@
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "Set changeId",
+											"activity": "Update CC_CHANGE_CAT_SUBCAT process",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -918,6 +878,35 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Update CC_CHANGE_CAT_SUBCAT process",
+									"description": "",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION =''Process send billing account number count ',string(activity('Get Account List').output.count),' record''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
 								}
 							],
 							"ifTrueActivities": [
@@ -950,6 +939,54 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Insert CC_CHANGE_CAT_SUBCAT process",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''O'',''Process send billing account number'');')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set changeId",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "changeId",
+							"value": {
+								"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
+								"type": "Expression"
+							}
 						}
 					}
 				],
