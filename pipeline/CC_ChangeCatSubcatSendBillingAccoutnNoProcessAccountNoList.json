@@ -335,7 +335,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@concat(pipeline().parameters.prefixOutputFile,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'.',pipeline().parameters.fileTypeOutputFile)",
+											"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd_hhmmss'),'.',pipeline().parameters.fileTypeOutputFile)",
 											"type": "Expression"
 										}
 									}
