@@ -100,6 +100,41 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Get Account No List",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Set fileTypeOutputFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',variables('SCHEMA'),'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							}
 						}
 					],
 					"ifTrueActivities": [
