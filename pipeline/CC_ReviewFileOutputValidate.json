@@ -1,5 +1,5 @@
 {
-	"name": "CC_FileOutputValidate",
+	"name": "CC_ReviewFileOutputValidate",
 	"properties": {
 		"activities": [
 			{
@@ -59,7 +59,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"pipeline": {
-												"referenceName": "CC_CreateFileOutput",
+												"referenceName": "CC_ReviewCreateFileOutput",
 												"type": "PipelineReference"
 											},
 											"waitOnCompletion": true,

@@ -1,5 +1,5 @@
 {
-	"name": "CC_ProcessFileError",
+	"name": "CC_ReviewResponseFile",
 	"properties": {
 		"activities": [
 			{
@@ -53,7 +53,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_FileOutputValidate",
+									"referenceName": "CC_ReviewFileOutputValidate",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
