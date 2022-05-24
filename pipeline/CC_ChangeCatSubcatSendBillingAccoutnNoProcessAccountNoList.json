@@ -96,6 +96,178 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set changeId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"additionalColumns": [
+										{
+											"name": "STATUS",
+											"value": ""
+										},
+										{
+											"name": "CREATED",
+											"value": {
+												"value": "@utcNow()",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD",
+											"value": {
+												"value": "@utcNow()",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "CREATED_BY",
+											"value": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD_BY",
+											"value": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "CHANGE_ID",
+											"value": {
+												"value": "@variables('changeId')",
+												"type": "Expression"
+											}
+										}
+									],
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CREATED"
+											},
+											"sink": {
+												"name": "CREATED",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "CREATED_BY"
+											},
+											"sink": {
+												"name": "CREATED_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD"
+											},
+											"sink": {
+												"name": "LAST_UPD",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD_BY"
+											},
+											"sink": {
+												"name": "LAST_UPD_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "CHANGE_ID"
+											},
+											"sink": {
+												"name": "CHANGE_ID",
+												"type": "Int64",
+												"physicalType": "bigint"
+											}
+										},
+										{
+											"source": {
+												"name": "BILLING_ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "BILLING_ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "STATUS"
+											},
+											"sink": {
+												"name": "STATUS",
+												"type": "String",
+												"physicalType": "char"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CC_DatasetChangeCatSubcatHist",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					],
 					"ifTrueActivities": [
