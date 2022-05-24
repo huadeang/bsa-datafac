@@ -133,7 +133,8 @@
 								"dataset": {
 									"referenceName": "AzureSqlMaster",
 									"type": "DatasetReference"
-								}
+								},
+								"firstRowOnly": false
 							}
 						}
 					],
