@@ -127,14 +127,14 @@
 										{
 											"name": "CREATED",
 											"value": {
-												"value": "@utcNow()",
+												"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 												"type": "Expression"
 											}
 										},
 										{
 											"name": "LAST_UPD",
 											"value": {
-												"value": "@utcNow()",
+												"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 												"type": "Expression"
 											}
 										},
@@ -266,6 +266,79 @@
 								{
 									"referenceName": "CC_DatasetChangeCatSubcatHist",
 									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Create File Output",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "FileServerWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CCLocalFileToWrite",
+									"type": "DatasetReference",
+									"parameters": {
+										"filePath": {
+											"value": "@pipeline().parameters.outputPath",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@concat(pipeline().parameters.prefixOutputFile,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'.',pipeline().parameters.fileTypeOutputFile)",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
