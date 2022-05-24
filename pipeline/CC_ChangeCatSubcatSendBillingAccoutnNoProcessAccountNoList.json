@@ -1,0 +1,17 @@
+{
+	"name": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
+	"properties": {
+		"parameters": {
+			"outputPath": {
+				"type": "string"
+			},
+			"prefixOutputFile": {
+				"type": "string"
+			},
+			"fileTypeOutputFile": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
