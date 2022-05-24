@@ -135,6 +135,14 @@
 									"SCHEMA": {
 										"value": "@variables('SCHEMA')",
 										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@variables('CREDIT_USER')",
+										"type": "Expression"
+									},
+									"CHANGE_TYPE": {
+										"value": "@variables('CHANGE_TYPE')",
+										"type": "Expression"
 									}
 								}
 							}
