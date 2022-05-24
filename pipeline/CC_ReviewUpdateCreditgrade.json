@@ -1,5 +1,5 @@
 {
-	"name": "CC_UpdateCreditgrade",
+	"name": "CC_ReviewUpdateCreditgrade",
 	"properties": {
 		"activities": [
 			{
@@ -205,7 +205,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_FindFileSyncInDir",
+									"referenceName": "CC_ReviewFindFileSyncInDir",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
