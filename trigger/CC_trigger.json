@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "CC_UpdateCreditgrade",
+					"referenceName": "CC_ReviewUpdateCreditgrade",
 					"type": "PipelineReference"
 				}
 			}
