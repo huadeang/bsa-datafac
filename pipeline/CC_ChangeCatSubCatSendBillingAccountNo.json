@@ -131,6 +131,10 @@
 									"fileTypeOutputFile": {
 										"value": "@variables('fileTypeOutputFile')",
 										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@variables('SCHEMA')",
+										"type": "Expression"
 									}
 								}
 							}
