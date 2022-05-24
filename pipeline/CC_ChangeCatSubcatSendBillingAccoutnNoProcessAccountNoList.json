@@ -92,7 +92,7 @@
 							"typeProperties": {
 								"variableName": "changeId",
 								"value": {
-									"value": "@activity('Insert CC_CHANGE_CAT_SUBCAT process').output.CHANGE_ID",
+									"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
 									"type": "Expression"
 								}
 							}
