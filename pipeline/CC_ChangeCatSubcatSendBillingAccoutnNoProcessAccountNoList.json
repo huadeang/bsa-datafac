@@ -1,6 +1,37 @@
 {
 	"name": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
 	"properties": {
+		"activities": [
+			{
+				"name": "Get Account List",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
 		"parameters": {
 			"outputPath": {
 				"type": "string"
@@ -9,6 +40,9 @@
 				"type": "string"
 			},
 			"fileTypeOutputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
 				"type": "string"
 			}
 		},
