@@ -98,6 +98,180 @@
 							}
 						},
 						{
+							"name": "Get Metadata file created",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Create File Output",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "CCLocalFileMasterNotSplit",
+									"type": "DatasetReference",
+									"parameters": {
+										"filePath": {
+											"value": "@pipeline().parameters.outputPath",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@variables('fileOutputName')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists",
+									"size",
+									"columnCount"
+								],
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Set fileOutputName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileOutputName",
+								"value": {
+									"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd_hhmmss'),'.',pipeline().parameters.fileTypeOutputFile)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Update CC_CHANGE_CAT_SUBCAT success",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "create file output archive",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',variables('fileOutputName'),''' WHERE CHEAGE_ID = ',variables('changeId'))",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Update CC_CHANGE_CAT_SUBCAT error",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Create File Output",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Update CC_CHANGE_CAT_SUBCAT error_copy1",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "create file output archive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
 							"name": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
 							"type": "Copy",
 							"dependsOn": [
@@ -357,55 +531,6 @@
 							]
 						},
 						{
-							"name": "Get Metadata file created",
-							"type": "GetMetadata",
-							"dependsOn": [
-								{
-									"activity": "Create File Output",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "CCLocalFileMasterNotSplit",
-									"type": "DatasetReference",
-									"parameters": {
-										"filePath": {
-											"value": "@pipeline().parameters.outputPath",
-											"type": "Expression"
-										},
-										"fileName": {
-											"value": "@variables('fileOutputName')",
-											"type": "Expression"
-										}
-									}
-								},
-								"fieldList": [
-									"exists",
-									"size",
-									"columnCount"
-								],
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							}
-						},
-						{
 							"name": "create file output archive",
 							"type": "Copy",
 							"dependsOn": [
@@ -431,7 +556,7 @@
 										{
 											"name": "COLUMN",
 											"value": {
-												"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
+												"value": "@coalesce(activity('Get Metadata file created').output?.size,'0')",
 												"type": "Expression"
 											}
 										}
@@ -495,131 +620,6 @@
 									}
 								}
 							]
-						},
-						{
-							"name": "Set fileOutputName",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileOutputName",
-								"value": {
-									"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd_hhmmss'),'.',pipeline().parameters.fileTypeOutputFile)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Update CC_CHANGE_CAT_SUBCAT success",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "create file output archive",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',variables('fileOutputName'),''' WHERE CHEAGE_ID = ',variables('changeId'))",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Update CC_CHANGE_CAT_SUBCAT error",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Create File Output",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Update CC_CHANGE_CAT_SUBCAT error_copy1",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "create file output archive",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
-											"type": "Expression"
-										}
-									}
-								]
-							}
 						}
 					],
 					"ifTrueActivities": [
