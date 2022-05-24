@@ -70,11 +70,31 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''p'',''Process send billing account number count',string(activity('Get Account List').output.count),' record'');')",
 											"type": "Expression"
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set changeId",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "changeId",
+								"value": {
+									"value": "@activity('Insert CC_CHANGE_CAT_SUBCAT process').output.CHANGE_ID",
+									"type": "Expression"
+								}
 							}
 						}
 					],
