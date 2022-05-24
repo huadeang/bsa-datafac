@@ -4049,6 +4049,27 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "CC_ReviewUpdatePayment",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "CC_ReviewUpdateArpu",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "CC_ReviewResponseFile",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -4063,14 +4084,17 @@
 								0
 							],
 							"hours": [
-								8
+								17
 							]
 						}
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdateCreditgrade')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdateCreditgrade')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdatePayment')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdateArpu')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewResponseFile')]"
 			]
 		}
 	]
