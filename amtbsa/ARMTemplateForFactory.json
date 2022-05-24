@@ -364,7 +364,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''p'',''Process send billing account number count',string(activity('Get Account List').output.count),' record'');')",
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''P'',''Process send billing account number count ',string(activity('Get Account List').output.count),' record'');')",
 													"type": "Expression"
 												}
 											}
@@ -488,7 +488,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',variables('fileOutputName'),''' WHERE CHEAGE_ID = ',variables('changeId'))",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',variables('fileOutputName'),''' WHERE CHANGE_ID = ',variables('changeId'))",
 													"type": "Expression"
 												}
 											}
@@ -523,7 +523,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
 													"type": "Expression"
 												}
 											}
@@ -558,7 +558,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
 													"type": "Expression"
 												}
 											}
