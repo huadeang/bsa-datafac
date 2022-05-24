@@ -196,11 +196,11 @@
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_SEND_ACCNT_NO"
+				"defaultValue": "CC_CAT_SUB_CAT_SEND_BA"
 			},
 			"CHANGE_TYPE": {
 				"type": "String",
-				"defaultValue": "CHANGE_TYPE_NULL"
+				"defaultValue": "CHANGE_CAT_SUB_CAT_SEND_BA"
 			},
 			"outputPath": {
 				"type": "String"
