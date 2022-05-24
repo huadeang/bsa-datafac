@@ -265,11 +265,11 @@
 					},
 					"CREDIT_USER": {
 						"type": "String",
-						"defaultValue": "DATA_FAC_SEND_ACCNT_NO"
+						"defaultValue": "CC_CAT_SUB_CAT_SEND_BA"
 					},
 					"CHANGE_TYPE": {
 						"type": "String",
-						"defaultValue": "CHANGE_TYPE_NULL"
+						"defaultValue": "CHANGE_CAT_SUB_CAT_SEND_BA"
 					},
 					"outputPath": {
 						"type": "String"
@@ -392,11 +392,359 @@
 									}
 								},
 								{
+									"name": "Get Metadata file created",
+									"type": "GetMetadata",
+									"dependsOn": [
+										{
+											"activity": "Create File Output",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "CCLocalFileMasterNotSplit",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": {
+													"value": "@pipeline().parameters.outputPath",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@variables('fileOutputName')",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"exists",
+											"size",
+											"columnCount"
+										],
+										"storeSettings": {
+											"type": "FileServerReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "DelimitedTextReadSettings"
+										}
+									}
+								},
+								{
+									"name": "Set fileOutputName",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "fileOutputName",
+										"value": {
+											"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd_hhmmss'),'.',pipeline().parameters.fileTypeOutputFile)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Update CC_CHANGE_CAT_SUBCAT success",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "create file output archive",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',variables('fileOutputName'),''' WHERE CHEAGE_ID = ',variables('changeId'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Update CC_CHANGE_CAT_SUBCAT error",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Create File Output",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Create File Output')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Update CC_CHANGE_CAT_SUBCAT error_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "create file output archive",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('create file output archive')),'''','''''')),0,499),'''\n\tWHERE CHEAGE_ID = ',variables('changeId'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
 									"name": "Insert CC_CHANGE_CAT_SUBCAT_HIST",
 									"type": "Copy",
 									"dependsOn": [
 										{
 											"activity": "Set changeId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"additionalColumns": [
+												{
+													"name": "STATUS",
+													"value": "S"
+												},
+												{
+													"name": "CREATED",
+													"value": {
+														"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "LAST_UPD",
+													"value": {
+														"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "CREATED_BY",
+													"value": {
+														"value": "@pipeline().parameters.CREDIT_USER",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "LAST_UPD_BY",
+													"value": {
+														"value": "@pipeline().parameters.CREDIT_USER",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "CHANGE_ID",
+													"value": {
+														"value": "@variables('changeId')",
+														"type": "Expression"
+													}
+												}
+											],
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "CREATED"
+													},
+													"sink": {
+														"name": "CREATED",
+														"type": "DateTime",
+														"physicalType": "datetime"
+													}
+												},
+												{
+													"source": {
+														"name": "CREATED_BY"
+													},
+													"sink": {
+														"name": "CREATED_BY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "LAST_UPD"
+													},
+													"sink": {
+														"name": "LAST_UPD",
+														"type": "DateTime",
+														"physicalType": "datetime"
+													}
+												},
+												{
+													"source": {
+														"name": "LAST_UPD_BY"
+													},
+													"sink": {
+														"name": "LAST_UPD_BY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "CHANGE_ID"
+													},
+													"sink": {
+														"name": "CHANGE_ID",
+														"type": "Int64",
+														"physicalType": "bigint"
+													}
+												},
+												{
+													"source": {
+														"name": "BILLING_ACCNT_NO",
+														"type": "String",
+														"physicalType": "varchar"
+													},
+													"sink": {
+														"name": "BILLING_ACCNT_NO",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "STATUS"
+													},
+													"sink": {
+														"name": "STATUS",
+														"type": "String",
+														"physicalType": "char"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlMaster",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CC_DatasetChangeCatSubcatHist",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Create File Output",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Set fileOutputName",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -421,70 +769,20 @@
 											"partitionOption": "None"
 										},
 										"sink": {
-											"type": "AzureSqlSink",
-											"writeBehavior": "insert",
-											"sqlWriterUseTableLock": false
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "FileServerWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
 										},
 										"enableStaging": false,
 										"translator": {
 											"type": "TabularTranslator",
 											"mappings": [
-												{
-													"source": {},
-													"sink": {
-														"name": "CHANGE_HIST_ID",
-														"type": "Int64",
-														"physicalType": "bigint"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "CREATED",
-														"type": "DateTime",
-														"physicalType": "datetime"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "CREATED_BY",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "LAST_UPD",
-														"type": "DateTime",
-														"physicalType": "datetime"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "LAST_UPD_BY",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "CHANGE_ID",
-														"type": "Int64",
-														"physicalType": "bigint"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "BILLING_ACCNT_ID",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
 												{
 													"source": {
 														"name": "BILLING_ACCNT_NO",
@@ -492,141 +790,9 @@
 														"physicalType": "varchar"
 													},
 													"sink": {
-														"name": "BILLING_ACCNT_NO",
 														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "NEW_ACCNT_SUB_CAT",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "OLD_ACCNT_SUB_CAT",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "PROFILE_CHANGE_DATE",
-														"type": "DateTime",
-														"physicalType": "datetime"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "PROFILE_CHANGE_ROWID",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "MAIL_PERIOD",
-														"type": "Decimal",
-														"physicalType": "decimal",
-														"scale": 0,
-														"precision": 2
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "SET_CL_STATUS",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "PREV_SET_CL_STATUS",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "AVAILABLE_CL",
-														"type": "Decimal",
-														"physicalType": "decimal",
-														"scale": 2,
-														"precision": 22
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "CHANGE_REASON",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "REF_REQ_ID",
-														"type": "Int64",
-														"physicalType": "bigint"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "STATUS",
-														"type": "String",
-														"physicalType": "char"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "REMARK",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "ERROR_MSG",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "REGISTER_DT",
-														"type": "DateTime",
-														"physicalType": "datetime"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "NEW_ACCNT_CAT",
-														"type": "String",
-														"physicalType": "varchar"
-													}
-												},
-												{
-													"source": {},
-													"sink": {
-														"name": "ACCNT_ID",
-														"type": "String",
-														"physicalType": "varchar"
+														"physicalType": "String",
+														"ordinal": 1
 													}
 												}
 											],
@@ -646,9 +812,110 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CC_DatasetChangeCatSubcatHist",
+											"referenceName": "CCLocalFileToWrite",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": {
+													"value": "@pipeline().parameters.outputPath",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@variables('fileOutputName')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "create file output archive",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Get Metadata file created",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"additionalColumns": [
+												{
+													"name": "COLUMN",
+													"value": {
+														"value": "@coalesce(activity('Get Metadata file created').output?.size,'0')",
+														"type": "Expression"
+													}
+												}
+											],
+											"sqlReaderQuery": " SELECT 'ONE'",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "FileServerWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "COLUMN"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 1
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlMaster",
 											"type": "DatasetReference",
 											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CCLocalFileToWrite",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": {
+													"value": "@pipeline().parameters.outputPath",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd_hhmmss'),'.sync')",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								}
@@ -713,6 +980,9 @@
 				"variables": {
 					"changeId": {
 						"type": "String"
+					},
+					"fileOutputName": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -720,7 +990,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
-				"[concat(variables('factoryId'), '/datasets/CC_DatasetChangeCatSubcatHist')]"
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
+				"[concat(variables('factoryId'), '/datasets/CC_DatasetChangeCatSubcatHist')]",
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]"
 			]
 		},
 		{
