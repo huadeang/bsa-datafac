@@ -9,6 +9,12 @@
 					"referenceName": "CC_ReviewUpdateCreditgrade",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "CC_ReviewUpdatePayment",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "ScheduleTrigger",
