@@ -2885,7 +2885,10 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM CREDIT_DEV.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE 'RESPONSE_FILE%'\nORDER BY CREATED;",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE ''RESPONSE_FILE%''\nORDER BY CREATED;')",
+									"type": "Expression"
+								},
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
