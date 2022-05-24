@@ -30,6 +30,25 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "if Account List Empty",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Account List",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('Get Account List').output.value)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
