@@ -807,6 +807,137 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHistUAT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CHANGE_HIST_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "CHANGE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "NEW_ACCNT_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "NEW_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "OLD_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "PROFILE_CHANGE_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PROFILE_CHANGE_ROWID",
+						"type": "varchar"
+					},
+					{
+						"name": "MAIL_PERIOD",
+						"type": "decimal",
+						"precision": 2,
+						"scale": 0
+					},
+					{
+						"name": "SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "PREV_SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "AVAILABLE_CL",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 2
+					},
+					{
+						"name": "CHANGE_REASON",
+						"type": "varchar"
+					},
+					{
+						"name": "REF_REQ_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_UAT",
+					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1451,7 +1582,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CC_DatasetChangeCatSubcatHist",
+											"referenceName": "CC_DatasetChangeCatSubcatHistUAT",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
@@ -1785,7 +1916,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
-				"[concat(variables('factoryId'), '/datasets/CC_DatasetChangeCatSubcatHist')]",
+				"[concat(variables('factoryId'), '/datasets/CC_DatasetChangeCatSubcatHistUAT')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]"
 			]
 		},
@@ -3129,315 +3260,6 @@
 				"[concat(variables('factoryId'), '/datasets/DemoBillingCSV')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTestBillingTable')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ImportReviewBilling')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ImportFileToCCBilling",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"preCopyScript": "delete from credit.test_cc_billing",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime",
-											"physicalType": "datetime2"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "DateTime",
-											"physicalType": "datetime2"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILL_NAME",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "BILL_NAME",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "INVOICING_COMPANY",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "INVOICING_COMPANY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "REGISTER_DT",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "REGISTER_DT",
-											"type": "DateTime",
-											"physicalType": "datetime2"
-										}
-									},
-									{
-										"source": {
-											"name": "ARPU",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "ARPU",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "CREDIT_GRADE",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "CREDIT_GRADE",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 0,
-											"precision": 5
-										}
-									},
-									{
-										"source": {
-											"name": "DEBT_NEGO_FLG",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "DEBT_NEGO_FLG",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CCBillingFile",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "TestCCBilling",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CCBillingFile')]",
-				"[concat(variables('factoryId'), '/datasets/TestCCBilling')]"
 			]
 		}
 	]

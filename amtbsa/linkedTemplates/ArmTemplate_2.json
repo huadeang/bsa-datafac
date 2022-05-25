@@ -13,6 +13,312 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ImportReviewBilling')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ImportFileToCCBilling",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBatchSize": 1000,
+								"preCopyScript": "delete from credit.test_cc_billing",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREATED",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED_BY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREATED_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD_BY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_NO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_NO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_CATEGORY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_CATEGORY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_SUB_CATEGORY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_SUB_CATEGORY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILL_NAME",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILL_NAME",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILL_CYCLE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILL_CYCLE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "INVOICING_COMPANY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "INVOICING_COMPANY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PAYMENT_METHOD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PAYMENT_METHOD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MASTER_ACCNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MASTER_ACCNT_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS_CD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATUS_CD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILLING_STATUS_CD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILLING_STATUS_CD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "REGISTER_DT",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "REGISTER_DT",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "ARPU",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ARPU",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 7,
+											"precision": 22
+										}
+									},
+									{
+										"source": {
+											"name": "CREDIT_GRADE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREDIT_GRADE",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 5
+										}
+									},
+									{
+										"source": {
+											"name": "DEBT_NEGO_FLG",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DEBT_NEGO_FLG",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CCBillingFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TestCCBilling",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimit')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
