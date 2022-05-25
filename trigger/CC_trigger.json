@@ -21,12 +21,6 @@
 					"referenceName": "CC_ReviewUpdateArpu",
 					"type": "PipelineReference"
 				}
-			},
-			{
-				"pipelineReference": {
-					"referenceName": "CC_ReviewResponseFile",
-					"type": "PipelineReference"
-				}
 			}
 		],
 		"type": "ScheduleTrigger",
