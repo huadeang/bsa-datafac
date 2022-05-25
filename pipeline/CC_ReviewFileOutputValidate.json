@@ -220,6 +220,49 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Execute CC_ReviewFileOutputValidateChildren",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ReviewFileOutputValidateChildren",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@item().FILE_NAME",
+										"type": "Expression"
+									},
+									"fileId": {
+										"value": "@item().FILE_ID",
+										"type": "Expression"
+									},
+									"outputPath": {
+										"value": "@item().OUTPUT_PATH",
+										"type": "Expression"
+									},
+									"fileType": {
+										"value": "@item().FILE_TYPE",
+										"type": "Expression"
+									},
+									"fileNameArchive": {
+										"value": "@item().FILE_NAME_ARCHIVE",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					]
 				}
