@@ -1611,7 +1611,7 @@
 										"source": {
 											"type": "AzureSqlSource",
 											"sqlReaderQuery": {
-												"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+												"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\n    GROUP BY BILLING_ACCNT_NO ORDER BY BILLING_ACCNT_NO')",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
