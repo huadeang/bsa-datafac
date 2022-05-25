@@ -398,7 +398,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CC_DatasetChangeCatSubcatHist",
+									"referenceName": "CC_DatasetChangeCatSubcatHistUAT",
 									"type": "DatasetReference"
 								}
 							]
