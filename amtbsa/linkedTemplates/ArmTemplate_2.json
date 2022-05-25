@@ -2255,282 +2255,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewFileOutputValidate')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ForEach file error",
-						"type": "ForEach",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@pipeline().parameters.fileErrorList",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "Set fileId",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileType",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileId",
-										"value": {
-											"value": "@string(if(equals(trim(coalesce(string(item().FILE_ID),'')),''),null,string(item().FILE_ID)))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "If Some val is Null",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "Set fileOutputpath",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@or(or(or(equals(variables('fileId'),string(null)),equals(variables('fileName'),string(null))),equals(variables('outputPath'),string(null))),equals(variables('fileType'),string(null)))",
-											"type": "Expression"
-										},
-										"ifFalseActivities": [
-											{
-												"name": "Execute CreateFileOutPut",
-												"type": "ExecutePipeline",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"pipeline": {
-														"referenceName": "CC_ReviewCreateFileOutput",
-														"type": "PipelineReference"
-													},
-													"waitOnCompletion": true,
-													"parameters": {
-														"SCHEMA": {
-															"value": "@pipeline().parameters.SCHEMA",
-															"type": "Expression"
-														},
-														"CREDIT_USER": {
-															"value": "@pipeline().parameters.CREDIT_USER",
-															"type": "Expression"
-														},
-														"fileType": {
-															"value": "@variables('fileType')",
-															"type": "Expression"
-														},
-														"fileName": {
-															"value": "@variables('fileName')",
-															"type": "Expression"
-														},
-														"outputPath": {
-															"value": "@variables('outputPath')",
-															"type": "Expression"
-														},
-														"fileId": {
-															"value": "@variables('fileId')",
-															"type": "Expression"
-														},
-														"fileNameArchive": {
-															"value": "@variables('fileNameArchive')",
-															"type": "Expression"
-														}
-													}
-												}
-											}
-										],
-										"ifTrueActivities": [
-											{
-												"name": "insert error when config val error",
-												"type": "Script",
-												"dependsOn": [
-													{
-														"activity": "Set errorMsg",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"timeout": "7.00:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"linkedServiceName": {
-													"referenceName": "AzureSqlDatabase1",
-													"type": "LinkedServiceReference"
-												},
-												"typeProperties": {
-													"scripts": [
-														{
-															"type": "Query",
-															"text": {
-																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',if(startswith(\n\tvariables('errorMessage'),','),substring(\n\tvariables('errorMessage'),1,sub(length(\n\tvariables('errorMessage')),1)),\n\tvariables('errorMessage')),' data not found.'');')",
-																"type": "Expression"
-															}
-														}
-													]
-												}
-											},
-											{
-												"name": "Set errorMsg",
-												"type": "SetVariable",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "errorMessage",
-													"value": {
-														"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set fileOutputpath",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileName",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "outputPath",
-										"value": {
-											"value": "@string(if(equals(trim(coalesce(item().OUTPUT_PATH,'')),''),null,item().OUTPUT_PATH))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set fileName",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileId",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileName",
-										"value": {
-											"value": "@string(if(equals(trim(coalesce(item().FILE_NAME,'')),''),null,item().FILE_NAME))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set fileType",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileAchriveName",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileType",
-										"value": {
-											"value": "@string(if(equals(trim(coalesce(item().FILE_TYPE,'')),''),null,item().FILE_TYPE))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set fileAchriveName",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileNameArchive",
-										"value": {
-											"value": "@string(if(equals(trim(coalesce(item().FILE_NAME_ARCHIVE,'')),''),null,item().FILE_NAME_ARCHIVE))",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"fileErrorList": {
-						"type": "array"
-					},
-					"CREDIT_USER": {
-						"type": "string"
-					},
-					"SCHEMA": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"resId": {
-						"type": "String"
-					},
-					"fileName": {
-						"type": "String"
-					},
-					"fileId": {
-						"type": "String"
-					},
-					"outputPath": {
-						"type": "String"
-					},
-					"errorMessage": {
-						"type": "String"
-					},
-					"fileType": {
-						"type": "String"
-					},
-					"fileNameArchive": {
-						"type": "String"
-					},
-					"switchCaseValue": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewCreateFileOutput')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewProcessFileSync')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2964,6 +2688,391 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewProcessFileDat')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewFileOutputValidateChildren')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set fileId",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileName",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileId",
+							"value": {
+								"value": "@string(if(equals(trim(coalesce(string(pipeline().parameters.fileId),'')),''),null,string(pipeline().parameters.fileId)))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Some val is Null",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Set fileOutputpath",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(or(or(equals(variables('fileId'),string(null)),equals(variables('fileName'),string(null))),equals(variables('outputPath'),string(null))),equals(variables('fileType'),string(null)))",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Execute CreateFileOutPut",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewCreateFileOutput",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"fileType": {
+												"value": "@variables('fileType')",
+												"type": "Expression"
+											},
+											"fileName": {
+												"value": "@variables('fileName')",
+												"type": "Expression"
+											},
+											"outputPath": {
+												"value": "@variables('outputPath')",
+												"type": "Expression"
+											},
+											"fileId": {
+												"value": "@variables('fileId')",
+												"type": "Expression"
+											},
+											"fileNameArchive": {
+												"value": "@variables('fileNameArchive')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "insert error when config val error",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set errorMsg",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',if(startswith(\n\tvariables('errorMessage'),','),substring(\n\tvariables('errorMessage'),1,sub(length(\n\tvariables('errorMessage')),1)),\n\tvariables('errorMessage')),' data not found.'');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set errorMsg",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set fileOutputpath",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileId",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "outputPath",
+							"value": {
+								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.outputPath,'')),''),null,pipeline().parameters.outputPath))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileName",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileType",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileName",
+							"value": {
+								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileName,'')),''),null,pipeline().parameters.fileName))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileType",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set fileAchriveName",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileType",
+							"value": {
+								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileType,'')),''),null,pipeline().parameters.fileType))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileAchriveName",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileNameArchive",
+							"value": {
+								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileNameArchive,'')),''),null,pipeline().parameters.fileNameArchive))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					},
+					"fileId": {
+						"type": "string"
+					},
+					"outputPath": {
+						"type": "string"
+					},
+					"fileType": {
+						"type": "string"
+					},
+					"fileNameArchive": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"resId": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "String"
+					},
+					"fileId": {
+						"type": "String"
+					},
+					"outputPath": {
+						"type": "String"
+					},
+					"errorMessage": {
+						"type": "String"
+					},
+					"fileType": {
+						"type": "String"
+					},
+					"fileNameArchive": {
+						"type": "String"
+					},
+					"switchCaseValue": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewCreateFileOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewFileOutputValidate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach file error",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.fileErrorList",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Execute CC_ReviewFileOutputValidateChildren",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewFileOutputValidateChildren",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"fileName": {
+												"value": "@item().FILE_NAME",
+												"type": "Expression"
+											},
+											"fileId": {
+												"value": "@item().FILE_ID",
+												"type": "Expression"
+											},
+											"outputPath": {
+												"value": "@item().OUTPUT_PATH",
+												"type": "Expression"
+											},
+											"fileType": {
+												"value": "@item().FILE_TYPE",
+												"type": "Expression"
+											},
+											"fileNameArchive": {
+												"value": "@item().FILE_NAME_ARCHIVE",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"fileErrorList": {
+						"type": "array"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"resId": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "String"
+					},
+					"fileId": {
+						"type": "String"
+					},
+					"outputPath": {
+						"type": "String"
+					},
+					"errorMessage": {
+						"type": "String"
+					},
+					"fileType": {
+						"type": "String"
+					},
+					"fileNameArchive": {
+						"type": "String"
+					},
+					"switchCaseValue": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewFileOutputValidateChildren')]"
 			]
 		},
 		{
