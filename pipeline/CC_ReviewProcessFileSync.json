@@ -12,7 +12,7 @@
 						"value": "@pipeline().parameters.fileNameList",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Execute CC_ReviewProcessFileSyncChildren",
