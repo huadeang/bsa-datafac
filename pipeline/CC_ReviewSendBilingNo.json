@@ -184,7 +184,7 @@
 		"variables": {
 			"SCHEMA": {
 				"type": "String",
-				"defaultValue": "CREDIT_UAT"
+				"defaultValue": "CREDIT_DATA_FAC"
 			},
 			"LOV_TYPE": {
 				"type": "String",
