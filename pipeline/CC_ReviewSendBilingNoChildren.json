@@ -82,7 +82,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Set dataId",
+									"activity": "Set fileName",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -391,7 +391,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set fileName",
+									"activity": "insert CC_DATA_FACTORY onprocess",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -411,7 +411,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "insert CC_DATA_FACTORY onprocess",
+									"activity": "Set processTime",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -421,7 +421,7 @@
 							"typeProperties": {
 								"variableName": "fileName",
 								"value": {
-									"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss'),'.',pipeline().parameters.fileTypeOutputFile)",
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('pocessTime'),'.',pipeline().parameters.fileTypeOutputFile)",
 									"type": "Expression"
 								}
 							}
@@ -441,7 +441,27 @@
 							"typeProperties": {
 								"variableName": "fileSyncName",
 								"value": {
-									"value": "@concat(pipeline().parameters.prefixOutputFile,formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss'),'.sync')",
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('pocessTime'),'.sync')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set processTime",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pocessTime",
+								"value": {
+									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
 									"type": "Expression"
 								}
 							}
@@ -508,6 +528,9 @@
 				"type": "String"
 			},
 			"fileSyncName": {
+				"type": "String"
+			},
+			"pocessTime": {
 				"type": "String"
 			}
 		},
