@@ -196,7 +196,7 @@
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "CREDIT_USER"
+				"defaultValue": "DATA_FAC_SEND_BA"
 			},
 			"DATA_TYPE": {
 				"type": "String",
