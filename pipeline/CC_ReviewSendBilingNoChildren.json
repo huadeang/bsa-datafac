@@ -204,7 +204,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ''',variables('fileName'),''',\n\tFILE_NAME_SYNC = ''',variables('fileSyncName'),''',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Create File : ',variables('fileName'),' success'' WHERE DATA_ID =',variables('dataId'),';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ''',variables('fileName'),''',\n\tFILE_NAME_SYNC = ''',variables('fileSyncName'),''',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Create File : ',variables('fileName'),' success'' WHERE DATA_ID =',variables('dataId'),';')",
 											"type": "Expression"
 										}
 									}
