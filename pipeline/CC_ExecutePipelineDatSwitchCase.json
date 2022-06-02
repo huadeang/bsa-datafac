@@ -29,7 +29,7 @@
 										"waitOnCompletion": true,
 										"parameters": {
 											"fileDatName": {
-												"value": "@variables('fileDatName')",
+												"value": "@pipeline().parameters.fileDatName",
 												"type": "Expression"
 											},
 											"SCHEMA": {
@@ -53,11 +53,11 @@
 												"type": "Expression"
 											},
 											"fileSyncName": {
-												"value": "@variables('fileinputName')",
+												"value": "@pipeline().parameters.fileSyncName",
 												"type": "Expression"
 											},
 											"reviewId": {
-												"value": "@variables('reviewId')",
+												"value": "@pipeline().parameters.reviewId",
 												"type": "Expression"
 											},
 											"FILE_UPDATE_TYPE": {
@@ -95,7 +95,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',variables('exceptionError'),'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',variables('exceptionError'),'''',\n\t' WHERE REVIEW_ID =''',pipeline().parameters.reviewId,''';')",
 													"type": "Expression"
 												}
 											}
@@ -161,28 +161,7 @@
 			}
 		},
 		"variables": {
-			"fileProcessTime": {
-				"type": "String"
-			},
-			"fileNameArchive": {
-				"type": "String"
-			},
-			"tempFileDatId": {
-				"type": "String"
-			},
-			"fileDatNameNotExension": {
-				"type": "String"
-			},
-			"fileDatExension": {
-				"type": "String"
-			},
-			"fileSyncNotExension": {
-				"type": "String"
-			},
-			"fileSyncExension": {
-				"type": "String"
-			},
-			"descriptionOnprocess": {
+			"exceptionError": {
 				"type": "String"
 			}
 		},
