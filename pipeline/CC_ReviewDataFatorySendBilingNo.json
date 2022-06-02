@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewSendBilingNo",
+	"name": "CC_ReviewDataFatorySendBilingNo",
 	"properties": {
 		"activities": [
 			{
@@ -115,7 +115,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewSendBilingNoChildren",
+									"referenceName": "CC_ReviewDataFactorySendBilingNoChildren",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
