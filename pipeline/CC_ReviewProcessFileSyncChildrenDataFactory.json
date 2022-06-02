@@ -152,10 +152,6 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "CC_ExecutePipelineDatSwitchCase",
-									"type": "PipelineReference"
-								},
 								"waitOnCompletion": true,
 								"parameters": {
 									"fileDatName": {
