@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "CC_ReviewResponseFile",
+					"referenceName": "CC_ReviewTempFileResponseFile",
 					"type": "PipelineReference"
 				}
 			}
