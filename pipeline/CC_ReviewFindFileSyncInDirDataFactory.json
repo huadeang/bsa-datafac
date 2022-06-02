@@ -181,16 +181,7 @@
 			"CREDIT_USER": {
 				"type": "string"
 			},
-			"FILE_TYPE": {
-				"type": "string"
-			},
-			"LOV_TYPE_REVIEW": {
-				"type": "string"
-			},
 			"moveInputPath": {
-				"type": "string"
-			},
-			"FILE_UPDATE_TYPE": {
 				"type": "string"
 			},
 			"executePipeLineName": {
