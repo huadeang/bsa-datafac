@@ -205,7 +205,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewFindFileSyncInDir",
+									"referenceName": "CC_ReviewTempFileFindFileSyncInDir",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
