@@ -247,7 +247,7 @@
 										"type": "Expression"
 									},
 									"executePipeLineName": {
-										"value": "@variables('executePipeLineName')",
+										"value": "@variables('executeDatPipeLineName')",
 										"type": "Expression"
 									}
 								}
@@ -331,7 +331,7 @@
 				"type": "String",
 				"defaultValue": "credit grade"
 			},
-			"executePipeLineName": {
+			"executeDatPipeLineName": {
 				"type": "String",
 				"defaultValue": "CC_ReviewTempfileProcessFileDat"
 			}
