@@ -117,7 +117,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Set executePipeLineName",
+							"name": "Set executePipeLineName error message",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
@@ -192,7 +192,14 @@
 			{
 				"name": "Set fileInputName",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set executePipeLineName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "fileinputName",
@@ -238,9 +245,16 @@
 				}
 			},
 			{
-				"name": "Switch1",
+				"name": "Switch Case Execute pipeline dat",
 				"type": "Switch",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If file size equal and Not exist",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
@@ -249,37 +263,55 @@
 					},
 					"cases": [
 						{
-							"value": ""
+							"value": "error message file dat size not mapping",
+							"activities": [
+								{
+									"name": "update file dat data not mapping",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',pipeline().parameters.fileInputName,''',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',variables('fileinputName'),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						},
+						{
+							"value": "Case2"
 						}
 					]
 				}
 			},
 			{
-				"name": "update file dat data not mapping",
-				"type": "Script",
+				"name": "Set executePipeLineName",
+				"type": "SetVariable",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
 				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',pipeline().parameters.fileInputName,''',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',variables('fileinputName'),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
-								"type": "Expression"
-							}
-						}
-					]
+					"variableName": "executePipeLineName",
+					"value": {
+						"value": "@pipeline().parameters.executePipeLineName",
+						"type": "Expression"
+					}
 				}
 			}
 		],
