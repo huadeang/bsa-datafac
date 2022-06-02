@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewProcessFileSync",
+	"name": "CC_ReviewTempFileProcessFileSync",
 	"properties": {
 		"activities": [
 			{
@@ -21,7 +21,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewProcessFileSyncChildren",
+									"referenceName": "CC_ReviewTempFileProcessFileSyncChildren",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
