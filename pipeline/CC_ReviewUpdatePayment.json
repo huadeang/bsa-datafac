@@ -247,7 +247,7 @@
 										"type": "Expression"
 									},
 									"executePipeLineName": {
-										"value": "@variables('executePipeLineName')",
+										"value": "@variables('executeDatPipeLineName')",
 										"type": "Expression"
 									}
 								}
@@ -335,7 +335,7 @@
 				"type": "String",
 				"defaultValue": "payment"
 			},
-			"executePipeLineName": {
+			"executeDatPipeLineName": {
 				"type": "String",
 				"defaultValue": "CC_ReviewTempfileProcessFileDat"
 			}
