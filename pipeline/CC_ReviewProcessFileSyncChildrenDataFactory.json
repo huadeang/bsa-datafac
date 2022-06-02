@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set reviewId",
+						"activity": "Set dataId",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -241,50 +241,9 @@
 				}
 			},
 			{
-				"name": "insert review process file sync",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Set fileInputName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''P'',''Process :',variables('fileinputName'),''');')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Set reviewId",
+				"name": "Set dataId",
 				"type": "SetVariable",
 				"dependsOn": [
-					{
-						"activity": "insert review process file sync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "insert data factory  process file sync",
 						"dependencyConditions": [
@@ -294,9 +253,9 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "reviewId",
+					"variableName": "dataId",
 					"value": {
-						"value": "@string(first(first(activity('insert review process file sync').output.resultSets).rows).REVIEW_ID)",
+						"value": "@string(first(first(activity('insert data factory  process file sync').output.resultSets).rows).DATA_ID)",
 						"type": "Expression"
 					}
 				}
@@ -342,7 +301,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''S'',''File prefix : ',pipeline().parameters.prefixInputFile,'  data not found in path  ',pipeline().parameters.inputPath,''');')",
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tFILE_PATH,\n\tFILE_NAME_SYNC,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''',pipeline().parameters.inputPath,''',\n\t''',pipeline().parameters.fileInputName,''',\n\t''P'',''Process file name :  ',pipeline().parameters.fileInputName,''');')",
 								"type": "Expression"
 							}
 						}
@@ -380,7 +339,7 @@
 			"fileDatSize": {
 				"type": "String"
 			},
-			"reviewId": {
+			"dataId": {
 				"type": "String"
 			},
 			"fileinputName": {
