@@ -87,7 +87,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewProcessFileSync",
+									"referenceName": "CC_ReviewProcessFileSyncDataFactory",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -123,10 +123,6 @@
 									"FILE_UPDATE_TYPE": {
 										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
 										"type": "Expression"
-									},
-									"executePipeLineName": {
-										"value": "@pipeline().parameters.executePipeLineName",
-										"type": "Expression"
 									}
 								}
 							}
@@ -154,7 +150,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''S'',''File prefix : ',pipeline().parameters.prefixInputFile,' data not found in path ',pipeline().parameters.inputPath,''');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''S'',''File prefix : ',pipeline().parameters.prefixInputFile,'  data not found in path  ',pipeline().parameters.inputPath,''');')",
 											"type": "Expression"
 										}
 									}
@@ -185,6 +181,9 @@
 				"type": "string"
 			},
 			"executePipeLineName": {
+				"type": "string"
+			},
+			"DATA_TYPE": {
 				"type": "string"
 			}
 		},
