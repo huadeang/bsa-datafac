@@ -101,7 +101,7 @@
 				"type": "String",
 				"defaultValue": "REVIEW_INSERT_BA"
 			},
-			"executePipelineName": {
+			"executeDatPipeLineName": {
 				"type": "String"
 			}
 		},
