@@ -343,6 +343,18 @@
 								}
 							]
 						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Fail Not Have Pipeline Name in data factory",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Fail Not Have Pipeline Name in data factory",
+								"errorCode": "400"
+							}
+						}
 					]
 				}
 			},
