@@ -5493,6 +5493,14 @@
 											"moveInputPath": {
 												"value": "@variables('moveInputPath')",
 												"type": "Expression"
+											},
+											"executePipeLineName": {
+												"value": "@variables('executeDatPipeLineName')",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@variables('DATA_TYPE')",
+												"type": "Expression"
 											}
 										}
 									}
@@ -5557,7 +5565,8 @@
 						"defaultValue": "REVIEW_INSERT_BA"
 					},
 					"executeDatPipeLineName": {
-						"type": "String"
+						"type": "String",
+						"defaultValue": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat"
 					},
 					"inputPath": {
 						"type": "String"
