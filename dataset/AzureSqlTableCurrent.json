@@ -1,0 +1,217 @@
+{
+	"name": "AzureSqlTableCurrent",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ROW_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "CREATED",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_UPD",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LAST_UPD_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "PAR_ROW_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "REQUEST_DETAIL_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "LOV_CAT",
+				"type": "varchar"
+			},
+			{
+				"name": "LOV_SUBCAT",
+				"type": "varchar"
+			},
+			{
+				"name": "LOV_CUST_GROUP",
+				"type": "varchar"
+			},
+			{
+				"name": "MODULE_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "LOV_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "LOV_NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL11",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL12",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL13",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL14",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL15",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL16",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL17",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL18",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL19",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL20",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL21",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL22",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL23",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL24",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL25",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL26",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL27",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL28",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL29",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VAL30",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TEXT_DESC",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ORDER_BY",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "EFFECTIVE_UNTIL_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ACTIVE_FLG",
+				"type": "char"
+			},
+			{
+				"name": "IMPORT_FLG",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "CREDIT_DATA_FAC",
+			"table": "CC_CURRENT"
+		}
+	}
+}
