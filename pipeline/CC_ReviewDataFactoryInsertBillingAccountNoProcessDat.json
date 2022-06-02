@@ -118,9 +118,9 @@
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Script Insert Table CC_BILLING_REVIEW",
+									"activity": "Set haveErrorRow",
 									"dependencyConditions": [
-										"Failed"
+										"Succeeded"
 									]
 								}
 							],
@@ -146,6 +146,26 @@
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set haveErrorRow",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Script Insert Table CC_BILLING_REVIEW",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "haveErrorRow",
+								"value": {
+									"value": "@bool(true)",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -245,6 +265,12 @@
 			},
 			"dataId": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"haveErrorRow": {
+				"type": "Boolean",
+				"defaultValue": false
 			}
 		},
 		"annotations": []
