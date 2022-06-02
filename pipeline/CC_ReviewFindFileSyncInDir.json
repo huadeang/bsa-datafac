@@ -123,10 +123,6 @@
 									"FILE_UPDATE_TYPE": {
 										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
 										"type": "Expression"
-									},
-									"executePipeLineName": {
-										"value": "@pipeline().parameters.executePipeLineName",
-										"type": "Expression"
 									}
 								}
 							}
