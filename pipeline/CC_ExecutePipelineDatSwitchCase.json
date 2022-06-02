@@ -1,0 +1,191 @@
+{
+	"name": "CC_ExecutePipelineDatSwitchCase",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch Execute PipelineName",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.executePipeLineName",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "CC_ReviewTempfileProcessFileDat",
+							"activities": [
+								{
+									"name": "Execute ProcessFileDat",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewTempfileProcessFileDat",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"fileDatName": {
+												"value": "@variables('fileDatName')",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"FILE_TYPE": {
+												"value": "@pipeline().parameters.FILE_TYPE",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"inputPath": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"moveInputPath": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"fileSyncName": {
+												"value": "@variables('fileinputName')",
+												"type": "Expression"
+											},
+											"reviewId": {
+												"value": "@variables('reviewId')",
+												"type": "Expression"
+											},
+											"FILE_UPDATE_TYPE": {
+												"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "update review End Process Error",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set error exception",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',variables('exceptionError'),'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set error exception",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute ProcessFileDat",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "exceptionError",
+										"value": {
+											"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute ProcessFileDat')),'''','''''')),0,499)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileDatName": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"FILE_TYPE": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"inputPath": {
+				"type": "string"
+			},
+			"moveInputPath": {
+				"type": "string"
+			},
+			"fileSyncName": {
+				"type": "string"
+			},
+			"reviewId": {
+				"type": "string"
+			},
+			"FILE_UPDATE_TYPE": {
+				"type": "string"
+			},
+			"executePipeLineName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"fileProcessTime": {
+				"type": "String"
+			},
+			"fileNameArchive": {
+				"type": "String"
+			},
+			"tempFileDatId": {
+				"type": "String"
+			},
+			"fileDatNameNotExension": {
+				"type": "String"
+			},
+			"fileDatExension": {
+				"type": "String"
+			},
+			"fileSyncNotExension": {
+				"type": "String"
+			},
+			"fileSyncExension": {
+				"type": "String"
+			},
+			"descriptionOnprocess": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
