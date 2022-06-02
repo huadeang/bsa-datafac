@@ -82,7 +82,36 @@
 					"items": {
 						"value": "@activity('Filter Start With 02').output.Value",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "Execute CC_ReviewInsertBillingAccountNoProcessDat",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"dataLine": {
+										"value": "@item().Prop_0",
+										"type": "Expression"
+									},
+									"SCHAME": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
 				}
 			}
 		],

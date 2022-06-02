@@ -1,0 +1,55 @@
+{
+	"name": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+	"properties": {
+		"parameters": {
+			"dataLine": {
+				"type": "string"
+			},
+			"SCHAME": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"SCHEMA": {
+				"type": "String",
+				"defaultValue": "CREDIT_DATA_FAC"
+			},
+			"LOV_TYPE": {
+				"type": "String",
+				"defaultValue": "CC_MONITOR_MASTER"
+			},
+			"LOV_NAME": {
+				"type": "String",
+				"defaultValue": "cc_data_fac_review_Insert_billing_no"
+			},
+			"CREDIT_USER": {
+				"type": "String",
+				"defaultValue": "DATA_FAC_INSERT_BA"
+			},
+			"DATA_TYPE": {
+				"type": "String",
+				"defaultValue": "REVIEW_INSERT_BA"
+			},
+			"executeDatPipeLineName": {
+				"type": "String",
+				"defaultValue": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat"
+			},
+			"inputPath": {
+				"type": "String"
+			},
+			"fileTypeInputFile": {
+				"type": "String"
+			},
+			"prefixInputFile": {
+				"type": "String"
+			},
+			"moveInputPath": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
