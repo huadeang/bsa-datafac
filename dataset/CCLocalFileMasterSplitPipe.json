@@ -28,9 +28,8 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": "",
 			"escapeChar": "\\",
-			"quoteChar": "\""
+			"quoteChar": ""
 		},
 		"schema": []
 	}
