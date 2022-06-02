@@ -205,7 +205,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewTempFileFindFileSyncInDir",
+									"referenceName": "CC_ReviewFindFileSyncInDir",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -244,6 +244,10 @@
 									},
 									"FILE_UPDATE_TYPE": {
 										"value": "@variables('FILE_UPDATE_TYPE')",
+										"type": "Expression"
+									},
+									"executePipeLineName": {
+										"value": "@variables('executePipeLineName')",
 										"type": "Expression"
 									}
 								}
@@ -330,6 +334,10 @@
 			"FILE_UPDATE_TYPE": {
 				"type": "String",
 				"defaultValue": "payment"
+			},
+			"executePipeLineName": {
+				"type": "String",
+				"defaultValue": "CC_ReviewTempfileProcessFileDat"
 			}
 		},
 		"annotations": []
