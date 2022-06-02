@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewInsertBillingAccountNo",
+	"name": "CC_ReviewDataFactoryInsertBillingAccountNo",
 	"properties": {
 		"activities": [
 			{
