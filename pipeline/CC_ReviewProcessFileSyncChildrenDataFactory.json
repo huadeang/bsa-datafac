@@ -123,10 +123,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "executePipeLineName",
-								"value": {
-									"value": "@concat('Error Message in data id ',variables('dataId'))",
-									"type": "Expression"
-								}
+								"value": "error message file dat size not mapping"
 							}
 						}
 					]
@@ -246,7 +243,15 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"cases": []
+					"on": {
+						"value": "@variables('executePipeLineName')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": ""
+						}
+					]
 				}
 			},
 			{
