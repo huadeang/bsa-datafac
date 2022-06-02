@@ -21,7 +21,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewProcessFileSyncChildren",
+									"referenceName": "CC_ReviewProcessFileSyncChildrenDataFactory",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -38,20 +38,12 @@
 										"value": "@pipeline().parameters.CREDIT_USER",
 										"type": "Expression"
 									},
-									"LOV_TYPE_REVIEW": {
-										"value": "@pipeline().parameters.LOV_TYPE_REVIEW",
-										"type": "Expression"
-									},
-									"FILE_TYPE": {
-										"value": "@pipeline().parameters.FILE_TYPE",
+									"DATA_TYPE": {
+										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
 									"moveInputPath": {
 										"value": "@pipeline().parameters.moveInputPath",
-										"type": "Expression"
-									},
-									"FILE_UPDATE_TYPE": {
-										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
 										"type": "Expression"
 									},
 									"fileInputName": {
@@ -79,10 +71,7 @@
 			"CREDIT_USER": {
 				"type": "string"
 			},
-			"LOV_TYPE_REVIEW": {
-				"type": "string"
-			},
-			"FILE_TYPE": {
+			"DATA_TYPE": {
 				"type": "string"
 			},
 			"moveInputPath": {
@@ -90,9 +79,6 @@
 			},
 			"fileNameList": {
 				"type": "array"
-			},
-			"FILE_UPDATE_TYPE": {
-				"type": "string"
 			},
 			"executePipeLineName": {
 				"type": "string"
