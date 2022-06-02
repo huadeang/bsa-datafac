@@ -57,10 +57,6 @@
 									"fileInputName": {
 										"value": "@item().name",
 										"type": "Expression"
-									},
-									"executePipeLineName": {
-										"value": "@pipeline().parameters.executePipeLineName",
-										"type": "Expression"
 									}
 								}
 							}
