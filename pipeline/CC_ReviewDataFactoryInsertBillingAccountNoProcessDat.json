@@ -208,7 +208,7 @@
 										{
 											"name": "COUNT_SME_MOBILE",
 											"value": {
-												"value": "@if(empty(split(item().Prop_0,'|')[16]),'',split(item().Prop_0,'|')[16])",
+												"value": "@if(empty(split(item().Prop_0,'|')[16]),null,split(item().Prop_0,'|')[16])",
 												"type": "Expression"
 											}
 										},
