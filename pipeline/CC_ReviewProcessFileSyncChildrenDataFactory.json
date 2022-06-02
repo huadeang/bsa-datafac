@@ -305,7 +305,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+											"referenceName": "CC_ReviewDataFactoryProcessDatFilterStartWith02",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,

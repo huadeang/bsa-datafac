@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+	"name": "CC_ReviewDataFactoryProcessDatFilterStartWith02",
 	"properties": {
 		"activities": [
 			{
@@ -27,7 +27,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -41,6 +41,48 @@
 						}
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Filter Start With 02",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lookup File dat",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup File dat').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@startswith(item().Prop_0,'02')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach row",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter Start With 02",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter Start With 02').output.Value",
+						"type": "Expression"
+					}
 				}
 			}
 		],
