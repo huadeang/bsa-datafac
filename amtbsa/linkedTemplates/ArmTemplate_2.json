@@ -13,6 +13,471 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFactoryInsertBillingAccountNoProcessDat')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup File dat",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileDatName",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Filter Start With 02",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lookup File dat",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup File dat').output.value",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@startswith(item().Prop_0,'02')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEach row",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filter Start With 02",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filter Start With 02').output.Value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Insert Table CC_DATA_FACTORY_HIST",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"additionalColumns": [
+												{
+													"name": "ROW_ID ",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[1]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "CREATED",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[2]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "CREATED_BY ",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[3]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "LAST_UPD",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[4]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "LAST_UPD_BY",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[5]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "ACCNT_NO",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[6]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "ACCNT_CATEGORY",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[7]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "ACCNT_SUB_CATEGORY ",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[8]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "BILL_CYCLE",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[9]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "PAYMENT_METHOD",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[10]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "MASTER_ACCNT_ID",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[11]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "STATUS_CD",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[12]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "BILLING_STATUS_CD",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[13]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "REGISTER_DT",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[14]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "FBB_FLAG",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[15]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "COUNT_SME_MOBILE",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[16]",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "POST_PAID_FLAG",
+													"value": {
+														"value": "@split(item().Prop_0,'|')[17]",
+														"type": "Expression"
+													}
+												}
+											],
+											"sqlReaderQuery": "SELECT 'Y'",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "CREATED"
+													},
+													"sink": {
+														"name": "CREATED",
+														"type": "DateTime",
+														"physicalType": "datetime"
+													}
+												},
+												{
+													"source": {
+														"name": "CREATED_BY "
+													},
+													"sink": {
+														"name": "CREATED_BY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "LAST_UPD"
+													},
+													"sink": {
+														"name": "LAST_UPD",
+														"type": "DateTime",
+														"physicalType": "datetime"
+													}
+												},
+												{
+													"source": {
+														"name": "LAST_UPD_BY"
+													},
+													"sink": {
+														"name": "LAST_UPD_BY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "ACCNT_NO"
+													},
+													"sink": {
+														"name": "ACCNT_NO",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "ACCNT_CATEGORY"
+													},
+													"sink": {
+														"name": "ACCNT_CATEGORY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "ACCNT_SUB_CATEGORY "
+													},
+													"sink": {
+														"name": "ACCNT_SUB_CATEGORY",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "BILL_CYCLE"
+													},
+													"sink": {
+														"name": "BILL_CYCLE",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "PAYMENT_METHOD"
+													},
+													"sink": {
+														"name": "PAYMENT_METHOD",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "MASTER_ACCNT_ID"
+													},
+													"sink": {
+														"name": "MASTER_ACCNT_ID",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "STATUS_CD"
+													},
+													"sink": {
+														"name": "STATUS_CD",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "BILLING_STATUS_CD"
+													},
+													"sink": {
+														"name": "BILLING_STATUS_CD",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "REGISTER_DT"
+													},
+													"sink": {
+														"name": "REGISTER_DT",
+														"type": "DateTime",
+														"physicalType": "datetime"
+													}
+												},
+												{
+													"source": {
+														"name": "FBB_FLAG"
+													},
+													"sink": {
+														"name": "FBB_FLAG",
+														"type": "String",
+														"physicalType": "char"
+													}
+												},
+												{
+													"source": {
+														"name": "COUNT_SME_MOBILE"
+													},
+													"sink": {
+														"name": "COUNT_SME_MOBILE",
+														"type": "Int32",
+														"physicalType": "int"
+													}
+												},
+												{
+													"source": {
+														"name": "POST_PAID_FLAG"
+													},
+													"sink": {
+														"name": "POST_PAID_FLAG",
+														"type": "String",
+														"physicalType": "char"
+													}
+												},
+												{
+													"source": {
+														"name": "ROW_ID "
+													},
+													"sink": {
+														"name": "ROW_ID",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqlMaster",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CC_DatasetTableBillingReviewSchemaDataFac",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"SCHEMA": {
+						"type": "string"
+					},
+					"DATA_TYPE": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"inputPath": {
+						"type": "string"
+					},
+					"moveInputPath": {
+						"type": "string"
+					},
+					"fileDatName": {
+						"type": "string"
+					},
+					"dataId": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFactorySendBilingNoChildren')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -3226,7 +3691,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactoryInsertBillingAccountNoProcessDat')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewTempfileProcessFileDat')]",
@@ -5789,147 +6256,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewProcessFileSync')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewTempFileResponseFile')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "get file Error Temp file",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT FILE_ID,FILE_TYPE,FILE_NAME,FILE_NAME_ARCHIVE,OUTPUT_PATH FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \nWHERE FILE_TYPE  LIKE ''RESPONSE_FILE%''\nORDER BY CREATED;')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "If not Have file input",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "get file Error Temp file",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@empty(activity('get file Error Temp file').output.value)",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Execute Create file error",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_ReviewFileOutputValidate",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"fileErrorList": {
-												"value": "@activity('get file Error Temp file').output.value",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@variables('CREDIT_USER')",
-												"type": "Expression"
-											},
-											"SCHEMA": {
-												"value": "@variables('SCHEMA')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "insert response file not have input file",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''RESPONSE_FILE'',\n\t''S'',''Query response file data not found'');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"SCHEMA": {
-						"type": "String",
-						"defaultValue": "CREDIT_UAT"
-					},
-					"CREDIT_USER": {
-						"type": "String",
-						"defaultValue": "CREDIT"
-					},
-					"errorException": {
-						"type": "String"
-					},
-					"RESPONST_TYPE": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewFileOutputValidate')]"
 			]
 		}
 	]
