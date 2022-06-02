@@ -85,31 +85,344 @@
 					},
 					"activities": [
 						{
-							"name": "Execute CC_ReviewInsertBillingAccountNoProcessDat",
-							"type": "ExecutePipeline",
+							"name": "Insert Table CC_DATA_FACTORY_HIST",
+							"type": "Copy",
 							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
-									"type": "PipelineReference"
+								"source": {
+									"type": "AzureSqlSource",
+									"additionalColumns": [
+										{
+											"name": "ROW_ID ",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[1]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "CREATED",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[2]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "CREATED_BY ",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[3]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[4]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD_BY",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[5]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "ACCNT_NO",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[6]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "ACCNT_CATEGORY",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[7]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "ACCNT_SUB_CATEGORY ",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[8]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "BILL_CYCLE",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[9]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "PAYMENT_METHOD",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[10]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "MASTER_ACCNT_ID",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[11]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "STATUS_CD",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[12]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "BILLING_STATUS_CD",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[13]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "REGISTER_DT",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[14]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "FBB_FLAG",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[15]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "COUNT_SME_MOBILE",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[16]",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "POST_PAID_FLAG",
+											"value": {
+												"value": "@split(item().Prop_0,'|')[17]",
+												"type": "Expression"
+											}
+										}
+									],
+									"sqlReaderQuery": "SELECT 'Y'",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"dataLine": {
-										"value": "@item().Prop_0",
-										"type": "Expression"
-									},
-									"SCHAME": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"CREDIT_USER": {
-										"value": "@pipeline().parameters.CREDIT_USER",
-										"type": "Expression"
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CREATED"
+											},
+											"sink": {
+												"name": "CREATED",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "CREATED_BY "
+											},
+											"sink": {
+												"name": "CREATED_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD"
+											},
+											"sink": {
+												"name": "LAST_UPD",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD_BY"
+											},
+											"sink": {
+												"name": "LAST_UPD_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "ACCNT_NO"
+											},
+											"sink": {
+												"name": "ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "ACCNT_CATEGORY"
+											},
+											"sink": {
+												"name": "ACCNT_CATEGORY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "ACCNT_SUB_CATEGORY "
+											},
+											"sink": {
+												"name": "ACCNT_SUB_CATEGORY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "BILL_CYCLE"
+											},
+											"sink": {
+												"name": "BILL_CYCLE",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "PAYMENT_METHOD"
+											},
+											"sink": {
+												"name": "PAYMENT_METHOD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "MASTER_ACCNT_ID"
+											},
+											"sink": {
+												"name": "MASTER_ACCNT_ID",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "STATUS_CD"
+											},
+											"sink": {
+												"name": "STATUS_CD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "BILLING_STATUS_CD"
+											},
+											"sink": {
+												"name": "BILLING_STATUS_CD",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "REGISTER_DT"
+											},
+											"sink": {
+												"name": "REGISTER_DT",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "FBB_FLAG"
+											},
+											"sink": {
+												"name": "FBB_FLAG",
+												"type": "String",
+												"physicalType": "char"
+											}
+										},
+										{
+											"source": {
+												"name": "COUNT_SME_MOBILE"
+											},
+											"sink": {
+												"name": "COUNT_SME_MOBILE",
+												"type": "Int32",
+												"physicalType": "int"
+											}
+										},
+										{
+											"source": {
+												"name": "POST_PAID_FLAG"
+											},
+											"sink": {
+												"name": "POST_PAID_FLAG",
+												"type": "String",
+												"physicalType": "char"
+											}
+										},
+										{
+											"source": {
+												"name": "ROW_ID "
+											},
+											"sink": {
+												"name": "ROW_ID",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
 									}
 								}
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CC_DatasetTableBillingReviewSchemaDataFac",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
