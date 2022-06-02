@@ -47,6 +47,81 @@
 						"value": "@or(not(contains(string(activity('Get Config value').output),'firstRow')),\n\tor(\n\t\tor(\n\t\t\tor(\n\t\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL1,'')),''),null,activity('Get Config value').output.firstRow.VAL1),null),\n\t\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL3,'')),''),null,activity('Get Config value').output.firstRow.VAL3),null)\n\t\t\t),\n\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL4,'')),''),null,activity('Get Config value').output.firstRow.VAL4),null)\n\t\t),\n\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL7,'')),''),null,activity('Get Config value').output.firstRow.VAL7),null)\n\t)\n)",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Set inputPath",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "inputPath",
+								"value": {
+									"value": "@activity('Get Config Value').output.firstRow.val1",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileTypeInputFile",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set inputPath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileTypeInputFile",
+								"value": {
+									"value": "@activity('Get Config Value').output.firstRow.val4",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set prefixInputFile",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileTypeInputFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "prefixInputFile",
+								"value": {
+									"value": "@activity('Get Config Value').output.firstRow.val3",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set moveInputPath",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set prefixInputFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "moveInputPath",
+								"value": {
+									"value": "@activity('Get Config Value').output.firstRow.val7",
+									"type": "Expression"
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "insert error when config val error",
@@ -102,6 +177,18 @@
 				"defaultValue": "REVIEW_INSERT_BA"
 			},
 			"executeDatPipeLineName": {
+				"type": "String"
+			},
+			"inputPath": {
+				"type": "String"
+			},
+			"fileTypeInputFile": {
+				"type": "String"
+			},
+			"prefixInputFile": {
+				"type": "String"
+			},
+			"moveInputPath": {
 				"type": "String"
 			}
 		},
