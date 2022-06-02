@@ -296,7 +296,52 @@
 							]
 						},
 						{
-							"value": "Case2"
+							"value": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+							"activities": [
+								{
+									"name": "Execute CC_ReviewInsertBillingAccountNoProcessDat",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"inputPath": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"moveInputPath": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"fileDatName": {
+												"value": "@variables('fileDatName')",
+												"type": "Expression"
+											},
+											"dataId": {
+												"value": "@variables('dataId')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						}
 					]
 				}
