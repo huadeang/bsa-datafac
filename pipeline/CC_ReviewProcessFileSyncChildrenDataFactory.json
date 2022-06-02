@@ -117,83 +117,15 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "update file dat data not mapping",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',pipeline().parameters.fileInputName,''',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',variables('fileinputName'),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Execute Pipeline Switch FileDat",
-							"type": "ExecutePipeline",
+							"name": "Set executePipeLineName",
+							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"waitOnCompletion": true,
-								"parameters": {
-									"fileDatName": {
-										"value": "@variables('fileDatName')",
-										"type": "Expression"
-									},
-									"SCHEMA": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"FILE_TYPE": {
-										"value": "@pipeline().parameters.FILE_TYPE",
-										"type": "Expression"
-									},
-									"CREDIT_USER": {
-										"value": "@pipeline().parameters.CREDIT_USER",
-										"type": "Expression"
-									},
-									"inputPath": {
-										"value": "@pipeline().parameters.inputPath",
-										"type": "Expression"
-									},
-									"moveInputPath": {
-										"value": "@pipeline().parameters.moveInputPath",
-										"type": "Expression"
-									},
-									"fileSyncName": {
-										"value": "@pipeline().parameters.fileInputName",
-										"type": "Expression"
-									},
-									"reviewId": {
-										"value": "@variables('reviewId')",
-										"type": "Expression"
-									},
-									"FILE_UPDATE_TYPE": {
-										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
-										"type": "Expression"
-									},
-									"executePipeLineName": {
-										"value": "@pipeline().parameters.executePipeLineName",
-										"type": "Expression"
-									}
+								"variableName": "executePipeLineName",
+								"value": {
+									"value": "@concat('Error Message in data id ',variables('dataId'))",
+									"type": "Expression"
 								}
 							}
 						}
@@ -307,6 +239,43 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"cases": []
+				}
+			},
+			{
+				"name": "update file dat data not mapping",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',pipeline().parameters.fileInputName,''',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',variables('fileinputName'),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -346,6 +315,9 @@
 				"type": "String"
 			},
 			"exceptionError": {
+				"type": "String"
+			},
+			"executePipeLineName": {
 				"type": "String"
 			}
 		},
