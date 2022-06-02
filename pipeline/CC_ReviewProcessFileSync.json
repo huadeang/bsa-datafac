@@ -57,6 +57,10 @@
 									"fileInputName": {
 										"value": "@item().name",
 										"type": "Expression"
+									},
+									"executePipeLineName": {
+										"value": "@pipeline().parameters.executePipeLineName",
+										"type": "Expression"
 									}
 								}
 							}
@@ -88,6 +92,9 @@
 				"type": "array"
 			},
 			"FILE_UPDATE_TYPE": {
+				"type": "string"
+			},
+			"executePipeLineName": {
 				"type": "string"
 			}
 		},
