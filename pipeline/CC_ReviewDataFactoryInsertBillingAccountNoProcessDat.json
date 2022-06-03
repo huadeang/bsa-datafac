@@ -5,7 +5,32 @@
 			{
 				"name": "Lookup File dat",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set fileSyncExension",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set fileSyncNameNotExtension",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set fileDatExension",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set fileDatNameNotExtension",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -287,6 +312,58 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set fileDatNameNotExtension",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileDatNameNotExension",
+					"value": {
+						"value": "@if(greater(length(split(pipeline().parameters.fileDatName,'.')),2),join(take(split(pipeline().parameters.fileDatName,'.'),sub(length(split(pipeline().parameters.fileDatName,'.')),1)),'.'),split(pipeline().parameters.fileDatName,'.')[0])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileDatExension",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileDatExension",
+					"value": {
+						"value": "@split(pipeline().parameters.fileDatName,'.')[sub(length(split(pipeline().parameters.fileDatName,'.')),1)]",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileSyncNameNotExtension",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileSyncNotExension",
+					"value": {
+						"value": "@if(greater(length(split(pipeline().parameters.fileSyncName,'.')),2),join(take(split(pipeline().parameters.fileSyncName,'.'),sub(length(split(pipeline().parameters.fileSyncName,'.')),1)),'.'),split(pipeline().parameters.fileSyncName,'.')[0])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileSyncExension",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileSyncExension",
+					"value": {
+						"value": "@split(pipeline().parameters.fileSyncName,'.')[sub(length(split(pipeline().parameters.fileSyncName,'.')),1)]",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -310,12 +387,27 @@
 			},
 			"dataId": {
 				"type": "string"
+			},
+			"fileSyncName": {
+				"type": "string"
 			}
 		},
 		"variables": {
 			"haveErrorRow": {
 				"type": "Boolean",
 				"defaultValue": false
+			},
+			"fileDatNameNotExension": {
+				"type": "String"
+			},
+			"fileDatExension": {
+				"type": "String"
+			},
+			"fileSyncNotExension": {
+				"type": "String"
+			},
+			"fileSyncExension": {
+				"type": "String"
 			}
 		},
 		"annotations": []
