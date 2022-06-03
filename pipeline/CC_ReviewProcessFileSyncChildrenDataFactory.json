@@ -337,6 +337,10 @@
 											"dataId": {
 												"value": "@variables('dataId')",
 												"type": "Expression"
+											},
+											"fileSyncName": {
+												"value": "@variables('fileinputName')",
+												"type": "Expression"
 											}
 										}
 									}
