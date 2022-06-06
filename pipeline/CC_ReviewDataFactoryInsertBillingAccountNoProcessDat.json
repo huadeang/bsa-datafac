@@ -5,32 +5,7 @@
 			{
 				"name": "Lookup File dat",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set fileSyncExension",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileSyncNameNotExtension",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileDatExension",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileDatNameNotExtension",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -314,55 +289,149 @@
 				}
 			},
 			{
-				"name": "Set fileDatNameNotExtension",
-				"type": "SetVariable",
-				"dependsOn": [],
+				"name": "Move FIle Sync",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If have Error Record",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileDatNameNotExension",
-					"value": {
-						"value": "@if(greater(length(split(pipeline().parameters.fileDatName,'.')),2),join(take(split(pipeline().parameters.fileDatName,'.'),sub(length(split(pipeline().parameters.fileDatName,'.')),1)),'.'),split(pipeline().parameters.fileDatName,'.')[0])",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "CC_ReviewMoveFile",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"inDir": {
+							"value": "@pipeline().parameters.inputPath",
+							"type": "Expression"
+						},
+						"outDir": {
+							"value": "@pipeline().parameters.moveInputPath",
+							"type": "Expression"
+						},
+						"inName": {
+							"value": "@pipeline().parameters.fileSyncName",
+							"type": "Expression"
+						},
+						"outName": {
+							"value": "@pipeline().parameters.fileSyncName",
+							"type": "Expression"
+						}
 					}
 				}
 			},
 			{
-				"name": "Set fileDatExension",
-				"type": "SetVariable",
-				"dependsOn": [],
+				"name": "Move FIle Dat",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If have Error Record",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileDatExension",
-					"value": {
-						"value": "@split(pipeline().parameters.fileDatName,'.')[sub(length(split(pipeline().parameters.fileDatName,'.')),1)]",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "CC_ReviewMoveFile",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"inDir": {
+							"value": "@pipeline().parameters.inputPath",
+							"type": "Expression"
+						},
+						"outDir": {
+							"value": "@pipeline().parameters.moveInputPath",
+							"type": "Expression"
+						},
+						"inName": {
+							"value": "@pipeline().parameters.fileDatName",
+							"type": "Expression"
+						},
+						"outName": {
+							"value": "@pipeline().parameters.fileDatName",
+							"type": "Expression"
+						}
 					}
 				}
 			},
 			{
-				"name": "Set fileSyncNameNotExtension",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileSyncNotExension",
-					"value": {
-						"value": "@if(greater(length(split(pipeline().parameters.fileSyncName,'.')),2),join(take(split(pipeline().parameters.fileSyncName,'.'),sub(length(split(pipeline().parameters.fileSyncName,'.')),1)),'.'),split(pipeline().parameters.fileSyncName,'.')[0])",
-						"type": "Expression"
+				"name": "update data facEnd Process Move file sync Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Move FIle Sync",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
+								"type": "Expression"
+							}
+						}
+					]
 				}
 			},
 			{
-				"name": "Set fileSyncExension",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileSyncExension",
-					"value": {
-						"value": "@split(pipeline().parameters.fileSyncName,'.')[sub(length(split(pipeline().parameters.fileSyncName,'.')),1)]",
-						"type": "Expression"
+				"name": "update data fac End Process Move file dat Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Move FIle Dat",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
+								"type": "Expression"
+							}
+						}
+					]
 				}
 			}
 		],
