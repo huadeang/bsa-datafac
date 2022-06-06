@@ -4977,7 +4977,7 @@
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Get All FIle in Config directory",
+								"activity": "Filter file Sync",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4993,14 +4993,7 @@
 								{
 									"name": "Execute ProcessFileSync",
 									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Filter file Sync",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
@@ -5043,22 +5036,6 @@
 											}
 										}
 									}
-								},
-								{
-									"name": "Filter file Sync",
-									"type": "Filter",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"items": {
-											"value": "@activity('Get All FIle in Config directory').output.childItems",
-											"type": "Expression"
-										},
-										"condition": {
-											"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
-											"type": "Expression"
-										}
-									}
 								}
 							],
 							"ifTrueActivities": [
@@ -5091,6 +5068,29 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Filter file Sync",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Get All FIle in Config directory",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get All FIle in Config directory').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -5183,7 +5183,7 @@
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Get All FIle in Config directory",
+								"activity": "Filter file Sync",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5199,14 +5199,7 @@
 								{
 									"name": "Execute ProcessFileSync",
 									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Filter file Sync",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
@@ -5245,22 +5238,6 @@
 											}
 										}
 									}
-								},
-								{
-									"name": "Filter file Sync",
-									"type": "Filter",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"items": {
-											"value": "@activity('Get All FIle in Config directory').output.childItems",
-											"type": "Expression"
-										},
-										"condition": {
-											"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
-											"type": "Expression"
-										}
-									}
 								}
 							],
 							"ifTrueActivities": [
@@ -5293,6 +5270,29 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Filter file Sync",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Get All FIle in Config directory",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get All FIle in Config directory').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
+								"type": "Expression"
+							}
 						}
 					}
 				],
