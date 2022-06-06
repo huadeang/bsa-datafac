@@ -157,7 +157,7 @@
 							}
 						},
 						{
-							"name": "Execute All Process",
+							"name": "Execute Pipeline FindFile indir",
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
@@ -170,7 +170,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ChangeCatSubCatProfileChangeFindFileSyncInDir",
+									"referenceName": "CC_ReviewFindFileSyncInDirDataFactory",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -187,16 +187,20 @@
 										"value": "@variables('fileTypeInputFile')",
 										"type": "Expression"
 									},
-									"moveInputPath": {
-										"value": "@variables('moveInputPath')",
-										"type": "Expression"
-									},
 									"SCHEMA": {
 										"value": "@variables('SCHEMA')",
 										"type": "Expression"
 									},
 									"CREDIT_USER": {
 										"value": "@variables('CREDIT_USER')",
+										"type": "Expression"
+									},
+									"moveInputPath": {
+										"value": "@variables('moveInputPath')",
+										"type": "Expression"
+									},
+									"executePipeLineName": {
+										"value": "@variables('executeDatPipeLineName')",
 										"type": "Expression"
 									},
 									"DATA_TYPE": {
@@ -272,6 +276,10 @@
 			},
 			"moveInputPath": {
 				"type": "String"
+			},
+			"executeDatPipeLineName": {
+				"type": "String",
+				"defaultValue": "CC_ChangeCatSubcatInsertProfileChangeProcessDat"
 			}
 		},
 		"annotations": []
