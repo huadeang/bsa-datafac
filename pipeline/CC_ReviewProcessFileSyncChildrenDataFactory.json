@@ -348,7 +348,22 @@
 							]
 						},
 						{
-							"value": "CC_ChangeCatSubcatInsertProfileChangeProcessDat"
+							"value": "CC_ChangeCatSubcatInsertProfileChangeProcessDat",
+							"activities": [
+								{
+									"name": "Execute CC_ChangeCatSubcatInsertProfileChangeProcessDat",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ChangeCatSubCatInsertProfileChangeProcessDat",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
 						}
 					],
 					"defaultActivities": [
