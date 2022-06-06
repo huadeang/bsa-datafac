@@ -40,8 +40,8 @@
 				}
 			},
 			{
-				"name": "Filter file Sync",
-				"type": "Filter",
+				"name": "If not Have file input",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "Get All FIle in Config directory",
@@ -52,38 +52,22 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@activity('Get All FIle in Config directory').output.childItems",
-						"type": "Expression"
-					},
-					"condition": {
-						"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "If not Have file input",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Filter file Sync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
 					"expression": {
-						"value": "@empty(activity('Filter file Sync').output.Value)",
+						"value": "@or(empty(activity('Filter file Sync').output.Value),not(activity('Get All FIle in Config directory').output.exists))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
 							"name": "Execute ProcessFileSync",
 							"type": "ExecutePipeline",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Filter file Sync",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -120,6 +104,22 @@
 										"value": "@pipeline().parameters.executePipeLineName",
 										"type": "Expression"
 									}
+								}
+							}
+						},
+						{
+							"name": "Filter file Sync",
+							"type": "Filter",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('Get All FIle in Config directory').output.childItems",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
+									"type": "Expression"
 								}
 							}
 						}
