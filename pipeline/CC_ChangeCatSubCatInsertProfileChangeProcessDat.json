@@ -1,6 +1,32 @@
 {
 	"name": "CC_ChangeCatSubCatInsertProfileChangeProcessDat",
 	"properties": {
+		"variables": {
+			"SCHEMA": {
+				"type": "String"
+			},
+			"DATA_TYPE": {
+				"type": "String"
+			},
+			"CREDIT_USER": {
+				"type": "String"
+			},
+			"inputPath": {
+				"type": "String"
+			},
+			"moveInputPath": {
+				"type": "String"
+			},
+			"fileDatName": {
+				"type": "String"
+			},
+			"dataId": {
+				"type": "String"
+			},
+			"fileSyncName": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
