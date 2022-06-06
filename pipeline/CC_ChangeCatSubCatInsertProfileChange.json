@@ -23,7 +23,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL')",
+								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_PROFILE_CHANGE')",
 								"type": "Expression"
 							}
 						}
