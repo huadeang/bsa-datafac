@@ -351,7 +351,7 @@
 							"value": "CC_ChangeCatSubcatInsertProfileChangeProcessDat",
 							"activities": [
 								{
-									"name": "Execute CC_ChangeCatSubcatInsertProfileChangeProcessDat",
+									"name": "Execute CC_ChangeCatSubCatInsertProfileChangeProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
