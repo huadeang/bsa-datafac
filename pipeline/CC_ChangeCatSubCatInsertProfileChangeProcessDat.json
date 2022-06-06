@@ -435,30 +435,30 @@
 				}
 			}
 		],
-		"variables": {
+		"parameters": {
 			"SCHEMA": {
-				"type": "String"
+				"type": "string"
 			},
 			"DATA_TYPE": {
-				"type": "String"
+				"type": "string"
 			},
 			"CREDIT_USER": {
-				"type": "String"
+				"type": "string"
 			},
 			"inputPath": {
-				"type": "String"
+				"type": "string"
 			},
 			"moveInputPath": {
-				"type": "String"
+				"type": "string"
 			},
 			"fileDatName": {
-				"type": "String"
+				"type": "string"
 			},
 			"dataId": {
-				"type": "String"
+				"type": "string"
 			},
 			"fileSyncName": {
-				"type": "String"
+				"type": "string"
 			}
 		},
 		"annotations": []
