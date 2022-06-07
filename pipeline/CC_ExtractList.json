@@ -129,7 +129,7 @@
 							"typeProperties": {
 								"variableName": "listExtract",
 								"value": {
-									"value": "@json(concat('{ \"value\" : \"',string(variables('leftList')),'\"}'))",
+									"value": "@json(concat('{ \"value\" : ',string(variables('leftList')),'}'))",
 									"type": "Expression"
 								}
 							}
