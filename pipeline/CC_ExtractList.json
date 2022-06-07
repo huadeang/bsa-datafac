@@ -5,18 +5,25 @@
 			{
 				"name": "Set countRound",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set tempList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "countRound",
 					"value": {
-						"value": "@string(div(length(pipeline().parameters.baList),5))",
+						"value": "@string(if(equals(length(split(string(div(length(pipeline().parameters.baList),float(variables('limitPerRound')))),'.')),2),add(div(length(pipeline().parameters.baList),int(variables('limitPerRound'))),1),div(length(pipeline().parameters.baList),int(variables('limitPerRound')))))",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Set tempList",
+				"name": "Set tempCountList",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -28,9 +35,117 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"variableName": "tempCountList",
+					"value": {
+						"value": "@take(pipeline().parameters.baList,int(variables('countRound')))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach tempCountList",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set tempCountList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('tempList')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set leftList",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "leftList",
+								"value": {
+									"value": "@take(variables('tempList'),int(variables('limitPerRound')))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set rightList",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set leftList",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "rightList",
+								"value": {
+									"value": "@skip(variables('tempList'),int(variables('limitPerRound')))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set newTempList",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set rightList",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "tempList",
+								"value": {
+									"value": "@variables('rightList')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Append ListExtract",
+							"type": "AppendVariable",
+							"dependsOn": [
+								{
+									"activity": "Set newTempList",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "listExtract",
+								"value": {
+									"value": "@variables('leftList')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set tempList",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
 					"variableName": "tempList",
 					"value": {
-						"value": "@take(pipeline().parameters.baList,if(equals(length(split(variables('countRound'),',')),2),add(int(variables('countRound')),1),int(variables('countRound'))))",
+						"value": "@pipeline().parameters.baList",
 						"type": "Expression"
 					}
 				}
@@ -38,28 +153,93 @@
 		],
 		"parameters": {
 			"outputPath": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"prefixOutputFile": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"fileTypeOutputFile": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"SCHEMA": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"CREDIT_USER": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"CHANGE_TYPE": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			},
 			"baList": {
-				"type": "array"
+				"type": "array",
+				"defaultValue": [
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					},
+					{
+						"name": "RES_CAT_SUBCAT_PROFILE_CHANGE_20220601_1402.sync",
+						"type": "File"
+					}
+				]
 			},
 			"listPipeLineName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "TEST"
 			}
 		},
 		"variables": {
@@ -68,6 +248,19 @@
 			},
 			"countRound": {
 				"type": "String"
+			},
+			"tempCountList": {
+				"type": "Array"
+			},
+			"limitPerRound": {
+				"type": "String",
+				"defaultValue": "5.0000"
+			},
+			"leftList": {
+				"type": "Array"
+			},
+			"rightList": {
+				"type": "Array"
 			},
 			"tempList": {
 				"type": "Array"
