@@ -1,0 +1,78 @@
+{
+	"name": "CC_ExtractList",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set countRound",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "countRound",
+					"value": {
+						"value": "@string(div(length(pipeline().parameters.baList),5))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set tempList",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set countRound",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tempList",
+					"value": {
+						"value": "@take(pipeline().parameters.baList,if(equals(length(split(variables('countRound'),',')),2),add(int(variables('countRound')),1),int(variables('countRound'))))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"outputPath": {
+				"type": "string"
+			},
+			"prefixOutputFile": {
+				"type": "string"
+			},
+			"fileTypeOutputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"CHANGE_TYPE": {
+				"type": "string"
+			},
+			"baList": {
+				"type": "array"
+			},
+			"listPipeLineName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"listExtract": {
+				"type": "Array"
+			},
+			"countRound": {
+				"type": "String"
+			},
+			"tempList": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}
