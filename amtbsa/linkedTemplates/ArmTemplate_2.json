@@ -5741,7 +5741,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
+								"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output.size,0))))",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [

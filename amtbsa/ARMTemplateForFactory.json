@@ -69,14 +69,7 @@
 					{
 						"name": "Get Config Value",
 						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Clear CC_PROFILE_CHANGE",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -279,34 +272,6 @@
 								}
 							]
 						}
-					},
-					{
-						"name": "Clear CC_PROFILE_CHANGE",
-						"type": "Script",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_PROFILE_CHANGE')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
 					}
 				],
 				"policy": {
@@ -355,8 +320,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableCurrent')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewFindFileSyncInDirDataFactory')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewFindFileSyncInDirDataFactory')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		},
 		{
@@ -6223,7 +6188,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
+								"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output.size,0))))",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
