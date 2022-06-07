@@ -129,7 +129,7 @@
 							"typeProperties": {
 								"variableName": "listExtract",
 								"value": {
-									"value": "@json(concat('{ \"value\" : ',string(variables('leftList')),'}'))",
+									"value": "@json(concat('{ \"list\" : ',string(variables('leftList')),'}'))",
 									"type": "Expression"
 								}
 							}
@@ -146,6 +146,26 @@
 					"variableName": "tempList",
 					"value": {
 						"value": "@pipeline().parameters.baList",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEach tempCountList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@variables('listExtract')",
 						"type": "Expression"
 					}
 				}
@@ -263,6 +283,9 @@
 				"type": "Array"
 			},
 			"tempList": {
+				"type": "Array"
+			},
+			"test": {
 				"type": "Array"
 			}
 		},
