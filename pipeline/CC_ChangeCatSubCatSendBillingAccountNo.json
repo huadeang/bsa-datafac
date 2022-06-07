@@ -188,7 +188,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_send_chnage_cat_sub_cat"
+				"defaultValue": "cc_data_fac_review_send_billing_no"
 			},
 			"SCHEMA": {
 				"type": "String",
