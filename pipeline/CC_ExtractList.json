@@ -149,26 +149,6 @@
 						"type": "Expression"
 					}
 				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "ForEach tempCountList",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test",
-					"value": {
-						"value": "@variables('listExtract')",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
