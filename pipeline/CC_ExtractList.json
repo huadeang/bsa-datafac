@@ -167,7 +167,11 @@
 						"value": "@pipeline().parameters.listPipeLineName",
 						"type": "Expression"
 					},
-					"cases": [],
+					"cases": [
+						{
+							"value": "CC_CreateFileDatAndArchive"
+						}
+					],
 					"defaultActivities": [
 						{
 							"name": "Fail Not Have Pipeline Name",
