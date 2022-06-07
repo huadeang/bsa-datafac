@@ -84,6 +84,56 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Execute extractlist",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Update CC_CHANGE_CAT_SUBCAT process",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ExtractList",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"prefixOutputFile": {
+										"value": "@pipeline().parameters.prefixOutputFile",
+										"type": "Expression"
+									},
+									"fileTypeOutputFile": {
+										"value": "@pipeline().parameters.fileTypeOutputFile",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"CHANGE_TYPE": {
+										"value": "@pipeline().parameters.CHANGE_TYPE",
+										"type": "Expression"
+									},
+									"baList": {
+										"value": "@activity('Get Account List').output.value",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					],
 					"ifTrueActivities": [
