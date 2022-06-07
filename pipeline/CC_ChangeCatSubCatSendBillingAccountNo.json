@@ -192,7 +192,7 @@
 			},
 			"SCHEMA": {
 				"type": "String",
-				"defaultValue": "CREDIT_UAT"
+				"defaultValue": "CREDIT_DEV"
 			},
 			"CREDIT_USER": {
 				"type": "String",
