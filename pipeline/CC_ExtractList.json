@@ -149,6 +149,38 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Switch Execute Next Process",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "ForEach tempCountList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.listPipeLineName",
+						"type": "Expression"
+					},
+					"cases": [],
+					"defaultActivities": [
+						{
+							"name": "Fail Not Have Pipeline Name",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Not Have Pipe lIne Name",
+								"errorCode": "200"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
