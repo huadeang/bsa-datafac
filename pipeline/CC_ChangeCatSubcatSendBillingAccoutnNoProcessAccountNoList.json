@@ -411,6 +411,42 @@
 					"variableName": "round",
 					"value": "1"
 				}
+			},
+			{
+				"name": "Update End Process",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION =''Create FileError''\n\tWHERE CHANGE_ID = ',pipeline().parameters.changeId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
