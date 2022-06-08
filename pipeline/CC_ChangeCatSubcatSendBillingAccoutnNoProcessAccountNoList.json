@@ -64,14 +64,7 @@
 						{
 							"name": "Set script Query",
 							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set processTime",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "scriptQuery",
@@ -276,13 +269,50 @@
 						{
 							"name": "Set processTime",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Insert to change cat subcat Hist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "prpcessTime",
 								"value": {
 									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
 									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute CC_CreateFileAndArchive",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_CreateFileAndArchive",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"scriptQuery": {
+										"value": "@variables('scriptQuery')",
+										"type": "Expression"
+									}
 								}
 							}
 						}
@@ -363,6 +393,12 @@
 				"type": "String"
 			},
 			"prpcessTime": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"fileNameArchive": {
 				"type": "String"
 			}
 		},
