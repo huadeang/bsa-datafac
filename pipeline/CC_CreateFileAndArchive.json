@@ -1,0 +1,353 @@
+{
+	"name": "CC_CreateFileAndArchive",
+	"properties": {
+		"activities": [
+			{
+				"name": "create file output",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@pipeline().parameters.scriptQuery",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "FileServerWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "BILLING_ACCNT_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 1
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CCLocalFileToWrite",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.outputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Creste file Success",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "create file output archive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@pipeline().parameters.scriptOnSuccess",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Creste file Error",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "create file output",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@pipeline().parameters.scriptOnError",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Metadata file created",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "create file output",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "CCLocalFileMasterNotSplit",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.outputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"size",
+						"columnCount"
+					],
+					"storeSettings": {
+						"type": "FileServerReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "create file output archive",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata file created",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "COLUMN",
+								"value": {
+									"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
+									"type": "Expression"
+								}
+							}
+						],
+						"sqlReaderQuery": " SELECT 'ONE'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "FileServerWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "COLUMN"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 1
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CCLocalFileToWrite",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.outputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileArchiveName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Creste file Error_copy1",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "create file output archive",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@pipeline().parameters.scriptOnError",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			},
+			"outputPath": {
+				"type": "string"
+			},
+			"scriptQuery": {
+				"type": "string"
+			},
+			"scriptOnError": {
+				"type": "string"
+			},
+			"scriptOnSuccess": {
+				"type": "string"
+			},
+			"fileArchiveName": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
