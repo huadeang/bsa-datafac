@@ -139,12 +139,20 @@
 								},
 								"waitOnCompletion": true,
 								"parameters": {
+									"fileName": {
+										"value": "@variables('fileName')",
+										"type": "Expression"
+									},
 									"outputPath": {
 										"value": "@pipeline().parameters.outputPath",
 										"type": "Expression"
 									},
 									"scriptQuery": {
 										"value": "@variables('scriptQuery')",
+										"type": "Expression"
+									},
+									"fileArchiveName": {
+										"value": "@variables('fileNameArchive')",
 										"type": "Expression"
 									}
 								}
