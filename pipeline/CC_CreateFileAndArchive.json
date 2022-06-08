@@ -83,76 +83,6 @@
 				]
 			},
 			{
-				"name": "Creste file Success",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "create file output archive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@pipeline().parameters.scriptOnSuccess",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Creste file Error",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "create file output",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@pipeline().parameters.scriptOnError",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "Get Metadata file created",
 				"type": "GetMetadata",
 				"dependsOn": [
@@ -293,9 +223,15 @@
 				]
 			},
 			{
-				"name": "Creste file Error_copy1",
-				"type": "Script",
+				"name": "Fail to create file",
+				"type": "Fail",
 				"dependsOn": [
+					{
+						"activity": "create file output",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
 					{
 						"activity": "create file output archive",
 						"dependencyConditions": [
@@ -303,28 +239,10 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
 				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@pipeline().parameters.scriptOnError",
-								"type": "Expression"
-							}
-						}
-					]
+					"message": "Fail to create file",
+					"errorCode": "500"
 				}
 			}
 		],
@@ -336,12 +254,6 @@
 				"type": "string"
 			},
 			"scriptQuery": {
-				"type": "string"
-			},
-			"scriptOnError": {
-				"type": "string"
-			},
-			"scriptOnSuccess": {
 				"type": "string"
 			},
 			"fileArchiveName": {
