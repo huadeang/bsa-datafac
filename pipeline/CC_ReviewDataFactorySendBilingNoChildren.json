@@ -50,134 +50,9 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "insert CC_DATA_FACTORY onprocess",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''P'',''Process review send billing account count',activity('Get All BIlling Account').output.count,' records'');')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Creste file Success",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ''',variables('fileName'),''',\n\tFILE_NAME_SYNC = ''',variables('fileSyncName'),''',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Create File : ',variables('fileName'),' success'' WHERE DATA_ID =',variables('dataId'),';')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Set dataId",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "insert CC_DATA_FACTORY onprocess",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "dataId",
-								"value": {
-									"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Creste file Error_copy1",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',replace(activity('Execute ReviewDataFactorySendBilingProcessAccountNoList').Error.Message,'''','\"'),''' WHERE DATA_ID =',variables('dataId'),';')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
 							"name": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
 							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "Set dataId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -272,9 +147,6 @@
 			}
 		},
 		"variables": {
-			"dataId": {
-				"type": "String"
-			},
 			"fileName": {
 				"type": "String"
 			},
