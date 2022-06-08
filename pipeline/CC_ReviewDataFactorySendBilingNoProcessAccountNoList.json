@@ -308,7 +308,8 @@
 				"type": "String"
 			},
 			"limitPerRound": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "5.00"
 			},
 			"offset": {
 				"type": "String"
