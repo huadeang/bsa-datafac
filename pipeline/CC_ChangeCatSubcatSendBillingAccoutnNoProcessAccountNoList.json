@@ -279,7 +279,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "prpcessTime",
+								"variableName": "processTime",
 								"value": {
 									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
 									"type": "Expression"
@@ -291,7 +291,13 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Set processTime",
+									"activity": "Set fileNameArchive",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set fileName",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -313,6 +319,46 @@
 										"value": "@variables('scriptQuery')",
 										"type": "Expression"
 									}
+								}
+							}
+						},
+						{
+							"name": "Set fileNameArchive",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameArchive",
+								"value": {
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.sync')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.',pipeline().parameters.fileTypeOutputFile)",
+									"type": "Expression"
 								}
 							}
 						}
@@ -392,7 +438,7 @@
 			"round": {
 				"type": "String"
 			},
-			"prpcessTime": {
+			"processTime": {
 				"type": "String"
 			},
 			"fileName": {
