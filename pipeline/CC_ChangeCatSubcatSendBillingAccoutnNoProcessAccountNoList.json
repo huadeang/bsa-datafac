@@ -3,155 +3,24 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Account List",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set changeId",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "if Account List Empty",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Get Account List",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@empty(activity('Get Account List').output.value)",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "Update CC_CHANGE_CAT_SUBCAT process",
-							"description": "",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION =''Process send billing account number count ',string(activity('Get Account List').output.count),' record''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Insert CC_CHANGE_CAT_SUBCAT if Empty",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Insert CC_CHANGE_CAT_SUBCAT process",
-				"type": "Script",
+				"name": "Set countRound",
+				"type": "SetVariable",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
 				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''O'',''Process send billing account number'');')",
-								"type": "Expression"
-							}
-						}
-					]
+					"variableName": "countRound",
+					"value": {
+						"value": "@string(if(equals(length(split(string(div(length(pipeline().parameters.baList),float(variables('limitPerRound')))),'.')),2),add(div(length(pipeline().parameters.baList),int(variables('limitPerRound'))),1),div(length(pipeline().parameters.baList),int(variables('limitPerRound')))))",
+						"type": "Expression"
+					}
 				}
 			},
 			{
-				"name": "Set changeId",
+				"name": "Set tempCountList",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
+						"activity": "Set countRound",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -159,9 +28,9 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "changeId",
+					"variableName": "tempCountList",
 					"value": {
-						"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
+						"value": "@take(pipeline().parameters.baList,int(variables('countRound')))",
 						"type": "Expression"
 					}
 				}
@@ -185,13 +54,19 @@
 			},
 			"CHANGE_TYPE": {
 				"type": "string"
+			},
+			"baList": {
+				"type": "string"
 			}
 		},
 		"variables": {
-			"changeId": {
+			"tempCountList": {
 				"type": "String"
 			},
-			"fileOutputName": {
+			"countRound": {
+				"type": "String"
+			},
+			"limitPerRound": {
 				"type": "String"
 			}
 		},
