@@ -282,7 +282,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"'),0,if(less(length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',variables('dataId'),';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',variables('dataId'),';')",
 											"type": "Expression"
 										}
 									}
