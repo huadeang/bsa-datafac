@@ -361,6 +361,26 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Set Have Error Record",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute CC_CreateFileAndArchive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "haveError",
+								"value": {
+									"value": "@bool(true)",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -446,6 +466,9 @@
 			},
 			"fileNameArchive": {
 				"type": "String"
+			},
+			"haveError": {
+				"type": "Boolean"
 			}
 		},
 		"annotations": []
