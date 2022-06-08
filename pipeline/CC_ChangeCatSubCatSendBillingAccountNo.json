@@ -49,281 +49,50 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Set outputPath",
-							"type": "SetVariable",
+							"name": "Execute CC_ChangeCatSubCatSendBillingAccountNoChildren",
+							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "outputPath",
-								"value": {
-									"value": "@activity('Get Config Value').output.firstRow.VAL2",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set prefixOutputFile",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set outputPath",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "prefixOutputFile",
-								"value": {
-									"value": "@activity('Get Config Value').output.firstRow.VAL5",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set fileTypeOutputFile",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set prefixOutputFile",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileTypeOutputFile",
-								"value": {
-									"value": "@activity('Get Config Value').output.firstRow.VAL6",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Get Account List",
-							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Set changeId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "AzureSqlSource",
-									"sqlReaderQuery": {
-										"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',variables('SCHEMA'),'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+								"pipeline": {
+									"referenceName": "CC_ChangeCatSubCatSendBillingAccountNoChildren",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"LOV_TYPE": {
+										"value": "@variables('LOV_TYPE')",
 										"type": "Expression"
 									},
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "AzureSqlMaster",
-									"type": "DatasetReference"
-								},
-								"firstRowOnly": false
-							}
-						},
-						{
-							"name": "Insert CC_CHANGE_CAT_SUBCAT process",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Set fileTypeOutputFile",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('CHANGE_TYPE'),''',\n\t''O'',''Process send billing account number'');')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Set changeId",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "changeId",
-								"value": {
-									"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "if Account List Empty",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Get Account List",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@empty(activity('Get Account List').output.value)",
-									"type": "Expression"
-								},
-								"ifFalseActivities": [
-									{
-										"name": "Update CC_CHANGE_CAT_SUBCAT process",
-										"description": "",
-										"type": "Script",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "7.00:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"linkedServiceName": {
-											"referenceName": "AzureSqlDatabase1",
-											"type": "LinkedServiceReference"
-										},
-										"typeProperties": {
-											"scripts": [
-												{
-													"type": "Query",
-													"text": {
-														"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',variables('CREDIT_USER'),''',\n\tCHANGE_TYPE = ''',variables('CHANGE_TYPE'),''',\n\tSTATUS = ''P'',\n\tDESCRIPTION =''Process send billing account number count ',string(activity('Get Account List').output.count),' record''\n\tWHERE CHANGE_ID = ',variables('changeId'))",
-														"type": "Expression"
-													}
-												}
-											]
-										}
+									"LOV_NAME": {
+										"value": "@variables('LOV_NAME')",
+										"type": "Expression"
 									},
-									{
-										"name": "Execute ChangeCatSubcatSendBillingProcessAccountNoList",
-										"type": "ExecutePipeline",
-										"dependsOn": [
-											{
-												"activity": "Update CC_CHANGE_CAT_SUBCAT process",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true,
-											"parameters": {
-												"outputPath": {
-													"value": "@variables('outputPath')",
-													"type": "Expression"
-												},
-												"prefixOutputFile": {
-													"value": "@variables('prefixOutputFile')",
-													"type": "Expression"
-												},
-												"fileTypeOutputFile": {
-													"value": "@variables('fileTypeOutputFile')",
-													"type": "Expression"
-												},
-												"SCHEMA": {
-													"value": "@variables('SCHEMA')",
-													"type": "Expression"
-												},
-												"CREDIT_USER": {
-													"value": "@variables('CREDIT_USER')",
-													"type": "Expression"
-												},
-												"CHANGE_TYPE": {
-													"value": "@variables('CHANGE_TYPE')",
-													"type": "Expression"
-												},
-												"baList": {
-													"value": "@activity('Get Account List').output",
-													"type": "Expression"
-												},
-												"changeId": {
-													"value": "@variables('changeId')",
-													"type": "Expression"
-												}
-											}
-										}
+									"SCHEMA": {
+										"value": "@variables('SCHEMA')",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@variables('CREDIT_USER')",
+										"type": "Expression"
+									},
+									"CHANGE_TYPE": {
+										"value": "@variables('CHANGE_TYPE')",
+										"type": "Expression"
+									},
+									"outputPath": {
+										"value": "@variables('outputPath')",
+										"type": "Expression"
+									},
+									"prefixOutputFile": {
+										"value": "@variables('prefixOutputFile')",
+										"type": "Expression"
+									},
+									"fileTypeOutputFile": {
+										"value": "@variables('fileTypeOutputFile')",
+										"type": "Expression"
 									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "Insert CC_CHANGE_CAT_SUBCAT if Empty",
-										"type": "Script",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "7.00:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"linkedServiceName": {
-											"referenceName": "AzureSqlDatabase1",
-											"type": "LinkedServiceReference"
-										},
-										"typeProperties": {
-											"scripts": [
-												{
-													"type": "Query",
-													"text": {
-														"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('CHANGE_TYPE'),''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
-														"type": "Expression"
-													}
-												}
-											]
-										}
-									}
-								]
+								}
 							}
 						}
 					],
