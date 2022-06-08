@@ -56,7 +56,7 @@
 				"type": "string"
 			},
 			"baList": {
-				"type": "string"
+				"type": "array"
 			}
 		},
 		"variables": {
