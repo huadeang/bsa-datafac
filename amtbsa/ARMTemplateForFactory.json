@@ -12553,6 +12553,12 @@
 											"dependencyConditions": [
 												"Succeeded"
 											]
+										},
+										{
+											"activity": "Set Not Have Error Record",
+											"dependencyConditions": [
+												"Succeeded"
+											]
 										}
 									],
 									"policy": {
@@ -12577,6 +12583,26 @@
 												}
 											}
 										]
+									}
+								},
+								{
+									"name": "Set Not Have Error Record",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute CC_CreateFileAndArchive",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "haveError",
+										"value": {
+											"value": "@bool(false)",
+											"type": "Expression"
+										}
 									}
 								}
 							]
