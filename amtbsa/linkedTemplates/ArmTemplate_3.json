@@ -13,6 +13,126 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewProcessFileSync')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "For Each file Sync",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.fileNameList",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Execute CC_ReviewProcessFileSyncChildren",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewProcessFileSyncChildren",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"inputPath": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"LOV_TYPE_REVIEW": {
+												"value": "@pipeline().parameters.LOV_TYPE_REVIEW",
+												"type": "Expression"
+											},
+											"FILE_TYPE": {
+												"value": "@pipeline().parameters.FILE_TYPE",
+												"type": "Expression"
+											},
+											"moveInputPath": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"FILE_UPDATE_TYPE": {
+												"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+												"type": "Expression"
+											},
+											"fileInputName": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"inputPath": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"LOV_TYPE_REVIEW": {
+						"type": "string"
+					},
+					"FILE_TYPE": {
+						"type": "string"
+					},
+					"moveInputPath": {
+						"type": "string"
+					},
+					"fileNameList": {
+						"type": "array"
+					},
+					"FILE_UPDATE_TYPE": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"fileDatName": {
+						"type": "String"
+					},
+					"fileDatSize": {
+						"type": "String"
+					},
+					"reviewId": {
+						"type": "String"
+					},
+					"fileinputName": {
+						"type": "String"
+					},
+					"exceptionError": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewProcessFileSyncDataFactory')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -326,7 +446,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewProcessFileSync')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewFindFileSyncInDirDataFactory')]",
