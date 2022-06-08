@@ -206,26 +206,6 @@
 							}
 						},
 						{
-							"name": "Set Have Error Record",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Execute CC_CreateFileAndArchive",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "haveError",
-								"value": {
-									"value": "@bool(true)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "insert CC_DATA_FACTORY onprocess",
 							"type": "Script",
 							"dependsOn": [],
@@ -279,13 +259,43 @@
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Set Have Error Record",
+									"activity": "Execute CC_CreateFileAndArchive",
 									"dependencyConditions": [
-										"Succeeded"
+										"Failed"
 									]
-								},
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"'),0,499),''' WHERE DATA_ID =',variables('dataId'),';')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Update End Process Success",
+							"description": "",
+							"type": "Script",
+							"dependsOn": [
 								{
-									"activity": "Set Not Have Error Record",
+									"activity": "Execute CC_CreateFileAndArchive",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -308,31 +318,11 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',if(variables('haveError'),'NULL',concat('''',variables('fileName'),'''')),',\n\tFILE_NAME_SYNC = ',if(variables('haveError'),'NULL',concat('''',variables('fileNameArchive'),'''')),',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION = ''',if(variables('haveError'),substring(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"'),0,499),concat('Create File : ',variables('fileName'),' success')),''' WHERE DATA_ID =',variables('dataId'),';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameArchive'),''''),',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',concat('Create File : ',variables('fileName'),' success'),''' WHERE DATA_ID =',variables('dataId'),';')",
 											"type": "Expression"
 										}
 									}
 								]
-							}
-						},
-						{
-							"name": "Set Not Have Error Record",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Execute CC_CreateFileAndArchive",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "haveError",
-								"value": {
-									"value": "@bool(false)",
-									"type": "Expression"
-								}
 							}
 						}
 					]
@@ -417,9 +407,6 @@
 			},
 			"fileNameArchive": {
 				"type": "String"
-			},
-			"haveError": {
-				"type": "Boolean"
 			},
 			"dataId": {
 				"type": "String"
