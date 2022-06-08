@@ -99,7 +99,7 @@
 				}
 			},
 			{
-				"name": "If file size equal and Not exist",
+				"name": "If file size equal and exist",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
