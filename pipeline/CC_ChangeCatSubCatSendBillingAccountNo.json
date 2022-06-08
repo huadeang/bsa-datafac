@@ -284,6 +284,56 @@
 												}
 											]
 										}
+									},
+									{
+										"name": "Execute ChangeCatSubcatSendBillingProcessAccountNoList",
+										"type": "ExecutePipeline",
+										"dependsOn": [
+											{
+												"activity": "Update CC_CHANGE_CAT_SUBCAT process",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"outputPath": {
+													"value": "@variables('outputPath')",
+													"type": "Expression"
+												},
+												"prefixOutputFile": {
+													"value": "@variables('prefixOutputFile')",
+													"type": "Expression"
+												},
+												"fileTypeOutputFile": {
+													"value": "@variables('fileTypeOutputFile')",
+													"type": "Expression"
+												},
+												"SCHEMA": {
+													"value": "@variables('SCHEMA')",
+													"type": "Expression"
+												},
+												"CREDIT_USER": {
+													"value": "@variables('CREDIT_USER')",
+													"type": "Expression"
+												},
+												"CHANGE_TYPE": {
+													"value": "@variables('CHANGE_TYPE')",
+													"type": "Expression"
+												},
+												"baList": {
+													"value": "@activity('Get Account List').output",
+													"type": "Expression"
+												}
+											}
+										}
 									}
 								],
 								"ifTrueActivities": [
