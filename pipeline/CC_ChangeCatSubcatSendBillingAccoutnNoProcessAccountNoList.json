@@ -64,7 +64,14 @@
 						{
 							"name": "Set script Query",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "scriptQuery",
@@ -100,7 +107,7 @@
 										{
 											"name": "CREATED",
 											"value": {
-												"value": "@utcnow()",
+												"value": "@convertTimeZone(utcnow(),'UTC','North Asia Standard Time')",
 												"type": "Expression"
 											}
 										},
@@ -114,7 +121,7 @@
 										{
 											"name": "LAST_UPD",
 											"value": {
-												"value": "@utcnow()",
+												"value": "@convertTimeZone(utcnow(),'UTC','North Asia Standard Time')",
 												"type": "Expression"
 											}
 										},
@@ -265,6 +272,19 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Set processTime",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "prpcessTime",
+								"value": {
+									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -340,6 +360,9 @@
 				"type": "String"
 			},
 			"round": {
+				"type": "String"
+			},
+			"prpcessTime": {
 				"type": "String"
 			}
 		},
