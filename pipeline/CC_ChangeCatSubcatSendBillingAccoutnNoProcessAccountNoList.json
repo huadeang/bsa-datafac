@@ -61,7 +61,7 @@
 		},
 		"variables": {
 			"tempCountList": {
-				"type": "String"
+				"type": "Array"
 			},
 			"countRound": {
 				"type": "String"
