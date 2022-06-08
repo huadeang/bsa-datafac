@@ -41,7 +41,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "BILLING_ACCNT_NO",
+									"name": "LINE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
