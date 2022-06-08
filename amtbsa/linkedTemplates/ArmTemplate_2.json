@@ -4484,12 +4484,19 @@
 								{
 									"name": "Set script Query",
 									"type": "SetVariable",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set dataId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"userProperties": [],
 									"typeProperties": {
 										"variableName": "scriptQuery",
 										"value": {
-											"value": "@concat('SELECT  COALESCE(TEMP.BILLING_ACCNT_ID+''|''+TEMP.ACCNT_NO,TEMP.BILLING_ACCNT_ID+''|'',''|''+TEMP.ACCNT_NO) AS LINE\nFROM (SELECT B.BILLING_ACCNT_ID, B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND B.LAST_REVIEW_DAT IS NULL  \n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t(SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \t     \n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) < \n\t((SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t  + \n\t(SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t)\nUNION ALL\nSELECT B.BILLING_ACCNT_ID,B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t\t((SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  <=  ( SELECT top 1 CAST(lov_val1 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CFG_LOV c WHERE LOV_TYPE = ''CC_CUSTOMER_NEW_OLD'' and lov_name = ''Existing'' and active_flg = ''Y'' )      \n  AND ((B.LAST_REVIEW_DAT is null)\n        or ( B.LAST_REVIEW_DAT < cast(DATEADD(month, -(SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), GETDATE()+1) As Date) )\n\t  ) \nUNION ALL\t  \nSELECT B.BILLING_ACCNT_ID,B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  >= ( SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' ) \n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) < \n\t\t((SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg =''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )   \n  AND  ((B.LAST_REVIEW_DAT is null)\n        or ( B.LAST_REVIEW_DAT < cast(DATEADD(month, (SELECT top 1 CAST(val5 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), B.BA_REGISTER_DT) As Date) )\n\t) \nUNION ALL\nSELECT B.BILLING_ACCNT_ID, B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t\t((SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  >= ( SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' ) \n  AND B.LAST_REVIEW_DAT < cast(DATEADD(month, -(SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), GETDATE())+1 As Date)  \nUNION ALL  \nSELECT B.BILLING_ACCNT_ID ,B.ACCNT_NO\nFROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN C ON C.BILLING_ACCOUNT_NUM = B.ACCNT_NO AND C.REASON_SUBCODE IN(''1863'',''1864'') AND C.ACTION_DTM < CAST(GETDATE() AS DATE) \nWHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \nAND B.CL_LEVEL = ''BA'' AND ISNULL(B.CREDIT_LIMIT,0) > 0\n)TEMP\nGROUP BY TEMP.BILLING_ACCNT_ID,TEMP.ACCNT_NO\nORDER BY TEMP.ACCNT_NO OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(variables('limitPerRound'))),' ROWS ONLY;')",
+											"value": "@concat('SELECT  COALESCE(TEMP.BILLING_ACCNT_ID+''|''+TEMP.ACCNT_NO,TEMP.BILLING_ACCNT_ID+''|'',''|''+TEMP.ACCNT_NO) AS LIN\nFROM (SELECT B.BILLING_ACCNT_ID, B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND B.LAST_REVIEW_DAT IS NULL  \n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t(SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \t     \n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) < \n\t((SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t  + \n\t(SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t)\nUNION ALL\nSELECT B.BILLING_ACCNT_ID,B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t\t((SELECT top 1 CAST(val1 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  <=  ( SELECT top 1 CAST(lov_val1 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CFG_LOV c WHERE LOV_TYPE = ''CC_CUSTOMER_NEW_OLD'' and lov_name = ''Existing'' and active_flg = ''Y'' )      \n  AND ((B.LAST_REVIEW_DAT is null)\n        or ( B.LAST_REVIEW_DAT < cast(DATEADD(month, -(SELECT top 1 CAST(val3 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), GETDATE()+1) As Date) )\n\t  ) \nUNION ALL\t  \nSELECT B.BILLING_ACCNT_ID,B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  >= ( SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' ) \n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) < \n\t\t((SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg =''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )   \n  AND  ((B.LAST_REVIEW_DAT is null)\n        or ( B.LAST_REVIEW_DAT < cast(DATEADD(month, (SELECT top 1 CAST(val5 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), B.BA_REGISTER_DT) As Date) )\n\t) \nUNION ALL\nSELECT B.BILLING_ACCNT_ID, B.ACCNT_NO\n  FROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \n WHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \n   AND B.CL_LEVEL = ''BA''\n   AND ISNULL(B.CREDIT_LIMIT,0) > 0\n   AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE()) >= \n\t\t((SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'') \n\t\t + \n\t     (SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' )\n\t     )\n  AND DATEDIFF(month,B.BA_REGISTER_DT,GETDATE())  >= ( SELECT top 1 CAST(val5 AS NUMERIC)  FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y'' ) \n  AND B.LAST_REVIEW_DAT < cast(DATEADD(month, -(SELECT top 1 CAST(val7 AS NUMERIC) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT c WHERE LOV_TYPE = ''CC_REVIEW_CREDIT_LIMIT'' and active_flg = ''Y''), GETDATE())+1 As Date)  \nUNION ALL  \nSELECT B.BILLING_ACCNT_ID ,B.ACCNT_NO\nFROM ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE B \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN C ON C.BILLING_ACCOUNT_NUM = B.ACCNT_NO AND C.REASON_SUBCODE IN(''1863'',''1864'') AND C.ACTION_DTM < CAST(GETDATE() AS DATE) \nWHERE B.CL_TYPE IN (''System Review'', ''Permanent'') \nAND B.CL_LEVEL = ''BA'' AND ISNULL(B.CREDIT_LIMIT,0) > 0\n)TEMP\nGROUP BY TEMP.BILLING_ACCNT_ID,TEMP.ACCNT_NO\nORDER BY TEMP.ACCNT_NO OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(variables('limitPerRound'))),' ROWS ONLY;')",
 											"type": "Expression"
 										}
 									}
@@ -4637,6 +4644,90 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "insert CC_DATA_FACTORY onprocess",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''P'',''Process review send billing account count'');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set dataId",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "insert CC_DATA_FACTORY onprocess",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "dataId",
+										"value": {
+											"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Update End Process",
+									"description": "",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set Have Error Record",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',if(variables('haveError'),'NULL',concat('''',variables('fileName'),'''')),',\n\tFILE_NAME_SYNC = ',if(variables('haveError'),'NULL',concat('''',variables('fileNameArchive'),'''')),',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION = ''',if(variables('haveError'),'Create File Error ',concat('Create File : ',variables('fileName'),' success')),''' WHERE DATA_ID =',variables('dataId'),';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
 								}
 							]
 						}
@@ -4667,42 +4758,6 @@
 							"variableName": "round",
 							"value": "1"
 						}
-					},
-					{
-						"name": "Update End Process",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "ForEach1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',if(variables('haveError'),'NULL',concat('''',variables('fileName'),'''')),',\n\tFILE_NAME_SYNC = ',if(variables('haveError'),'NULL',concat('''',variables('fileNameArchive'),'''')),',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION = ''',if(variables('haveError'),'Create File Error ',concat('Create File : ',variables('fileName'),' success')),''' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
 					}
 				],
 				"policy": {
@@ -4728,7 +4783,7 @@
 					"baList": {
 						"type": "array"
 					},
-					"dataId": {
+					"DATA_TYPE": {
 						"type": "string"
 					}
 				},
@@ -4763,6 +4818,9 @@
 					},
 					"haveError": {
 						"type": "Boolean"
+					},
+					"dataId": {
+						"type": "String"
 					}
 				},
 				"annotations": []
@@ -5055,134 +5113,9 @@
 							},
 							"ifFalseActivities": [
 								{
-									"name": "insert CC_DATA_FACTORY onprocess",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''P'',''Process review send billing account count',activity('Get All BIlling Account').output.count,' records'');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Creste file Success",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ''',variables('fileName'),''',\n\tFILE_NAME_SYNC = ''',variables('fileSyncName'),''',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Create File : ',variables('fileName'),' success'' WHERE DATA_ID =',variables('dataId'),';')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set dataId",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "insert CC_DATA_FACTORY onprocess",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "dataId",
-										"value": {
-											"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Creste file Error_copy1",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',replace(activity('Execute ReviewDataFactorySendBilingProcessAccountNoList').Error.Message,'''','\"'),''' WHERE DATA_ID =',variables('dataId'),';')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
 									"name": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
 									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Set dataId",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
@@ -5215,8 +5148,8 @@
 												"value": "@activity('Get All BIlling Account').output.value",
 												"type": "Expression"
 											},
-											"dataId": {
-												"value": "@variables('dataId')",
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
 												"type": "Expression"
 											}
 										}
@@ -5281,9 +5214,6 @@
 					}
 				},
 				"variables": {
-					"dataId": {
-						"type": "String"
-					},
 					"fileName": {
 						"type": "String"
 					},
