@@ -80,14 +80,7 @@
 						{
 							"name": "create file output",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Set fileName",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -407,26 +400,6 @@
 							}
 						},
 						{
-							"name": "Set fileName",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set processTime",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileName",
-								"value": {
-									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('pocessTime'),'.',pipeline().parameters.fileTypeOutputFile)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Set fileSyncName",
 							"type": "SetVariable",
 							"dependsOn": [
@@ -442,26 +415,6 @@
 								"variableName": "fileSyncName",
 								"value": {
 									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('pocessTime'),'.sync')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set processTime",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set dataId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "pocessTime",
-								"value": {
-									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
 									"type": "Expression"
 								}
 							}
@@ -499,6 +452,56 @@
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Execute ReviewDataFactorySendBilingProcessAccountNoList",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"prefixOutputFile": {
+										"value": "@pipeline().parameters.prefixOutputFile",
+										"type": "Expression"
+									},
+									"fileTypeOutputFile": {
+										"value": "@pipeline().parameters.fileTypeOutputFile",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"baList": {
+										"value": "@activity('Get All BIlling Account').output.value",
+										"type": "Expression"
+									},
+									"dataId": {
+										"value": "@variables('dataId')",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					],
