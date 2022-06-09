@@ -400,56 +400,7 @@
 							]
 						},
 						{
-							"value": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
-							"activities": [
-								{
-									"name": "Execute ChangeCatSubcatInsertBillingAccountNoProcessDat",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@pipeline().parameters.DATA_TYPE",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"inputPath": {
-												"value": "@pipeline().parameters.inputPath",
-												"type": "Expression"
-											},
-											"moveInputPath": {
-												"value": "@pipeline().parameters.moveInputPath",
-												"type": "Expression"
-											},
-											"fileDatName": {
-												"value": "@variables('fileDatName')",
-												"type": "Expression"
-											},
-											"dataId": {
-												"value": "@variables('dataId')",
-												"type": "Expression"
-											},
-											"fileSyncName": {
-												"value": "@pipeline().parameters.fileInputName",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
+							"value": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat"
 						}
 					],
 					"defaultActivities": [
