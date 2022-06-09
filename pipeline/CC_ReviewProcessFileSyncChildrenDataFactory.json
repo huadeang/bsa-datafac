@@ -403,7 +403,7 @@
 							"value": "CC_ChangeCatSubCatInsertBillingAccountNo",
 							"activities": [
 								{
-									"name": "Execute CC_ChangeCatSubCatInsertBillingAccountNo",
+									"name": "Execute CC_ChangeCatSubCatInsertBillingAccntNoProcessD",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
