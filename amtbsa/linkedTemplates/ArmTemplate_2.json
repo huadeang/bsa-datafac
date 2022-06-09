@@ -4930,7 +4930,7 @@
 							"batchCount": 20,
 							"activities": [
 								{
-									"name": "Script Insert Table CC_PROFILE_CHANGE",
+									"name": "Script Insert Table CC_BILLING_CAT_SUBCAT",
 									"type": "Script",
 									"dependsOn": [],
 									"policy": {
@@ -4950,7 +4950,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_PROFILE_CHANGE \n    (ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tTYPE,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT  ,\n\tEFFECTIVE_DT ,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY ,\n\tNEW_ACCNT_SUB_CATEGORY,\n\tOLD_ACCNT_CATEGORY,\n\tOLD_ACCNT_SUB_CATEGORY) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),'NULL',concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),'NULL',concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),');')",
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_BILLING_CAT_SUBCAT \n    (ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_NO,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tNAME ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD,\n\tREGISTER_DT,\n\tFBB_FLAG,\n\tSUPPEND_FLAG,\n\tCOUNT_MOBILE,\n\tSUM_MAIN_PRO) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),'NULL',concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),'NULL',concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(empty(split(item().Prop_0,'|')[19]),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),',',\nif(empty(split(item().Prop_0,'|')[20]),'NULL',concat('''',split(item().Prop_0,'|')[20],'''')),');')",
 													"type": "Expression"
 												}
 											}
@@ -4985,7 +4985,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert Table CC_PROFILE_CHANGE').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert Table CC_BILLING_CAT_SUBCAT').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
 													"type": "Expression"
 												}
 											}
@@ -4997,7 +4997,7 @@
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "Script Insert Table CC_PROFILE_CHANGE",
+											"activity": "Script Insert Table CC_BILLING_CAT_SUBCAT",
 											"dependencyConditions": [
 												"Failed"
 											]
