@@ -7076,7 +7076,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
+													"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -7200,8 +7200,7 @@
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactoryInsertBillingAccountNoProcessDat')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubCatInsertProfileChangeProcessDat')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubcatInsertBillingAccountNoProcessDat')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubCatInsertProfileChangeProcessDat')]"
 			]
 		},
 		{
