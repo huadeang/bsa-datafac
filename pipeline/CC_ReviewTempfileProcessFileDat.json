@@ -634,7 +634,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CC_ReviewMoveFile",
+						"referenceName": "CC_MoveFile",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -672,7 +672,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CC_ReviewMoveFile",
+						"referenceName": "CC_MoveFile",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
