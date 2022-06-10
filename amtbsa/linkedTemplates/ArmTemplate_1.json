@@ -1778,50 +1778,15 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewCreateFileOutputAndArchive')]",
+			"name": "[concat(parameters('factoryName'), '/CC_MoveFile')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Update RESPONSE_FILE not have input file_copy1",
-						"type": "Script",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "create file output",
+						"name": "Copy to create file",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update RESPONSE_FILE not have input file_copy1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -1832,13 +1797,15 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT COALESCE(FILE_LINE+''|''+ERROR_MSG ,FILE_LINE) AS errorLine, STATUS AS status \n        FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL \n        WHERE FILE_ID = ',pipeline().parameters.fileId,' ORDER BY FILE_DTL_ID;')",
-									"type": "Expression"
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
 								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -1854,20 +1821,6 @@
 							"enableStaging": false,
 							"translator": {
 								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "errorLine",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
@@ -1877,22 +1830,31 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "AzureSqlMaster",
+								"referenceName": "CCLocalFileMasterNotSplit",
 								"type": "DatasetReference",
-								"parameters": {}
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inDir",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.inName",
+										"type": "Expression"
+									}
+								}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CCLocalFileMasterNotSplit",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
+										"value": "@pipeline().parameters.outDir",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.fileName",
+										"value": "@pipeline().parameters.outName",
 										"type": "Expression"
 									}
 								}
@@ -1900,151 +1862,11 @@
 						]
 					},
 					{
-						"name": "Clear temp file detail",
-						"type": "Script",
+						"name": "Delete File",
+						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Creste file Success",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Clear temp file",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Clear temp file detail",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Creste file Success",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "create file output archive",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record | create file ',pipeline().parameters.fileName,' in path ',pipeline().parameters.outputPath,' complete'' WHERE RES_ID =',pipeline().parameters.resId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Creste file Error",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "create file output",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',activity('create file output').Error.Message,''' WHERE RES_ID =',pipeline().parameters.resId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Get Metadata file created",
-						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "create file output",
+								"activity": "Copy to create file",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2064,128 +1886,29 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
+										"value": "@pipeline().parameters.inDir",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.fileName",
+										"value": "@pipeline().parameters.inName",
 										"type": "Expression"
 									}
 								}
 							},
-							"fieldList": [
-								"exists",
-								"size",
-								"columnCount"
-							],
+							"enableLogging": false,
 							"storeSettings": {
 								"type": "FileServerReadSettings",
 								"recursive": true,
 								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
 							}
 						}
 					},
 					{
-						"name": "create file output archive",
-						"type": "Copy",
+						"name": "Delete File Archive",
+						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata file created",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"additionalColumns": [
-									{
-										"name": "COLUMN",
-										"value": {
-											"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
-											"type": "Expression"
-										}
-									}
-								],
-								"sqlReaderQuery": " SELECT 'ONE'",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "COLUMN"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileNameArchive",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Creste file Error_copy1",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "create file output archive",
+								"activity": "Delete File",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2199,20 +1922,27 @@
 							"secureInput": false
 						},
 						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
 						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',activity('create file output archive').Error.Message,''' WHERE RES_ID =',pipeline().parameters.resId,';')",
+							"dataset": {
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.outDir",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.outName",
 										"type": "Expression"
 									}
 								}
-							]
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "FileServerReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
 						}
 					}
 				],
@@ -2221,39 +1951,22 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"SCHEMA": {
+					"inDir": {
 						"type": "string"
 					},
-					"CREDIT_USER": {
+					"outDir": {
 						"type": "string"
 					},
-					"fileType": {
+					"inName": {
 						"type": "string"
 					},
-					"fileName": {
-						"type": "string"
-					},
-					"outputPath": {
-						"type": "string"
-					},
-					"fileId": {
-						"type": "string"
-					},
-					"fileNameArchive": {
-						"type": "string"
-					},
-					"countRecord": {
-						"type": "string"
-					},
-					"resId": {
+					"outName": {
 						"type": "string"
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]"
 			]
 		}
