@@ -403,13 +403,13 @@
 							"value": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
 							"activities": [
 								{
-									"name": "Execute ChangeCatSubCatInsertProfileChangeProcessDat",
+									"name": "Execute ChangeCatSubCatInsertBillingAccountNoProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
+											"referenceName": "CC_ChangeCatSubCatInsertProfileChangeProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
