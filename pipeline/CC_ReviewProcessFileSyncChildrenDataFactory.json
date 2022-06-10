@@ -409,7 +409,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ChangeCatSubCatInsertProfileChangeProcessDat",
+											"referenceName": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
