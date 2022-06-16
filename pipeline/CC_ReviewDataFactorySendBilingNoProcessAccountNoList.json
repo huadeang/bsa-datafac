@@ -88,31 +88,11 @@
 							}
 						},
 						{
-							"name": "Set new offset",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set dataId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "offset",
-								"value": {
-									"value": "@string(mul(int(variables('round')),int(variables('limitPerRound'))))",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Set processTime",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set new offset",
+									"activity": "Set dataId",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -132,7 +112,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Set script Query",
+									"activity": "Set new offset",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -323,6 +303,26 @@
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set new offset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set script Query",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@string(mul(int(variables('round')),int(variables('limitPerRound'))))",
+									"type": "Expression"
+								}
 							}
 						}
 					]
