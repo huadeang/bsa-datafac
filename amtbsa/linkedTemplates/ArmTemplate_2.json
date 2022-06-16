@@ -4412,31 +4412,11 @@
 									}
 								},
 								{
-									"name": "Set new offset",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set dataId",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "offset",
-										"value": {
-											"value": "@string(mul(int(variables('round')),int(variables('limitPerRound'))))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
 									"name": "Set processTime",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "Set new offset",
+											"activity": "Set dataId",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -4456,7 +4436,13 @@
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
-											"activity": "Set script Query",
+											"activity": "Set new offset",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set new round",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -4532,7 +4518,14 @@
 								{
 									"name": "insert CC_DATA_FACTORY onprocess",
 									"type": "Script",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set oldRound",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -4648,6 +4641,59 @@
 											}
 										]
 									}
+								},
+								{
+									"name": "Set new offset",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Set script Query",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "offset",
+										"value": {
+											"value": "@string(mul(int(variables('round')),int(variables('limitPerRound'))))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set new round",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Set script Query",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "round",
+										"value": {
+											"value": "@string(add(int(variables('oldRound')),1))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set oldRound",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "oldRound",
+										"value": {
+											"value": "@variables('round')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -4737,6 +4783,9 @@
 						"type": "String"
 					},
 					"dataId": {
+						"type": "String"
+					},
+					"oldRound": {
 						"type": "String"
 					}
 				},
