@@ -208,12 +208,6 @@
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "create file output",
-									"dependencyConditions": [
-										"Failed"
-									]
-								},
-								{
 									"activity": "create file output archive",
 									"dependencyConditions": [
 										"Failed"
@@ -237,7 +231,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute CC_CreateFileAndArchive').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',variables('dataId'),';')",
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('create file output archive').Error.Message,'''','\"')),0,if(less(length(replace(activity('create file output archive').Error.Message,'''','\"')),499),length(replace(activity('create file output archive').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',variables('dataId'),';')",
 											"type": "Expression"
 										}
 									}
@@ -559,6 +553,42 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Update End Process_copy1",
+							"description": "",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "create file output",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('create file output').Error.Message,'''','\"')),0,if(less(length(replace(activity('create file output').Error.Message,'''','\"')),499),length(replace(activity('create file output').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',variables('dataId'),';')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
