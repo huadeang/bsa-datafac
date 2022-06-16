@@ -4436,12 +4436,6 @@
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
-											"activity": "Set new offset",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										},
-										{
 											"activity": "Set new round",
 											"dependencyConditions": [
 												"Succeeded"
@@ -4667,7 +4661,7 @@
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "Set script Query",
+											"activity": "Set new offset",
 											"dependencyConditions": [
 												"Succeeded"
 											]
