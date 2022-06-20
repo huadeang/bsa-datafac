@@ -137,7 +137,7 @@
 				"typeProperties": {
 					"variableName": "offset",
 					"value": {
-						"value": "@string(mul(sub(int(pipeline().parameters.round),1),int(variables('limitPerRound'))))",
+						"value": "@string(mul(sub(pipeline().parameters.round,1),int(variables('limitPerRound'))))",
 						"type": "Expression"
 					}
 				}
@@ -296,7 +296,7 @@
 				"type": "float"
 			},
 			"round": {
-				"type": "string"
+				"type": "int"
 			}
 		},
 		"variables": {
