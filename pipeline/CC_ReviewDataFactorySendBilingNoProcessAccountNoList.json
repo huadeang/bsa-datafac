@@ -43,7 +43,7 @@
 							"typeProperties": {
 								"variableName": "scriptQuery",
 								"value": {
-									"value": "@concat('SELECT ''01|''+''',variables('processTime'), ''' AS LINE\nUNION ALL\nSELECT T.LINE FROM (',variables('baScriptQuery'),') T\nUNION ALL\nSELECT ''09|'' +CONVERT(varchar(255), COUNT(T.LINE)) AS LINE FROM (',variables('baScriptQuery'),');')",
+									"value": "@concat('SELECT ''01|''+''',variables('processTime'), ''' AS LINE\nUNION ALL\nSELECT T.LINE FROM (',variables('baScriptQuery'),') T\nUNION ALL\nSELECT ''09|'' +CONVERT(varchar(255), COUNT(T2.LINE)) AS LINE FROM (',variables('baScriptQuery'),') T2;')",
 									"type": "Expression"
 								}
 							}
@@ -526,7 +526,7 @@
 							"typeProperties": {
 								"variableName": "offset",
 								"value": {
-									"value": "@string(mul(item(),int(variables('limitPerRound'))))",
+									"value": "@string(mul(sub(item(),1),int(variables('limitPerRound'))))",
 									"type": "Expression"
 								}
 							}
