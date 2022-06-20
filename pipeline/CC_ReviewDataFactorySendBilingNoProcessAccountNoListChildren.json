@@ -267,7 +267,7 @@
 				"typeProperties": {
 					"variableName": "scriptQuery",
 					"value": {
-						"value": "@concat('SELECT\n\t''01|'' + ',variables('processTime'),' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('baScriptQuery'),') T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (',variables('baScriptQuery'),') T2; ')",
+						"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('baScriptQuery'),') T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (',variables('baScriptQuery'),') T2; ')",
 						"type": "Expression"
 					}
 				}
