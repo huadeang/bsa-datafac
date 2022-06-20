@@ -3,75 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set processTime",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "processTime",
-					"value": {
-						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameArchive",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set processTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameArchive",
-					"value": {
-						"value": "@concat(pipeline().parameters.prefixFileNameArchive,variables('processTime'),'.',pipeline().parameters.fileTypeFileNameArchive)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileName",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set processTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileName",
-					"value": {
-						"value": "@concat(pipeline().parameters.prefixFileName,variables('processTime'),'.',pipeline().parameters.fileTypeFileName)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "create file output",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Set fileNameArchive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -141,7 +75,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@variables('fileName')",
+								"value": "@pipeline().parameters.fileName",
 								"type": "Expression"
 							}
 						}
@@ -177,7 +111,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@variables('fileName')",
+								"value": "@pipeline().parameters.fileName",
 								"type": "Expression"
 							}
 						}
@@ -281,7 +215,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@variables('fileNameArchive')",
+								"value": "@pipeline().parameters.fileNameArchive",
 								"type": "Expression"
 							}
 						}
@@ -290,16 +224,10 @@
 			}
 		],
 		"parameters": {
-			"prefixFileName": {
+			"fileName": {
 				"type": "string"
 			},
-			"prefixFileNameArchive": {
-				"type": "string"
-			},
-			"fileTypeFileName": {
-				"type": "string"
-			},
-			"fileTypeFileNameArchive": {
+			"fileNameArchive": {
 				"type": "string"
 			},
 			"scriptQuery": {
@@ -307,17 +235,6 @@
 			},
 			"outputPath": {
 				"type": "string"
-			}
-		},
-		"variables": {
-			"processTime": {
-				"type": "String"
-			},
-			"fileName": {
-				"type": "String"
-			},
-			"fileNameArchive": {
-				"type": "String"
 			}
 		},
 		"annotations": []
