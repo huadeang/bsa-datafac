@@ -36,7 +36,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set count Ba",
+						"activity": "Get COUNT_BA",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -81,16 +81,12 @@
 										"value": "@pipeline().parameters.CREDIT_USER",
 										"type": "Expression"
 									},
-									"baList": {
-										"value": "@activity('Get All BIlling Account').output.value",
-										"type": "Expression"
-									},
 									"DATA_TYPE": {
 										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
 									"countBa": {
-										"value": "@activity('Get All BIlling Account').output.value",
+										"value": "@activity('Get COUNT_BA').output.firstRow.COUNT_BA",
 										"type": "Expression"
 									}
 								}
@@ -127,26 +123,6 @@
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "Set count Ba",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Get COUNT_BA",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "countBa",
-					"value": {
-						"value": "@string(activity('Get COUNT_BA').output.firstRow.COUNT_BA)",
-						"type": "Expression"
-					}
 				}
 			}
 		],
