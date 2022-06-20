@@ -65,6 +65,10 @@
 									"round": {
 										"value": "@item()",
 										"type": "Expression"
+									},
+									"limitPerRound": {
+										"value": "@variables('limitPerRound')",
+										"type": "Expression"
 									}
 								}
 							}
