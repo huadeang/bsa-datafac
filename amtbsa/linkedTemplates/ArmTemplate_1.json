@@ -1778,13 +1778,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_MoveFile')]",
+			"name": "[concat(parameters('factoryName'), '/CC_CreateFileAndArchiveHaveDatName')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy to create file",
+						"name": "create file output",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -1797,15 +1797,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@pipeline().parameters.scriptQuery",
+									"type": "Expression"
 								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -1821,6 +1819,20 @@
 							"enableStaging": false,
 							"translator": {
 								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "LINE",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"type": "String",
+											"physicalType": "String",
+											"ordinal": 1
+										}
+									}
+								],
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
@@ -1830,31 +1842,22 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "CCLocalFileMasterNotSplit",
+								"referenceName": "AzureSqlMaster",
 								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.inDir",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.inName",
-										"type": "Expression"
-									}
-								}
+								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileMasterNotSplit",
+								"referenceName": "CCLocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.outDir",
+										"value": "@pipeline().parameters.outputPath",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.outName",
+										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
 									}
 								}
@@ -1862,11 +1865,11 @@
 						]
 					},
 					{
-						"name": "Delete File",
-						"type": "Delete",
+						"name": "Get Metadata file created",
+						"type": "GetMetadata",
 						"dependsOn": [
 							{
-								"activity": "Copy to create file",
+								"activity": "create file output",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1886,31 +1889,38 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.inDir",
+										"value": "@pipeline().parameters.outputPath",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.inName",
+										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
 									}
 								}
 							},
-							"enableLogging": false,
+							"fieldList": [
+								"exists",
+								"size",
+								"columnCount"
+							],
 							"storeSettings": {
 								"type": "FileServerReadSettings",
 								"recursive": true,
 								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
 							}
 						}
 					},
 					{
-						"name": "Delete File Archive",
-						"type": "Delete",
+						"name": "create file output archive",
+						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Delete File",
+								"activity": "Get Metadata file created",
 								"dependencyConditions": [
-									"Failed"
+									"Succeeded"
 								]
 							}
 						],
@@ -1923,27 +1933,77 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataset": {
-								"referenceName": "CCLocalFileMasterNotSplit",
+							"source": {
+								"type": "AzureSqlSource",
+								"additionalColumns": [
+									{
+										"name": "COLUMN",
+										"value": {
+											"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
+											"type": "Expression"
+										}
+									}
+								],
+								"sqlReaderQuery": " SELECT 'ONE'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "FileServerWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "COLUMN"
+										},
+										"sink": {
+											"type": "String",
+											"physicalType": "String",
+											"ordinal": 1
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CCLocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.outDir",
+										"value": "@pipeline().parameters.outputPath",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.outName",
+										"value": "@pipeline().parameters.fileNameArchive",
 										"type": "Expression"
 									}
 								}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "FileServerReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
 							}
-						}
+						]
 					}
 				],
 				"policy": {
@@ -1951,22 +2011,24 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"inDir": {
+					"fileName": {
 						"type": "string"
 					},
-					"outDir": {
+					"fileNameArchive": {
 						"type": "string"
 					},
-					"inName": {
+					"scriptQuery": {
 						"type": "string"
 					},
-					"outName": {
+					"outputPath": {
 						"type": "string"
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]"
 			]
 		}
