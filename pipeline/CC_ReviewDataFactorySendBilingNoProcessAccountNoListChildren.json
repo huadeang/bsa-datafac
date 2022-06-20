@@ -147,7 +147,19 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
+						"activity": "Set fileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set fileNameArchive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set script Query",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -161,19 +173,14 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"prefixFileName": {
-							"value": "@pipeline().parameters.prefixOutputFile",
+						"fileName": {
+							"value": "@variables('fileName')",
 							"type": "Expression"
 						},
-						"prefixFileNameArchive": {
-							"value": "@pipeline().parameters.prefixOutputFile",
+						"fileNameArchive": {
+							"value": "@variables('fileNameArchive')",
 							"type": "Expression"
 						},
-						"fileTypeFileName": {
-							"value": "@pipeline().parameters.fileTypeOutputFile",
-							"type": "Expression"
-						},
-						"fileTypeFileNameArchive": "sync",
 						"scriptQuery": {
 							"value": "@variables('scriptQuery')",
 							"type": "Expression"
@@ -182,6 +189,86 @@
 							"value": "@pipeline().parameters.outputPath",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "Set processTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "insert CC_DATA_FACTORY onprocess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "processTime",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileNameArchive",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileNameArchive",
+					"value": {
+						"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.sync')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileName",
+					"value": {
+						"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.',pipeline().parameters.fileTypeOutputFile)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set script Query",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "scriptQuery",
+					"value": {
+						"value": "@concat('SELECT\n\t''01|'' + ',variables('processTime'),' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('baScriptQuery'),') T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (',variables('baScriptQuery'),') T2; ')",
+						"type": "Expression"
 					}
 				}
 			}
@@ -213,12 +300,6 @@
 			}
 		},
 		"variables": {
-			"tempCountList": {
-				"type": "Array"
-			},
-			"countRound": {
-				"type": "String"
-			},
 			"limitPerRound": {
 				"type": "String"
 			},
@@ -228,7 +309,7 @@
 			"scriptQuery": {
 				"type": "String"
 			},
-			"round": {
+			"baScriptQuery": {
 				"type": "String"
 			},
 			"processTime": {
@@ -238,15 +319,6 @@
 				"type": "String"
 			},
 			"fileNameArchive": {
-				"type": "String"
-			},
-			"dataId": {
-				"type": "String"
-			},
-			"oldRound": {
-				"type": "String"
-			},
-			"baScriptQuery": {
 				"type": "String"
 			}
 		},
