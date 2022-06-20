@@ -157,7 +157,7 @@
 							{
 								"name": "COLUMN",
 								"value": {
-									"value": "@concat(variables('fileName'),'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
+									"value": "@concat(pipeline().parameters.fileName,'|',coalesce(activity('Get Metadata file created').output?.size,'0'))",
 									"type": "Expression"
 								}
 							}
