@@ -297,12 +297,12 @@
 			},
 			"round": {
 				"type": "int"
+			},
+			"limitPerRound": {
+				"type": "string"
 			}
 		},
 		"variables": {
-			"limitPerRound": {
-				"type": "String"
-			},
 			"offset": {
 				"type": "String"
 			},
