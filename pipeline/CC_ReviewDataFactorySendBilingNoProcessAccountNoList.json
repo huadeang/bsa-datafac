@@ -180,12 +180,6 @@
 			}
 		},
 		"variables": {
-			"tempCountList": {
-				"type": "Array"
-			},
-			"countRound": {
-				"type": "String"
-			},
 			"limitPerRound": {
 				"type": "String"
 			},
@@ -196,21 +190,6 @@
 				"type": "String"
 			},
 			"round": {
-				"type": "String"
-			},
-			"processTime": {
-				"type": "String"
-			},
-			"fileName": {
-				"type": "String"
-			},
-			"fileNameArchive": {
-				"type": "String"
-			},
-			"dataId": {
-				"type": "String"
-			},
-			"oldRound": {
 				"type": "String"
 			},
 			"baScriptQuery": {
