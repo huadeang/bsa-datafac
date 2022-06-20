@@ -4728,7 +4728,7 @@
 						"typeProperties": {
 							"variableName": "processTime",
 							"value": {
-								"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+								"value": "@formatDateTime(convertTimeZone(addminutes(utcnow(),pipeline().parameters.round),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
 								"type": "Expression"
 							}
 						}
@@ -5963,7 +5963,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
-							"batchCount": 20,
+							"batchCount": 5,
 							"activities": [
 								{
 									"name": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
