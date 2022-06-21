@@ -5950,7 +5950,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Set limitPerRound",
+								"activity": "Get Count Round",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6035,7 +6035,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT IIF((SELECT CAST(LOV_NAME AS NUMERIC(22,0)) AS MAX_RECORD FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y'') > 0,(SELECT CAST(LOV_NAME AS NUMERIC(22,0)) AS MAX_RECORD FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''),0) AS LIMIT;')",
+									"value": "@concat('SELECT ISNULL(CAST((SELECT IIF(LTRIM(RTRIM(LOV_NAME))='''',NULL,LOV_NAME) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y'')AS NUMERIC(22, 0)),50000)  AS LIMIT;')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
@@ -6053,7 +6053,7 @@
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "Get limit",
+								"activity": "Set limitPerRound",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6071,7 +6071,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT\n    IIF(ROUND(',string(pipeline().parameters.countBa),' /(SELECT CAST(LOV_NAME AS NUMERIC(22, 0)) AS MAX_RECORD FROM CREDIT_DEV.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''), 0, 1)>0,\n\tROUND(',string(pipeline().parameters.countBa),' /(SELECT CAST(LOV_NAME AS NUMERIC(22, 0)) AS MAX_RECORD FROM CREDIT_DEV.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''), 0, 1)+\n\t(IIF(',string(pipeline().parameters.countBa),'%(SELECT CAST(LOV_NAME AS NUMERIC(22,0)) AS MAX_RECORD FROM CREDIT_DEV.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y'') > 0,1,0)),1) AS COUNT_ROUND;')",
+									"value": "@concat('SELECT\n    IIF(ROUND(',string(pipeline().parameters.countBa),' /(',variables('limitPerRound'),'), 0, 1)>0,\n\tROUND(',string(pipeline().parameters.countBa),' /(',variables('limitPerRound'),'), 0, 1)+\n\t(IIF(',string(pipeline().parameters.countBa),'%(',variables('limitPerRound'),') > 0,1,0)),1) AS COUNT_ROUND;')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
@@ -6089,7 +6089,7 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "Get Count Round",
+								"activity": "Get limit",
 								"dependencyConditions": [
 									"Succeeded"
 								]
