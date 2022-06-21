@@ -92,7 +92,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT IIF((SELECT CAST(LOV_NAME AS NUMERIC(22,0)) AS MAX_RECORD FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y'') > 0,(SELECT CAST(LOV_NAME AS NUMERIC(22,0)) AS MAX_RECORD FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''),0) AS LIMIT;')",
+							"value": "@concat('SELECT ISNULL((SELECT CAST(LOV_NAME AS NUMERIC(22, 0)) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''),50000) AS LIMIT;')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
