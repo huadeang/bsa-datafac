@@ -6243,7 +6243,14 @@
 								{
 									"name": "Get Exiting RefRowId",
 									"type": "Lookup",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -6256,7 +6263,7 @@
 										"source": {
 											"type": "AzureSqlSource",
 											"sqlReaderQuery": {
-												"value": "@concat('SELECT * from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN c WHERE c.REF_ROW_ID = ''',split(item().Prop_0,'|')[1],'')\n",
+												"value": "@concat('SELECT * from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE REF_ROW_ID = ''',variables('refRowId'),'')",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
@@ -6266,6 +6273,19 @@
 											"referenceName": "AzureSqlTableCurrent",
 											"type": "DatasetReference",
 											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "refRowId",
+										"value": {
+											"value": "@split(item().Prop_0,'|')[1]",
+											"type": "Expression"
 										}
 									}
 								}
@@ -6570,6 +6590,9 @@
 					"haveErrorRow": {
 						"type": "Boolean",
 						"defaultValue": false
+					},
+					"refRowId": {
+						"type": "String"
 					}
 				},
 				"annotations": []
