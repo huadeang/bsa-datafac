@@ -5,14 +5,7 @@
 			{
 				"name": "Get Config Value",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Clear CC_BILLING_CAT_SUBCAT",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -210,34 +203,6 @@
 										}
 									}
 								]
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Clear CC_BILLING_CAT_SUBCAT",
-				"type": "Script",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_BILLING_REVIEW')",
-								"type": "Expression"
 							}
 						}
 					]
