@@ -5508,7 +5508,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT ISNULL(CAST((SELECT IIF(LTRIM(RTRIM(LOV_NAME))='''',NULL,LOV_NAME) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y'')AS NUMERIC(22, 0)),50000)  AS LIMIT;')",
+									"value": "@concat('SELECT CAST(ISNULL(NULLIF(LOV_NAME ,''''),50000) AS NUMERIC(22,0)) FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
