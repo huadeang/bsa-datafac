@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewDataFactoryInsertCatSubcatBilling",
+	"name": "CC_CatSubcatDataFactoryInsertCatSubcatBilling",
 	"properties": {
 		"activities": [
 			{
