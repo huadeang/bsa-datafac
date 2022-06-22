@@ -291,7 +291,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('SELECT * from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN c WHERE c.REF_ROW_ID = ''',split(item().Prop_0,'|')[1],'')\n",
+										"value": "@concat('SELECT * from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN c WHERE c.REF_ROW_ID = ''',split(item().Prop_0,'|')[1],'''')\n",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
