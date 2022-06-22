@@ -452,16 +452,16 @@
 							]
 						},
 						{
-							"value": "InsertOrUpdateNegotiationValueProcessDat",
+							"value": "InsertOrUpdateCreditAssignProcessDat",
 							"activities": [
 								{
-									"name": "Execute InsertOrUpdateNegotiationValueProcessDat",
+									"name": "ExecuteInsertOrUpdateCreditAssignProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "InsertOrUpdateNegotiationValueProcessDat",
+											"referenceName": "InsertOrUpdateCreditAssignProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
