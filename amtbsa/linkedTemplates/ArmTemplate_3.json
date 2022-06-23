@@ -3838,7 +3838,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@or(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),or(or(empty(trim(activity('Get Config Value in Clound Storage').output.firstRow.val1)),empty(activity('Get Config Value in Clound Storage').output.firstRow.val3)),empty(activity('Get Config Value in Clound Storage').output.firstRow.val4)))",
+								"value": "@or(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),or(or(empty(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,''))),empty(activity('Get Config Value in Clound Storage').output.firstRow.val3)),empty(activity('Get Config Value in Clound Storage').output.firstRow.val4)))",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
