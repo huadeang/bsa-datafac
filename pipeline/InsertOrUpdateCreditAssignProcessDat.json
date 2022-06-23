@@ -114,7 +114,7 @@
 							}
 						},
 						{
-							"name": "Script Insert Table CC_CREDIT_ASSIGN_copy1",
+							"name": "Script Insert Table CC_CREDIT_ASSIGN",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -149,11 +149,11 @@
 							}
 						},
 						{
-							"name": "Script Insert Table CC_DATA_FACTORY_HIST onfail_copy2",
+							"name": "Script Insert Table CC_DATA_FACTORY_HIST",
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Set haveErrorRow_copy2",
+									"activity": "Set haveErrorRow",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -184,11 +184,11 @@
 							}
 						},
 						{
-							"name": "Set haveErrorRow_copy2",
+							"name": "Set haveErrorRow",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Script Insert Table CC_CREDIT_ASSIGN_copy1",
+									"activity": "Script Insert Table CC_CREDIT_ASSIGN",
 									"dependencyConditions": [
 										"Failed"
 									]
