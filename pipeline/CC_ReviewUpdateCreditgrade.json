@@ -186,7 +186,7 @@
 							"typeProperties": {
 								"variableName": "moveInputPath",
 								"value": {
-									"value": "@if(equals(trim(activity('Get Config Value in Clound Storage').output.firstRow.val7),''),'',activity('Get Config Value in Clound Storage').output.firstRow.val7)",
+									"value": "@if(empty(activity('Get Config Value in Clound Storage').output.firstRow.val7),'',activity('Get Config Value in Clound Storage').output.firstRow.val7)",
 									"type": "Expression"
 								}
 							}
