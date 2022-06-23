@@ -9014,152 +9014,6 @@
 						}
 					},
 					{
-						"name": "Move FIle Sync",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Move Data Dat Succes",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "CC_MoveFile",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"inDir": {
-									"value": "@pipeline().parameters.inputPath",
-									"type": "Expression"
-								},
-								"outDir": {
-									"value": "@pipeline().parameters.moveInputPath",
-									"type": "Expression"
-								},
-								"inName": {
-									"value": "@pipeline().parameters.fileSyncName",
-									"type": "Expression"
-								},
-								"outName": {
-									"value": "@concat(variables('fileSyncNotExension'),'_',variables('fileProcessTime'),'.',variables('fileSyncExension'))",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Move FIle Dat",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Move Data Dat Succes",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "CC_MoveFile",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"inDir": {
-									"value": "@pipeline().parameters.inputPath",
-									"type": "Expression"
-								},
-								"outDir": {
-									"value": "@pipeline().parameters.moveInputPath",
-									"type": "Expression"
-								},
-								"inName": {
-									"value": "@pipeline().parameters.fileDatName",
-									"type": "Expression"
-								},
-								"outName": {
-									"value": "@variables('fileNameArchive')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "update review End Process Move file sync Error",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Move FIle Sync",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "update review End Process Move file dat Error",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Move FIle Dat",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
 						"name": "Set description on process",
 						"type": "SetVariable",
 						"dependsOn": [
@@ -9177,6 +9031,159 @@
 								"value": "@concat('Process file name : ',pipeline().parameters.fileDatName,' total count ',string(length(activity('Lookup FIle Dat').output.value)),' record -> count process ',if(equals(pipeline().parameters.CREDIT_USER,'DATA_FAC_UPDATE_PAYMENT'),string(length(activity('Lookup FIle Dat').output.value)),string(sub(length(activity('Lookup FIle Dat').output.value),2))),' record.')",
 								"type": "Expression"
 							}
+						}
+					},
+					{
+						"name": "If Move Path is Empty",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Move Data Dat Succes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@empty(pipeline().parameters.moveInputPath)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Move FIle Sync",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_MoveFile",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"inDir": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"outDir": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"inName": {
+												"value": "@pipeline().parameters.fileSyncName",
+												"type": "Expression"
+											},
+											"outName": {
+												"value": "@concat(variables('fileSyncNotExension'),'_',variables('fileProcessTime'),'.',variables('fileSyncExension'))",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Move FIle Dat",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_MoveFile",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"inDir": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"outDir": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"inName": {
+												"value": "@pipeline().parameters.fileDatName",
+												"type": "Expression"
+											},
+											"outName": {
+												"value": "@variables('fileNameArchive')",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "update review End Process Move file sync Error",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Move FIle Sync",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "update review End Process Move file dat Error",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Move FIle Dat",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
 						}
 					}
 				],
@@ -9712,7 +9719,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@or(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),or(or(or(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null)),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null)),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null)))",
+								"value": "@or(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),or(or(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null)),equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null)))",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -9784,7 +9791,7 @@
 									"typeProperties": {
 										"variableName": "moveInputPath",
 										"value": {
-											"value": "@activity('Get Config Value in Clound Storage').output.firstRow.val7",
+											"value": "@if(empty(activity('Get Config Value in Clound Storage').output.firstRow.val7),'',activity('Get Config Value in Clound Storage').output.firstRow.val7)",
 											"type": "Expression"
 										}
 									}
@@ -9870,7 +9877,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('REVIEW_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),concat('Config LOV_TYPE : ',variables('lovType'),' ,LOV_NAME : ',variables('lovName'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val7,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t)\n\t,' Data not found.')),''');')",
+													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('REVIEW_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value in Clound Storage').output),'firstRow')),concat('Config LOV_TYPE : ',variables('lovType'),' ,LOV_NAME : ',variables('lovName'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val1,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val3,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value in Clound Storage').output.firstRow.val4,'')),''),null,activity('Get Config Value in Clound Storage').output.firstRow.val4),null),',file type Input file(val4)',''))\n\t)\n\t,' Data not found.')),''');')",
 													"type": "Expression"
 												}
 											}
