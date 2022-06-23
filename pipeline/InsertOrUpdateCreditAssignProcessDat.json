@@ -114,7 +114,7 @@
 							}
 						},
 						{
-							"name": "Script Insert Table CC_CREDIT_ASSIGN",
+							"name": "Script Insert or Update Table CC_CREDIT_ASSIGN",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -176,7 +176,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert Table CC_CREDIT_ASSIGN').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert or Update Table CC_CREDIT_ASSIGN').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
 											"type": "Expression"
 										}
 									}
@@ -188,7 +188,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Script Insert Table CC_CREDIT_ASSIGN",
+									"activity": "Script Insert or Update Table CC_CREDIT_ASSIGN",
 									"dependencyConditions": [
 										"Failed"
 									]
