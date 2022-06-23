@@ -88,7 +88,14 @@
 						{
 							"name": "Script Insert Table CC_NEGOTIATION_VALUE",
 							"type": "Script",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Get Data By RowId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
