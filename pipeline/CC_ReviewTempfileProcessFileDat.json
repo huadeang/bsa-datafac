@@ -785,6 +785,18 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "If Move Path is Empty",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(pipeline().parameters.moveInputPath)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
