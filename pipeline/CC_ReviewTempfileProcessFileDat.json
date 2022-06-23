@@ -189,7 +189,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCTableFileTempDetailSchemaUAT",
+						"referenceName": "CCTableFileTempDetail",
 						"type": "DatasetReference"
 					}
 				]
