@@ -1,5 +1,5 @@
 {
-	"name": "InsertOrUpdateNegotiationValue",
+	"name": "CC_DataFactoryInsertOrUpdateNegotiationValue",
 	"properties": {
 		"activities": [
 			{
