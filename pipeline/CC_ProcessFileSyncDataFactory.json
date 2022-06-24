@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewProcessFileSyncDataFactory",
+	"name": "CC_ProcessFileSyncDataFactory",
 	"properties": {
 		"activities": [
 			{
