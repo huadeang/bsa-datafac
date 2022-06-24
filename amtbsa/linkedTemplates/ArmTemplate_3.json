@@ -4091,7 +4091,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT VAL1,VAL3,VAL4,VAL7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('lovType'),''' AND c.LOV_NAME = ''',variables('lovName'),''' AND c.ACTIVE_FLG =''Y''')",
+									"value": "@concat('SELECT VAL1,VAL3,VAL4,NULLIF(VAL7,'') AS VAL7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('lovType'),''' AND c.LOV_NAME = ''',variables('lovName'),''' AND c.ACTIVE_FLG =''Y''')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
@@ -4434,7 +4434,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT Val1, Val3, Val4, NULLIF(Val7,'''') AS Val7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('lovType'),''' AND c.LOV_NAME = ''',variables('lovName'),''' AND c.ACTIVE_FLG =''Y''')",
+									"value": "@concat('SELECT VAL1, VAL3, VAL4, NULLIF(VAL7,'''') AS VAL7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('lovType'),''' AND c.LOV_NAME = ''',variables('lovName'),''' AND c.ACTIVE_FLG =''Y''')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
