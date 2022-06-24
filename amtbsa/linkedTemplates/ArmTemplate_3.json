@@ -2170,7 +2170,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatDataFactoryInsertBillingAccountNo')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertBillingChangeCatSubCat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2467,7 +2467,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatDataFactoryInsertProfileChange')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertProfileChange')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {

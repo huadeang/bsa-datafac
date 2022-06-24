@@ -2425,7 +2425,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertProfileChangeProcessDat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2906,7 +2906,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubcatDataFactoryInsertBillingAccountNoProcessDat')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertBillingChangeCatSubcatProcessDat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -7597,7 +7597,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat",
+													"referenceName": "CC_DataFactoryInsertProfileChangeProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -7649,7 +7649,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_ChangeCatSubcatDataFactoryInsertBillingAccountNoProcessDat",
+													"referenceName": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -7823,8 +7823,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactoryInsertBillingAccountNoProcessDat')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubcatDataFactoryInsertBillingAccountNoProcessDat')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertProfileChangeProcessDat')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertBillingChangeCatSubcatProcessDat')]",
 				"[concat(variables('factoryId'), '/pipelines/InsertOrUpdateCreditAssignProcessDat')]"
 			]
 		},
