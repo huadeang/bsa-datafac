@@ -357,7 +357,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat",
+											"referenceName": "CC_DataFactoryInsertProfileChangeProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
