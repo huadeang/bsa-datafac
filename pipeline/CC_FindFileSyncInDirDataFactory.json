@@ -64,7 +64,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewProcessFileSyncDataFactory",
+									"referenceName": "CC_ProcessFileSyncDataFactory",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
