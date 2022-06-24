@@ -792,7 +792,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_ChangeCatSubCatInsertProfileChangeProcessDat",
+													"referenceName": "CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -844,7 +844,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
+													"referenceName": "CC_ChangeCatSubcatDataFactoryInsertBillingAccountNoProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -2486,7 +2486,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatInsertBillingAccountNo')]",
+			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatDataFactoryInsertBillingAccountNo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2783,7 +2783,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatInsertProfileChange')]",
+			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatDataFactoryInsertProfileChange')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
