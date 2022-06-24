@@ -1,5 +1,5 @@
 {
-	"name": "InsertOrUpdateScoreValueProcessDat",
+	"name": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
 	"properties": {
 		"activities": [
 			{

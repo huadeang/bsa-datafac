@@ -1,5 +1,5 @@
 {
-	"name": "InsertOrUpdateCreditAssign",
+	"name": "CC_DataFactoryInsertOrUpdateCreditAssign",
 	"properties": {
 		"activities": [
 			{

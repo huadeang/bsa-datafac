@@ -1,5 +1,5 @@
 {
-	"name": "InsertOrUpdateCreditAssignProcessDat",
+	"name": "CC_DataFactoryInsertOrUpdateCreditAssignProcessDat",
 	"properties": {
 		"activities": [
 			{
