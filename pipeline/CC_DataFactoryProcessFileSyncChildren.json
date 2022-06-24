@@ -1,5 +1,5 @@
 {
-	"name": "CC_ProcessFileSyncChildrenDataFactory",
+	"name": "CC_DataFactoryProcessFileSyncChildren",
 	"properties": {
 		"activities": [
 			{

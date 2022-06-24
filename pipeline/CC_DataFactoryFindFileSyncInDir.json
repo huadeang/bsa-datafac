@@ -1,5 +1,5 @@
 {
-	"name": "CC_FindFileSyncInDirDataFactory",
+	"name": "CC_DataFactoryFindFileSyncInDir",
 	"properties": {
 		"activities": [
 			{
@@ -64,7 +64,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ProcessFileSyncDataFactory",
+									"referenceName": "CC_DataFactoryProcessFileSync",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

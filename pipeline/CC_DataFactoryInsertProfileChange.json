@@ -142,7 +142,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_FindFileSyncInDirDataFactory",
+									"referenceName": "CC_DataFactoryFindFileSyncInDir",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
