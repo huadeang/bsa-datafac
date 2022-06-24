@@ -461,7 +461,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_DataFactoryInsertOrUpdateCreditAssignProcessDat",
+											"referenceName": "InsertOrUpdateCreditAssignProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -513,7 +513,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+											"referenceName": "InsertOrUpdateScoreValueProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -554,6 +554,9 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat"
 						}
 					],
 					"defaultActivities": [
