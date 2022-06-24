@@ -303,7 +303,7 @@
 			},
 			"SCHEMA": {
 				"type": "String",
-				"defaultValue": "CREDIT_DATA_FAC"
+				"defaultValue": "CREDIT_UAT"
 			},
 			"TEMP_FILE_DETAIL_CREATED_BY": {
 				"type": "String",
