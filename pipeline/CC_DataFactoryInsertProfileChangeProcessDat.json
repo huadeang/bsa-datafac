@@ -1,5 +1,5 @@
 {
-	"name": "CC_ChangeCatSubCatDataFactoryInsertProfileChangeProcessDat",
+	"name": "CC_DataFactoryInsertProfileChangeProcessDat",
 	"properties": {
 		"activities": [
 			{
