@@ -500,6 +500,9 @@
 			"haveErrorRow": {
 				"type": "Boolean",
 				"defaultValue": false
+			},
+			"refRowId": {
+				"type": "String"
 			}
 		},
 		"annotations": []
