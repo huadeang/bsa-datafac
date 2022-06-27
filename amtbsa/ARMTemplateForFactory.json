@@ -2144,7 +2144,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_BILLING_CAT_SUBCAT \n    (ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_NO,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tNAME ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD,\n\tREGISTER_DT,\n\tFBB_FLAG,\n\tSUPPEND_FLAG,\n\tCOUNT_MOBILE,\n\tSUM_MAIN_PRO) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),'NULL',concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(equals(trim(coalesce(split(item().Prop_0,'|')[19],'')),''),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),');')",
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_BILLING_CAT_SUBCAT \n    (ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_NO,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tNAME ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD,\n\tREGISTER_DT,\n\tFBB_FLAG,\n\tSUPPEND_FLAG,\n\tCOUNT_MOBILE,\n\tSUM_MAIN_PRO) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(equals(trim(coalesce(split(item().Prop_0,'|')[19],'')),''),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),');')",
 													"type": "Expression"
 												}
 											}
@@ -3537,7 +3537,7 @@
 					},
 					"DATA_TYPE": {
 						"type": "String",
-						"defaultValue": "NEGO_VALUE"
+						"defaultValue": "INSERT_OR_UPDATE__NEGO_VALUE"
 					},
 					"CREDIT_USER": {
 						"type": "String",
@@ -3728,7 +3728,7 @@
 										"source": {
 											"type": "AzureSqlSource",
 											"sqlReaderQuery": {
-												"value": "@concat('SELECT ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_NEGOTIATION_VALUE n WHERE c.REF_ROW_ID= ''',split(item().Prop_0,'|')[1],'')",
+												"value": "@concat('SELECT ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_NEGOTIATION_VALUE WHERE REF_ROW_ID= ''',split(item().Prop_0,'|')[1],'''')",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
@@ -4077,6 +4077,9 @@
 					"haveErrorRow": {
 						"type": "Boolean",
 						"defaultValue": false
+					},
+					"refRowId": {
+						"type": "String"
 					}
 				},
 				"annotations": []
