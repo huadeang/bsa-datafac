@@ -156,7 +156,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('SELECT ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_NEGOTIATION_VALUE n WHERE c.REF_ROW_ID= ''',split(item().Prop_0,'|')[1],'')",
+										"value": "@concat('SELECT ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_NEGOTIATION_VALUE WHERE REF_ROW_ID= ''',split(item().Prop_0,'|')[1],'''')",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
