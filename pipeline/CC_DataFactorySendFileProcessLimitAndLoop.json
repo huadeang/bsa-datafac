@@ -58,8 +58,8 @@
 										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
-									"countBa": {
-										"value": "@pipeline().parameters.countBa",
+									"count": {
+										"value": "@pipeline().parameters.count",
 										"type": "Expression"
 									},
 									"round": {
@@ -127,7 +127,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT\n    IIF(ROUND(',string(pipeline().parameters.countBa),' /(',variables('limitPerRound'),'), 0, 1)>0,\n\tROUND(',string(pipeline().parameters.countBa),' /(',variables('limitPerRound'),'), 0, 1)+\n\t(IIF(',string(pipeline().parameters.countBa),'%(',variables('limitPerRound'),') > 0,1,0)),1) AS COUNT_ROUND;')",
+							"value": "@concat('SELECT\n    IIF(ROUND(',string(pipeline().parameters.count),' /(',variables('limitPerRound'),'), 0, 1)>0,\n\tROUND(',string(pipeline().parameters.count),' /(',variables('limitPerRound'),'), 0, 1)+\n\t(IIF(',string(pipeline().parameters.count),'%(',variables('limitPerRound'),') > 0,1,0)),1) AS COUNT_ROUND;')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -179,7 +179,7 @@
 			"DATA_TYPE": {
 				"type": "string"
 			},
-			"countBa": {
+			"count": {
 				"type": "float"
 			}
 		},
