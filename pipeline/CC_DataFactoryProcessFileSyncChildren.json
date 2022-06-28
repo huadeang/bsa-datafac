@@ -452,7 +452,7 @@
 							]
 						},
 						{
-							"value": "InsertOrUpdateCreditAssignProcessDat",
+							"value": "CC_DataFactoryInsertOrUpdateCreditAssignProcessDat",
 							"activities": [
 								{
 									"name": "Execute InsertOrUpdateCreditAssignProcessDat",
@@ -504,7 +504,7 @@
 							]
 						},
 						{
-							"value": "InsertOrUpdateScoreValueProcessDat",
+							"value": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
 							"activities": [
 								{
 									"name": "Execute InsertOrUpdateScoreValueProcessDat",
