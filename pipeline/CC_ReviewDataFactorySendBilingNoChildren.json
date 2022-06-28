@@ -45,7 +45,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Get COUNT_BA').output.firstRow.COUNT_BA,0)",
+						"value": "@equals(activity('Get COUNT').output.firstRow.COUNT,0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
