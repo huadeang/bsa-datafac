@@ -181,6 +181,9 @@
 			},
 			"count": {
 				"type": "float"
+			},
+			"pipeLineProcessFileName": {
+				"type": "string"
 			}
 		},
 		"variables": {
