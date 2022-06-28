@@ -2675,7 +2675,7 @@
 						"typeProperties": {
 							"variableName": "scriptQuery",
 							"value": {
-								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID ASC OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY) T2; ')",
+								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID ASC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC ) T2; ')",
 								"type": "Expression"
 							}
 						}
@@ -2708,7 +2708,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID OFFSET 0 ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
+										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID ) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
 										"type": "Expression"
 									}
 								}
