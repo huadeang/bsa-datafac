@@ -277,7 +277,7 @@
 			"moveInputPath": {
 				"type": "String"
 			},
-			"executeDatPipeLineName": {
+			"executePipeLineName": {
 				"type": "String",
 				"defaultValue": "CC_DataFactoryInsertUpdateCaBillingProcessDat"
 			}
