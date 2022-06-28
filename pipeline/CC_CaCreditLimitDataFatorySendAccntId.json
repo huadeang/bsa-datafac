@@ -197,15 +197,15 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_review_send_billing_no"
+				"defaultValue": "sff_cc_ca_accnt_id_req"
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_SEND_BA"
+				"defaultValue": "DATA_FAC_SEND_CA"
 			},
 			"DATA_TYPE": {
 				"type": "String",
-				"defaultValue": "REVIEW_SEND_BA"
+				"defaultValue": "CA_CL_SEND_CA"
 			},
 			"outputPath": {
 				"type": "String"
