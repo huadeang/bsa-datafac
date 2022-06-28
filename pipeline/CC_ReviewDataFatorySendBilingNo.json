@@ -215,6 +215,10 @@
 			},
 			"fileTypeOutputFile": {
 				"type": "String"
+			},
+			"pipeLineProcessFileName": {
+				"type": "String",
+				"defaultValue": "CC_ReviewDataFactorySendBilingNoProcesFile"
 			}
 		},
 		"annotations": []
