@@ -143,7 +143,12 @@
 									"fileTypeOutputFile": {
 										"value": "@variables('fileTypeOutputFile')",
 										"type": "Expression"
-									}
+									},
+									"ScriptCount": {
+										"value": "@concat('SELECT COUNT(T.LINE) AS COUNT FROM (SELECT ACCNT_ID AS LINE FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO \nWHERE STATUS = ''P'' \nORDER BY CA_ID ASC\n) T;')",
+										"type": "Expression"
+									},
+									"messageWhenCountZero": "Query Customer account id for send to sff data not found"
 								}
 							}
 						}
