@@ -88,6 +88,10 @@
 									"count": {
 										"value": "@activity('Get COUNT').output.firstRow.COUNT",
 										"type": "Expression"
+									},
+									"pipeLineProcessFileName": {
+										"value": "@pipeline().parameters.pipeLineProcessFileName",
+										"type": "Expression"
 									}
 								}
 							}
