@@ -286,6 +286,35 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "SELECT CA_ID LISt",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"parameters": {
