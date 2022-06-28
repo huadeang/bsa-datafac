@@ -1295,6 +1295,10 @@
 											"DATA_TYPE": {
 												"value": "@pipeline().parameters.DATA_TYPE",
 												"type": "Expression"
+											},
+											"count": {
+												"value": "@activity('Get COUNT').output.firstRow.COUNT",
+												"type": "Expression"
 											}
 										}
 									}
