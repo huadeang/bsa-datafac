@@ -13,7 +13,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryUpdateCaBilling')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertUpdateCaBilling')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -300,7 +300,7 @@
 					},
 					"executeDatPipeLineName": {
 						"type": "String",
-						"defaultValue": "CC_DataFactoryUpdateCaBillingProcessDat"
+						"defaultValue": "CC_DataFactoryInsertUpdateCaBillingProcessDat"
 					}
 				},
 				"annotations": []

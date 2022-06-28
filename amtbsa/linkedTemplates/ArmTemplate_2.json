@@ -5816,7 +5816,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryUpdateCaBillingProcessDat')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertUpdateCaBillingProcessDat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {

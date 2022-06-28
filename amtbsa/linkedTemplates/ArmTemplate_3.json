@@ -853,16 +853,16 @@
 									]
 								},
 								{
-									"value": "CC_DataFactoryUpdateCaBillingProcessDat",
+									"value": "CC_DataFactoryInsertUpdateCaBillingProcessDat",
 									"activities": [
 										{
-											"name": "Execute CC_DataFactoryUpdateCaBillingProcessDat",
+											"name": "Execute CC_DataFactoryInsertUpdateCaBillingProcessDat",
 											"type": "ExecutePipeline",
 											"dependsOn": [],
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_DataFactoryUpdateCaBillingProcessDat",
+													"referenceName": "CC_DataFactoryInsertUpdateCaBillingProcessDat",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
