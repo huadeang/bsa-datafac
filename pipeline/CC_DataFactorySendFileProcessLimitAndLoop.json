@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
+	"name": "CC_DataFactorySendFileProcessLimitAndLoop",
 	"properties": {
 		"activities": [
 			{
@@ -29,7 +29,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewDataFactorySendBilingNoProcessAccountNoListChildren",
+									"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
