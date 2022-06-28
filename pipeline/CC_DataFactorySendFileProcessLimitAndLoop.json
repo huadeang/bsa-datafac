@@ -23,13 +23,13 @@
 					"batchCount": 5,
 					"activities": [
 						{
-							"name": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
+							"name": "CC_DataFactorySendFileProcessCrossway",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile",
+									"referenceName": "CC_DataFactorySendFileProcessCrossway",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -60,6 +60,10 @@
 									},
 									"count": {
 										"value": "@pipeline().parameters.count",
+										"type": "Expression"
+									},
+									"pipeLineProcessFileName": {
+										"value": "@pipeline().parameters.pipeLineProcessFileName",
 										"type": "Expression"
 									},
 									"round": {
