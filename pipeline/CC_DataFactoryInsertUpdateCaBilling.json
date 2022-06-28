@@ -172,7 +172,7 @@
 										"type": "Expression"
 									},
 									"executePipeLineName": {
-										"value": "@variables('executeDatPipeLineName')",
+										"value": "@variables('executePipeLineName')",
 										"type": "Expression"
 									},
 									"DATA_TYPE": {
