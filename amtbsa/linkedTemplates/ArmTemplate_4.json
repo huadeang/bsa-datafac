@@ -722,7 +722,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactorySendBilingNoChildren",
+											"referenceName": "CC_DataFactorySendFileProcessCount",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,

@@ -2797,7 +2797,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFactorySendBilingNoChildren')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactorySendFileProcessCount')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3449,7 +3449,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactorySendBilingNoChildren",
+											"referenceName": "CC_DataFactorySendFileProcessCount",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -3566,7 +3566,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactorySendBilingNoChildren')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_DataFactorySendFileProcessCount')]"
 			]
 		},
 		{
