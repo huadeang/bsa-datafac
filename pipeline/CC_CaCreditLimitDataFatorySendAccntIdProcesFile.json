@@ -288,7 +288,7 @@
 				}
 			},
 			{
-				"name": "SELECT CA_ID LISt",
+				"name": "SELECT CA_ID LIST",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
