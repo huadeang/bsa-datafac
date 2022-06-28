@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get COUNT_BA",
+				"name": "Get COUNT",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -36,7 +36,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get COUNT_BA",
+						"activity": "Get COUNT",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -83,10 +83,6 @@
 									},
 									"DATA_TYPE": {
 										"value": "@pipeline().parameters.DATA_TYPE",
-										"type": "Expression"
-									},
-									"countBa": {
-										"value": "@activity('Get COUNT_BA').output.firstRow.COUNT_BA",
 										"type": "Expression"
 									}
 								}
