@@ -280,7 +280,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP 50000 CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
+								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
 								"type": "Expression"
 							}
 						}
