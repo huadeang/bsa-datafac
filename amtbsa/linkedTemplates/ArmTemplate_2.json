@@ -2675,7 +2675,7 @@
 						"typeProperties": {
 							"variableName": "scriptQuery",
 							"value": {
-								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (SELECT ACCNT_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO \n                        WHERE STATUS = ''P'' \n                        ORDER BY CA_ID ASC) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT ACCNT_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC) T2; ')",
+								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID ASC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC ) T2; ')",
 								"type": "Expression"
 							}
 						}
