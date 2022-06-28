@@ -150,6 +150,9 @@
 			},
 			"messageWhenCountZero": {
 				"type": "string"
+			},
+			"pipeLineProcessFileName": {
+				"type": "string"
 			}
 		},
 		"variables": {
