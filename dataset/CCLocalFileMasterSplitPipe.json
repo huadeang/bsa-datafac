@@ -29,7 +29,6 @@
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
-			"nullValue": "''",
 			"quoteChar": ""
 		},
 		"schema": []
