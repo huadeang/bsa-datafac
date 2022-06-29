@@ -100,7 +100,7 @@
 							"typeProperties": {
 								"variableName": "accntId",
 								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[1]),'NULL',split(item().Prop_0,'|')[1])",
+									"value": "@if(empty(split(item().Prop_0,'|')[1]),null,split(item().Prop_0,'|')[1])",
 									"type": "Expression"
 								}
 							}
@@ -120,7 +120,7 @@
 							"typeProperties": {
 								"variableName": "billingAccntId",
 								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[2]),'NULL',split(item().Prop_0,'|')[2])",
+									"value": "@if(empty(split(item().Prop_0,'|')[2]),null,split(item().Prop_0,'|')[2])",
 									"type": "Expression"
 								}
 							}
@@ -140,7 +140,7 @@
 							"typeProperties": {
 								"variableName": "statusCd",
 								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[3]),'NULL',split(item().Prop_0,'|')[3])",
+									"value": "@if(empty(split(item().Prop_0,'|')[3]),null,split(item().Prop_0,'|')[3])",
 									"type": "Expression"
 								}
 							}
