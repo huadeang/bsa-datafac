@@ -29,6 +29,7 @@
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
+			"nullValue": "NULL",
 			"quoteChar": ""
 		},
 		"schema": []
