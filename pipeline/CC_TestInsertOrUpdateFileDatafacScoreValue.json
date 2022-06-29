@@ -41,6 +41,7 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": false,
+					"validateDataConsistency": true,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
