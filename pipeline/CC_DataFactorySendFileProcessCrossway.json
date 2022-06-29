@@ -23,7 +23,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile",
+											"referenceName": "CC_ReviewDataFactorySendBilingNoProcessLoop",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -56,12 +56,12 @@
 												"value": "@pipeline().parameters.count",
 												"type": "Expression"
 											},
-											"round": {
-												"value": "@pipeline().parameters.round",
-												"type": "Expression"
-											},
 											"limitPerRound": {
 												"value": "@pipeline().parameters.limitPerRound",
+												"type": "Expression"
+											},
+											"listRound": {
+												"value": "@pipeline().parameters.listRound",
 												"type": "Expression"
 											}
 										}
