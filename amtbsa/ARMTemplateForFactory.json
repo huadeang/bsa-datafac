@@ -590,7 +590,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID\n')",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n WHERE.CA_ID IN (',variables('inConditionCaId'),');\n')",
 										"type": "Expression"
 									}
 								}
