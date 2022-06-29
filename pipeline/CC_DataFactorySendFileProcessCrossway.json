@@ -190,6 +190,9 @@
 			},
 			"listRound": {
 				"type": "array"
+			},
+			"round": {
+				"type": "string"
 			}
 		},
 		"annotations": []

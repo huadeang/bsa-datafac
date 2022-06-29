@@ -86,8 +86,8 @@
 				}
 			},
 			{
-				"name": "CC_DataFactorySendFileProcessCrossway",
-				"type": "ExecutePipeline",
+				"name": "ForEach Round",
+				"type": "ForEach",
 				"dependsOn": [
 					{
 						"activity": "Get Count Round",
@@ -98,53 +98,72 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_DataFactorySendFileProcessCrossway",
-						"type": "PipelineReference"
+					"items": {
+						"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"outputPath": {
-							"value": "@pipeline().parameters.outputPath",
-							"type": "Expression"
-						},
-						"prefixOutputFile": {
-							"value": "@pipeline().parameters.prefixOutputFile",
-							"type": "Expression"
-						},
-						"fileTypeOutputFile": {
-							"value": "@pipeline().parameters.fileTypeOutputFile",
-							"type": "Expression"
-						},
-						"SCHEMA": {
-							"value": "@pipeline().parameters.SCHEMA",
-							"type": "Expression"
-						},
-						"CREDIT_USER": {
-							"value": "@pipeline().parameters.CREDIT_USER",
-							"type": "Expression"
-						},
-						"DATA_TYPE": {
-							"value": "@pipeline().parameters.DATA_TYPE",
-							"type": "Expression"
-						},
-						"count": {
-							"value": "@pipeline().parameters.count",
-							"type": "Expression"
-						},
-						"pipeLineProcessFileName": {
-							"value": "@pipeline().parameters.pipeLineProcessFileName",
-							"type": "Expression"
-						},
-						"limitPerRound": {
-							"value": "@variables('limitPerRound')",
-							"type": "Expression"
-						},
-						"listRound": {
-							"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
-							"type": "Expression"
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CC_DataFactorySendFileProcessCrossway",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_DataFactorySendFileProcessCrossway",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"prefixOutputFile": {
+										"value": "@pipeline().parameters.prefixOutputFile",
+										"type": "Expression"
+									},
+									"fileTypeOutputFile": {
+										"value": "@pipeline().parameters.fileTypeOutputFile",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"DATA_TYPE": {
+										"value": "@pipeline().parameters.DATA_TYPE",
+										"type": "Expression"
+									},
+									"count": {
+										"value": "@pipeline().parameters.count",
+										"type": "Expression"
+									},
+									"pipeLineProcessFileName": {
+										"value": "@pipeline().parameters.pipeLineProcessFileName",
+										"type": "Expression"
+									},
+									"limitPerRound": {
+										"value": "@variables('limitPerRound')",
+										"type": "Expression"
+									},
+									"listRound": {
+										"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
+										"type": "Expression"
+									},
+									"round": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							}
 						}
-					}
+					]
 				}
 			}
 		],
