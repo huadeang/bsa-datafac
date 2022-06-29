@@ -95,6 +95,89 @@
 									}
 								}
 							}
+						},
+						{
+							"name": "Get limit",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT CAST(ISNULL(NULLIF(LOV_NAME ,''''),50000) AS NUMERIC(22,0)) AS LIMIT FROM ',pipeline().parameters.SCHEMA,'.CC_CURRENT WHERE LOV_TYPE = ''WRITE_FILE_MAX_RECORD'' AND ACTIVE_FLG = ''Y''')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Get Count Round",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Set limitPerRound",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT\n    IIF(ROUND(',activity('Get COUNT').output.firstRow.COUNT,' /(',variables('limitPerRound'),'), 0, 1)>0,\n\tROUND(',activity('Get COUNT').output.firstRow.COUNT,' /(',variables('limitPerRound'),'), 0, 1)+\n\t(IIF(',activity('Get COUNT').output.firstRow.COUNT,'%(',variables('limitPerRound'),') > 0,1,0)),1) AS COUNT_ROUND;')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set limitPerRound",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get limit",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "limitPerRound",
+								"value": {
+									"value": "@string(activity('Get limit').output.firstRow.LIMIT)",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"ifTrueActivities": [
@@ -170,6 +253,9 @@
 				"type": "String"
 			},
 			"countBa": {
+				"type": "String"
+			},
+			"limitPerRound": {
 				"type": "String"
 			}
 		},
