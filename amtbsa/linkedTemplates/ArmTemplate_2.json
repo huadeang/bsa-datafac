@@ -426,7 +426,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@empty(variables('accntId'))",
+											"value": "@empty(split(item().Prop_0,'|')[1])",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
