@@ -1,9 +1,17 @@
 {
-	"name": "CC_TableScoreValueSchemaDataFac",
+	"name": "CC_TableDynamic",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlBillingDatabase",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Schema": {
+				"type": "string"
+			},
+			"Table": {
+				"type": "string"
+			}
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
@@ -159,8 +167,14 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "CREDIT_DATA_FAC",
-			"table": "CC_SCORE_VALUE"
+			"schema": {
+				"value": "@dataset().Schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().Table",
+				"type": "Expression"
+			}
 		}
 	}
 }
