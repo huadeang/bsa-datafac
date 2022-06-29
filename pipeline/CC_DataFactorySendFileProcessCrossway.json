@@ -141,7 +141,7 @@
 															"type": "Expression"
 														},
 														"round": {
-															"value": "@pipeline().parameters.round",
+															"value": "@item()",
 															"type": "Expression"
 														},
 														"limitPerRound": {
