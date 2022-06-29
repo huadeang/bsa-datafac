@@ -89,54 +89,69 @@
 							"value": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
 							"activities": [
 								{
-									"name": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
-									"type": "ExecutePipeline",
+									"name": "ForEach1_copy1",
+									"type": "ForEach",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
-											"type": "PipelineReference"
+										"items": {
+											"value": "@pipeline().parameters.listRound",
+											"type": "Expression"
 										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"outputPath": {
-												"value": "@pipeline().parameters.outputPath",
-												"type": "Expression"
-											},
-											"prefixOutputFile": {
-												"value": "@pipeline().parameters.prefixOutputFile",
-												"type": "Expression"
-											},
-											"fileTypeOutputFile": {
-												"value": "@pipeline().parameters.fileTypeOutputFile",
-												"type": "Expression"
-											},
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@pipeline().parameters.DATA_TYPE",
-												"type": "Expression"
-											},
-											"count": {
-												"value": "@pipeline().parameters.count",
-												"type": "Expression"
-											},
-											"round": {
-												"value": "@pipeline().parameters.round",
-												"type": "Expression"
-											},
-											"limitPerRound": {
-												"value": "@pipeline().parameters.limitPerRound",
-												"type": "Expression"
+										"isSequential": true,
+										"activities": [
+											{
+												"name": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"outputPath": {
+															"value": "@pipeline().parameters.outputPath",
+															"type": "Expression"
+														},
+														"prefixOutputFile": {
+															"value": "@pipeline().parameters.prefixOutputFile",
+															"type": "Expression"
+														},
+														"fileTypeOutputFile": {
+															"value": "@pipeline().parameters.fileTypeOutputFile",
+															"type": "Expression"
+														},
+														"SCHEMA": {
+															"value": "@pipeline().parameters.SCHEMA",
+															"type": "Expression"
+														},
+														"CREDIT_USER": {
+															"value": "@pipeline().parameters.CREDIT_USER",
+															"type": "Expression"
+														},
+														"DATA_TYPE": {
+															"value": "@pipeline().parameters.DATA_TYPE",
+															"type": "Expression"
+														},
+														"count": {
+															"value": "@pipeline().parameters.count",
+															"type": "Expression"
+														},
+														"round": {
+															"value": "@pipeline().parameters.round",
+															"type": "Expression"
+														},
+														"limitPerRound": {
+															"value": "@pipeline().parameters.limitPerRound",
+															"type": "Expression"
+														}
+													}
+												}
 											}
-										}
+										]
 									}
 								}
 							]
