@@ -43,7 +43,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "CC_CreateFileAndArchiveHaveDatName",
+						"activity": "CC_CreateFileAndArchive",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -79,7 +79,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "CC_CreateFileAndArchiveHaveDatName",
+						"activity": "CC_CreateFileAndArchive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -123,7 +123,7 @@
 				}
 			},
 			{
-				"name": "CC_CreateFileAndArchiveHaveDatName",
+				"name": "CC_CreateFileAndArchive",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -148,7 +148,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "CC_CreateFileAndArchiveHaveDatName",
+						"referenceName": "CC_CreateFileAndArchive",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -157,16 +157,16 @@
 							"value": "@variables('fileName')",
 							"type": "Expression"
 						},
-						"fileNameArchive": {
-							"value": "@variables('fileNameArchive')",
+						"outputPath": {
+							"value": "@pipeline().parameters.outputPath",
 							"type": "Expression"
 						},
 						"scriptQuery": {
 							"value": "@variables('scriptQuery')",
 							"type": "Expression"
 						},
-						"outputPath": {
-							"value": "@pipeline().parameters.outputPath",
+						"fileArchiveName": {
+							"value": "@variables('fileNameArchive')",
 							"type": "Expression"
 						}
 					}
