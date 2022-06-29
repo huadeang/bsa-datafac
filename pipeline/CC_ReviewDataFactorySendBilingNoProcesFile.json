@@ -300,6 +300,9 @@
 			},
 			"limitPerRound": {
 				"type": "string"
+			},
+			"listRound": {
+				"type": "string"
 			}
 		},
 		"variables": {
