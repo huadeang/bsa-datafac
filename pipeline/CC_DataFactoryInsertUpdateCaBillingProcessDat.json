@@ -86,85 +86,12 @@
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "Set accntId",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set recordLine",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "accntId",
-								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[1]),null,split(item().Prop_0,'|')[1])",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set billingAccntId",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set accntId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "billingAccntId",
-								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[2]),null,split(item().Prop_0,'|')[2])",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set statusCd",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Set billingAccntId",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "statusCd",
-								"value": {
-									"value": "@if(empty(split(item().Prop_0,'|')[3]),null,split(item().Prop_0,'|')[3])",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set recordLine",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "recordLine",
-								"value": {
-									"value": "@item().Prop_0",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Script Insert FACTORY_HIST Or CC_UPDATE_CA_BILLING",
 							"description": "",
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Set statusCd",
+									"activity": "Set haveErrorRow_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -247,6 +174,19 @@
 										}
 									}
 								]
+							}
+						},
+						{
+							"name": "Set haveErrorRow_copy1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "haveErrorRow",
+								"value": {
+									"value": "@if(empty(split(item().Prop_0,'|')[1]),bool(true),bool(false))",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -400,18 +340,6 @@
 			"haveErrorRow": {
 				"type": "Boolean",
 				"defaultValue": false
-			},
-			"accntId": {
-				"type": "String"
-			},
-			"billingAccntId": {
-				"type": "String"
-			},
-			"statusCd": {
-				"type": "String"
-			},
-			"recordLine": {
-				"type": "String"
 			}
 		},
 		"annotations": []
