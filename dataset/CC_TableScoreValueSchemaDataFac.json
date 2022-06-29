@@ -1,0 +1,166 @@
+{
+	"name": "CC_TableScoreValueSchemaDataFac",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlBillingDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ROW_ID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "REF_ROW_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "CREATED",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CREATED_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_UPD",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LAST_UPD_BY",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCNT_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "BILLING_ACCNT_ID",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCNT_NO",
+				"type": "varchar"
+			},
+			{
+				"name": "CL_LEVEL",
+				"type": "varchar"
+			},
+			{
+				"name": "SCORE_RANGE",
+				"type": "varchar"
+			},
+			{
+				"name": "CL_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "CL_CHANGE_REASON",
+				"type": "varchar"
+			},
+			{
+				"name": "OUTCOME_CD",
+				"type": "varchar"
+			},
+			{
+				"name": "OUTCOME_REASON",
+				"type": "varchar"
+			},
+			{
+				"name": "CREDIT_LIMIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "PERM_CREDIT_LIMIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "TEMP_CREDIT_LIMIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "PREV_CREDIT_LIMIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "PREV_SCORE_RANGE",
+				"type": "varchar"
+			},
+			{
+				"name": "ACTUAL",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "ACTUAL_PERM",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "BILLING_CREDIT_LIMIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "BILLING_THRESHOLD_SET_ID",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "FBB_FLAG",
+				"type": "char"
+			},
+			{
+				"name": "LAST_REVIEW_DAT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "MIN_REVIEW",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "AVAILABLE_CREDIT",
+				"type": "decimal",
+				"precision": 22,
+				"scale": 7
+			},
+			{
+				"name": "PAYMENT_FLG",
+				"type": "char"
+			},
+			{
+				"name": "BA_REGISTER_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "CREDIT_DATA_FAC",
+			"table": "CC_SCORE_VALUE"
+		}
+	}
+}
