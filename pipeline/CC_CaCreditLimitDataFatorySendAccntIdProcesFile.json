@@ -302,7 +302,7 @@
 				"typeProperties": {
 					"variableName": "inConditionCaId",
 					"value": {
-						"value": "@string(take(skip(pipeline().parameters.listCa,int(variables('offset'))),int(pipeline().parameters.limitPerRound)))",
+						"value": "@replace(replace(replace(replace(replace(replace(string(take(skip(pipeline().parameters.listCa,int(variables('offset'))),int(pipeline().parameters.limitPerRound))),'[',''),']',''),'{',''),'}',''),':',''),'CA_ID','')",
 						"type": "Expression"
 					}
 				}
