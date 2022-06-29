@@ -3028,7 +3028,7 @@
 												"type": "Expression"
 											},
 											"listRound": {
-												"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT) )",
+												"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND) )",
 												"type": "Expression"
 											}
 										}
