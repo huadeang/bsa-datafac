@@ -49,7 +49,9 @@
 									"ordinal": 2
 								},
 								"sink": {
-									"name": "REF_ROW_ID"
+									"name": "REF_ROW_ID",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -58,7 +60,9 @@
 									"ordinal": 3
 								},
 								"sink": {
-									"name": "CREATED"
+									"name": "CREATED",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -67,7 +71,9 @@
 									"ordinal": 4
 								},
 								"sink": {
-									"name": "CREATED_BY"
+									"name": "CREATED_BY",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -76,7 +82,9 @@
 									"ordinal": 5
 								},
 								"sink": {
-									"name": "LAST_UPD"
+									"name": "LAST_UPD",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -85,7 +93,9 @@
 									"ordinal": 6
 								},
 								"sink": {
-									"name": "LAST_UPD_BY"
+									"name": "LAST_UPD_BY",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -94,7 +104,9 @@
 									"ordinal": 7
 								},
 								"sink": {
-									"name": "ACCNT_ID"
+									"name": "ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -103,7 +115,9 @@
 									"ordinal": 8
 								},
 								"sink": {
-									"name": "BILLING_ACCNT_ID"
+									"name": "BILLING_ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -112,7 +126,9 @@
 									"ordinal": 9
 								},
 								"sink": {
-									"name": "ACCNT_NO"
+									"name": "ACCNT_NO",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -121,7 +137,9 @@
 									"ordinal": 10
 								},
 								"sink": {
-									"name": "CL_LEVEL"
+									"name": "CL_LEVEL",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -130,7 +148,9 @@
 									"ordinal": 11
 								},
 								"sink": {
-									"name": "SCORE_RANGE"
+									"name": "SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -139,7 +159,9 @@
 									"ordinal": 12
 								},
 								"sink": {
-									"name": "CL_TYPE"
+									"name": "CL_TYPE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -148,7 +170,9 @@
 									"ordinal": 13
 								},
 								"sink": {
-									"name": "CL_CHANGE_REASON"
+									"name": "CL_CHANGE_REASON",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -157,7 +181,9 @@
 									"ordinal": 14
 								},
 								"sink": {
-									"name": "OUTCOME_CD"
+									"name": "OUTCOME_CD",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -166,7 +192,9 @@
 									"ordinal": 15
 								},
 								"sink": {
-									"name": "OUTCOME_REASON"
+									"name": "OUTCOME_REASON",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -175,7 +203,11 @@
 									"ordinal": 16
 								},
 								"sink": {
-									"name": "CREDIT_LIMIT"
+									"name": "CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -184,7 +216,11 @@
 									"ordinal": 17
 								},
 								"sink": {
-									"name": "PERM_CREDIT_LIMIT"
+									"name": "PERM_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -193,7 +229,11 @@
 									"ordinal": 18
 								},
 								"sink": {
-									"name": "TEMP_CREDIT_LIMIT"
+									"name": "TEMP_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -202,7 +242,11 @@
 									"ordinal": 19
 								},
 								"sink": {
-									"name": "PREV_CREDIT_LIMIT"
+									"name": "PREV_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -211,7 +255,9 @@
 									"ordinal": 20
 								},
 								"sink": {
-									"name": "PREV_SCORE_RANGE"
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -220,7 +266,11 @@
 									"ordinal": 21
 								},
 								"sink": {
-									"name": "ACTUAL"
+									"name": "ACTUAL",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -229,7 +279,11 @@
 									"ordinal": 22
 								},
 								"sink": {
-									"name": "ACTUAL_PERM"
+									"name": "ACTUAL_PERM",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -238,7 +292,11 @@
 									"ordinal": 23
 								},
 								"sink": {
-									"name": "BILLING_CREDIT_LIMIT"
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -247,7 +305,11 @@
 									"ordinal": 24
 								},
 								"sink": {
-									"name": "BILLING_THRESHOLD_SET_ID"
+									"name": "BILLING_THRESHOLD_SET_ID",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 10
 								}
 							},
 							{
@@ -256,7 +318,9 @@
 									"ordinal": 25
 								},
 								"sink": {
-									"name": "FBB_FLAG"
+									"name": "FBB_FLAG",
+									"type": "String",
+									"physicalType": "char"
 								}
 							},
 							{
@@ -265,7 +329,9 @@
 									"ordinal": 26
 								},
 								"sink": {
-									"name": "LAST_REVIEW_DAT"
+									"name": "LAST_REVIEW_DAT",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -274,7 +340,11 @@
 									"ordinal": 27
 								},
 								"sink": {
-									"name": "MIN_REVIEW"
+									"name": "MIN_REVIEW",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -283,7 +353,11 @@
 									"ordinal": 28
 								},
 								"sink": {
-									"name": "AVAILABLE_CREDIT"
+									"name": "AVAILABLE_CREDIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -292,7 +366,9 @@
 									"ordinal": 29
 								},
 								"sink": {
-									"name": "PAYMENT_FLG"
+									"name": "PAYMENT_FLG",
+									"type": "String",
+									"physicalType": "char"
 								}
 							},
 							{
@@ -301,7 +377,9 @@
 									"ordinal": 30
 								},
 								"sink": {
-									"name": "BA_REGISTER_DT"
+									"name": "BA_REGISTER_DT",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							}
 						],
@@ -328,7 +406,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"Schema": "CREDIT_DATA_FAC",
-							"Table": "CC_SCOREVALUE"
+							"Table": "CC_SCORE_VALUE"
 						}
 					}
 				]
