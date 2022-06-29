@@ -11119,7 +11119,7 @@
 				"variables": {
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DEV"
+						"defaultValue": "CREDIT_UAT"
 					},
 					"LOV_TYPE": {
 						"type": "String",
