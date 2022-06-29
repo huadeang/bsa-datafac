@@ -157,8 +157,8 @@
 			"limitPerRound": {
 				"type": "string"
 			},
-			"round": {
-				"type": "string"
+			"listRound": {
+				"type": "array"
 			}
 		},
 		"annotations": []
