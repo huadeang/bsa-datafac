@@ -195,7 +195,7 @@
 							}
 						},
 						{
-							"name": "Set haveErrorRow_copy1",
+							"name": "Set haveErrorRow",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -219,7 +219,7 @@
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Set haveErrorRow_copy1",
+									"activity": "Set haveErrorRow",
 									"dependencyConditions": [
 										"Succeeded"
 									]
