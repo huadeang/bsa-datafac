@@ -157,9 +157,6 @@
 			"limitPerRound": {
 				"type": "string"
 			},
-			"listRound": {
-				"type": "array"
-			},
 			"round": {
 				"type": "string"
 			}
