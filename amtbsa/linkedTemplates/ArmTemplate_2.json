@@ -2747,6 +2747,9 @@
 					},
 					"limitPerRound": {
 						"type": "string"
+					},
+					"listCa": {
+						"type": "array"
 					}
 				},
 				"variables": {
