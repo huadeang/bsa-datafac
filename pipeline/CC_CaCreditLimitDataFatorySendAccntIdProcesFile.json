@@ -66,7 +66,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),499),length(replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('CC_CreateFileAndArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_CreateFileAndArchive').Error.Message,'''','\"')),499),length(replace(activity('CC_CreateFileAndArchive').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
 								"type": "Expression"
 							}
 						}
@@ -257,7 +257,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "SELECT CA_ID LIST",
+						"activity": "Set offset",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -285,42 +285,6 @@
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "SELECT CA_ID LIST",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set offset",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID ASC')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
 				}
 			}
 		],
