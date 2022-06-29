@@ -190,7 +190,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 13
+									"physicalType": "String",
+									"ordinal": 14
 								},
 								"sink": {
 									"name": "CL_CHANGE_REASON",
@@ -202,7 +203,7 @@
 								"source": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 14
+									"ordinal": 15
 								},
 								"sink": {
 									"name": "OUTCOME_CD",
@@ -213,7 +214,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 15
+									"physicalType": "String",
+									"ordinal": 16
 								},
 								"sink": {
 									"name": "OUTCOME_REASON",
@@ -224,7 +226,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 16
+									"physicalType": "String",
+									"ordinal": 17
 								},
 								"sink": {
 									"name": "CREDIT_LIMIT",
@@ -237,7 +240,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 17
+									"physicalType": "String",
+									"ordinal": 18
 								},
 								"sink": {
 									"name": "PERM_CREDIT_LIMIT",
@@ -250,7 +254,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 18
+									"physicalType": "String",
+									"ordinal": 19
 								},
 								"sink": {
 									"name": "TEMP_CREDIT_LIMIT",
@@ -263,7 +268,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 19
+									"physicalType": "String",
+									"ordinal": 20
 								},
 								"sink": {
 									"name": "PREV_CREDIT_LIMIT",
@@ -276,7 +282,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 20
+									"physicalType": "String",
+									"ordinal": 21
 								},
 								"sink": {
 									"name": "PREV_SCORE_RANGE",
@@ -287,7 +294,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 21
+									"physicalType": "String",
+									"ordinal": 22
 								},
 								"sink": {
 									"name": "ACTUAL",
@@ -300,7 +308,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 22
+									"physicalType": "String",
+									"ordinal": 23
 								},
 								"sink": {
 									"name": "ACTUAL_PERM",
@@ -313,7 +322,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 23
+									"physicalType": "String",
+									"ordinal": 24
 								},
 								"sink": {
 									"name": "BILLING_CREDIT_LIMIT",
@@ -326,7 +336,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 24
+									"physicalType": "String",
+									"ordinal": 25
 								},
 								"sink": {
 									"name": "BILLING_THRESHOLD_SET_ID",
@@ -339,7 +350,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 25
+									"physicalType": "String",
+									"ordinal": 26
 								},
 								"sink": {
 									"name": "FBB_FLAG",
@@ -350,7 +362,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 26
+									"physicalType": "String",
+									"ordinal": 27
 								},
 								"sink": {
 									"name": "LAST_REVIEW_DAT",
@@ -361,7 +374,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 27
+									"physicalType": "String",
+									"ordinal": 28
 								},
 								"sink": {
 									"name": "MIN_REVIEW",
@@ -374,7 +388,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 28
+									"physicalType": "String",
+									"ordinal": 29
 								},
 								"sink": {
 									"name": "AVAILABLE_CREDIT",
@@ -387,7 +402,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 29
+									"physicalType": "String",
+									"ordinal": 30
 								},
 								"sink": {
 									"name": "PAYMENT_FLG",
