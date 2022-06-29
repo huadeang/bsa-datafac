@@ -557,7 +557,7 @@
 						"typeProperties": {
 							"variableName": "scriptQuery",
 							"value": {
-								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID ASC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC ) T2; ')",
+								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID DESC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID DESC ) T2; ')",
 								"type": "Expression"
 							}
 						}
@@ -590,7 +590,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nWHERE INFO.CA_ID IN (',string(activity('SELECT CA_ID LIST').output.value))",
+										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID ASC) UP\nINNER JOIN CREDIT_UAT.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
 										"type": "Expression"
 									}
 								}
@@ -6718,7 +6718,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Set haveErrorRow_copy1",
+											"activity": "If accntId is null",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -6804,16 +6804,30 @@
 									}
 								},
 								{
-									"name": "Set haveErrorRow_copy1",
-									"type": "SetVariable",
+									"name": "If accntId is null",
+									"type": "IfCondition",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "haveErrorRow",
-										"value": {
-											"value": "@if(empty(split(item().Prop_0,'|')[1]),bool(true),bool(false))",
+										"expression": {
+											"value": "@empty(split(item().Prop_0,'|')[1])",
 											"type": "Expression"
-										}
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Set haveErrorRow_copy",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "haveErrorRow",
+													"value": {
+														"value": "@bool(true)",
+														"type": "Expression"
+													}
+												}
+											}
+										]
 									}
 								}
 							]
@@ -8201,10 +8215,10 @@
 					"pipeLineProcessFileName": {
 						"type": "string"
 					},
-					"round": {
-						"type": "int"
-					},
 					"limitPerRound": {
+						"type": "string"
+					},
+					"round": {
 						"type": "string"
 					}
 				},
@@ -8221,84 +8235,6 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Get Count Round",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"batchCount": 5,
-							"activities": [
-								{
-									"name": "CC_DataFactorySendFileProcessCrossway",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_DataFactorySendFileProcessCrossway",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"outputPath": {
-												"value": "@pipeline().parameters.outputPath",
-												"type": "Expression"
-											},
-											"prefixOutputFile": {
-												"value": "@pipeline().parameters.prefixOutputFile",
-												"type": "Expression"
-											},
-											"fileTypeOutputFile": {
-												"value": "@pipeline().parameters.fileTypeOutputFile",
-												"type": "Expression"
-											},
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@pipeline().parameters.DATA_TYPE",
-												"type": "Expression"
-											},
-											"count": {
-												"value": "@pipeline().parameters.count",
-												"type": "Expression"
-											},
-											"pipeLineProcessFileName": {
-												"value": "@pipeline().parameters.pipeLineProcessFileName",
-												"type": "Expression"
-											},
-											"round": {
-												"value": "@item()",
-												"type": "Expression"
-											},
-											"limitPerRound": {
-												"value": "@variables('limitPerRound')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					},
 					{
 						"name": "Get limit",
 						"type": "Lookup",
@@ -8382,6 +8318,83 @@
 								"value": "@string(activity('Get limit').output.firstRow.LIMIT)",
 								"type": "Expression"
 							}
+						}
+					},
+					{
+						"name": "ForEach Round",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Count Round",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "CC_DataFactorySendFileProcessCrossway",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_DataFactorySendFileProcessCrossway",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"outputPath": {
+												"value": "@pipeline().parameters.outputPath",
+												"type": "Expression"
+											},
+											"prefixOutputFile": {
+												"value": "@pipeline().parameters.prefixOutputFile",
+												"type": "Expression"
+											},
+											"fileTypeOutputFile": {
+												"value": "@pipeline().parameters.fileTypeOutputFile",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
+												"type": "Expression"
+											},
+											"count": {
+												"value": "@pipeline().parameters.count",
+												"type": "Expression"
+											},
+											"pipeLineProcessFileName": {
+												"value": "@pipeline().parameters.pipeLineProcessFileName",
+												"type": "Expression"
+											},
+											"limitPerRound": {
+												"value": "@variables('limitPerRound')",
+												"type": "Expression"
+											},
+											"round": {
+												"value": "@item()",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						}
 					}
 				],

@@ -358,7 +358,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Set haveErrorRow_copy1",
+											"activity": "If accntId is null",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -444,16 +444,30 @@
 									}
 								},
 								{
-									"name": "Set haveErrorRow_copy1",
-									"type": "SetVariable",
+									"name": "If accntId is null",
+									"type": "IfCondition",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "haveErrorRow",
-										"value": {
-											"value": "@if(empty(split(item().Prop_0,'|')[1]),bool(true),bool(false))",
+										"expression": {
+											"value": "@empty(split(item().Prop_0,'|')[1])",
 											"type": "Expression"
-										}
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Set haveErrorRow_copy",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "haveErrorRow",
+													"value": {
+														"value": "@bool(true)",
+														"type": "Expression"
+													}
+												}
+											}
+										]
 									}
 								}
 							]
@@ -3029,7 +3043,7 @@
 						"typeProperties": {
 							"variableName": "scriptQuery",
 							"value": {
-								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID ASC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID ASC ) T2; ')",
+								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                    WHERE STATUS = ''P'' \n                                    ORDER BY CA_ID DESC ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT TOP ',pipeline().parameters.limitPerRound,' ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        ORDER BY CA_ID DESC ) T2; ')",
 								"type": "Expression"
 							}
 						}
@@ -3062,7 +3076,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nWHERE INFO.CA_ID IN (',string(activity('SELECT CA_ID LIST').output.value))",
+										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID ASC) UP\nINNER JOIN CREDIT_UAT.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
 										"type": "Expression"
 									}
 								}
