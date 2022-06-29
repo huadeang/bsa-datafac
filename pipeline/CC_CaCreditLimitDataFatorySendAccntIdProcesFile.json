@@ -280,7 +280,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \nSET STATUS = ''P''\n WHERE.CA_ID IN (',variables('inConditionCaId'),');\n')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \nSET STATUS = ''P''\n WHERE CA_ID IN (',variables('inConditionCaId'),');\n')",
 								"type": "Expression"
 							}
 						}
