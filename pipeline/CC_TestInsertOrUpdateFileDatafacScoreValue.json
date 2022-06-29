@@ -46,20 +46,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
 									"ordinal": 2
-								},
-								"sink": {
-									"name": "ROW_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 3
 								},
 								"sink": {
 									"name": "REF_ROW_ID",
@@ -70,8 +57,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 4
+									"ordinal": 3
 								},
 								"sink": {
 									"name": "CREATED",
@@ -82,8 +68,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 5
+									"ordinal": 4
 								},
 								"sink": {
 									"name": "CREATED_BY",
@@ -94,8 +79,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 6
+									"ordinal": 5
 								},
 								"sink": {
 									"name": "LAST_UPD",
@@ -106,8 +90,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 7
+									"ordinal": 6
 								},
 								"sink": {
 									"name": "LAST_UPD_BY",
@@ -118,8 +101,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 8
+									"ordinal": 7
 								},
 								"sink": {
 									"name": "ACCNT_ID",
@@ -130,8 +112,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 9
+									"ordinal": 8
 								},
 								"sink": {
 									"name": "BILLING_ACCNT_ID",
@@ -142,8 +123,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 10
+									"ordinal": 9
 								},
 								"sink": {
 									"name": "ACCNT_NO",
@@ -154,8 +134,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 11
+									"ordinal": 10
 								},
 								"sink": {
 									"name": "CL_LEVEL",
@@ -166,8 +145,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 12
+									"ordinal": 11
 								},
 								"sink": {
 									"name": "SCORE_RANGE",
@@ -178,8 +156,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 13
+									"ordinal": 12
 								},
 								"sink": {
 									"name": "CL_TYPE",
@@ -190,8 +167,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 14
+									"ordinal": 13
 								},
 								"sink": {
 									"name": "CL_CHANGE_REASON",
@@ -202,8 +178,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 15
+									"ordinal": 14
 								},
 								"sink": {
 									"name": "OUTCOME_CD",
@@ -214,8 +189,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 16
+									"ordinal": 15
 								},
 								"sink": {
 									"name": "OUTCOME_REASON",
@@ -226,8 +200,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 17
+									"ordinal": 16
 								},
 								"sink": {
 									"name": "CREDIT_LIMIT",
@@ -240,8 +213,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 18
+									"ordinal": 17
 								},
 								"sink": {
 									"name": "PERM_CREDIT_LIMIT",
@@ -254,8 +226,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 19
+									"ordinal": 18
 								},
 								"sink": {
 									"name": "TEMP_CREDIT_LIMIT",
@@ -268,8 +239,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 20
+									"ordinal": 19
 								},
 								"sink": {
 									"name": "PREV_CREDIT_LIMIT",
@@ -282,8 +252,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 21
+									"ordinal": 20
 								},
 								"sink": {
 									"name": "PREV_SCORE_RANGE",
@@ -294,8 +263,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 22
+									"ordinal": 21
 								},
 								"sink": {
 									"name": "ACTUAL",
@@ -308,8 +276,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 23
+									"ordinal": 22
 								},
 								"sink": {
 									"name": "ACTUAL_PERM",
@@ -322,8 +289,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 24
+									"ordinal": 23
 								},
 								"sink": {
 									"name": "BILLING_CREDIT_LIMIT",
@@ -336,8 +302,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 25
+									"ordinal": 24
 								},
 								"sink": {
 									"name": "BILLING_THRESHOLD_SET_ID",
@@ -350,8 +315,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 26
+									"ordinal": 25
 								},
 								"sink": {
 									"name": "FBB_FLAG",
@@ -362,8 +326,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 27
+									"ordinal": 26
 								},
 								"sink": {
 									"name": "LAST_REVIEW_DAT",
@@ -374,8 +337,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 28
+									"ordinal": 27
 								},
 								"sink": {
 									"name": "MIN_REVIEW",
@@ -388,8 +350,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 29
+									"ordinal": 28
 								},
 								"sink": {
 									"name": "AVAILABLE_CREDIT",
@@ -402,8 +363,7 @@
 							{
 								"source": {
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 30
+									"ordinal": 29
 								},
 								"sink": {
 									"name": "PAYMENT_FLG",
