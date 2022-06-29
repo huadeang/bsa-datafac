@@ -1820,7 +1820,8 @@
 								"value": "@pipeline().parameters.listRound",
 								"type": "Expression"
 							},
-							"isSequential": true,
+							"isSequential": false,
+							"batchCount": 5,
 							"activities": [
 								{
 									"name": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
