@@ -2685,7 +2685,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Set offset",
+								"activity": "SELECT CA_ID LIST",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2708,11 +2708,48 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID ) UP\nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
+										"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nWHERE INFO.CA_ID IN (',string(activity('SELECT CA_ID LIST').output.value))",
 										"type": "Expression"
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "SELECT CA_ID LIST",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Set offset",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT TOP ',pipeline().parameters.limitPerRound,' CA_ID FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
 						}
 					}
 				],
@@ -6088,7 +6125,7 @@
 														{
 															"type": "Query",
 															"text": {
-																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',variables('recordLine'),''',\n\t''accntId data not found'',\n\t''E''\n\t)')",
+																"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (\n\tCONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\tCONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',variables('recordLine'),''',\n\t''accntId data not found'',\n\t''E''\n\t)')",
 																"type": "Expression"
 															}
 														}
