@@ -79,7 +79,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+											"referenceName": "CC_CaCreditLimitDataFatorySendAccntIdProcesLoop",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -112,8 +112,8 @@
 												"value": "@pipeline().parameters.count",
 												"type": "Expression"
 											},
-											"round": {
-												"value": "@pipeline().parameters.round",
+											"listRound": {
+												"value": "@pipeline().parameters.listRound",
 												"type": "Expression"
 											},
 											"limitPerRound": {
