@@ -152,10 +152,6 @@
 										"value": "@variables('limitPerRound')",
 										"type": "Expression"
 									},
-									"listRound": {
-										"value": "@range(1,int(activity('Get Count Round').output.firstRow.COUNT_ROUND))",
-										"type": "Expression"
-									},
 									"round": {
 										"value": "@item()",
 										"type": "Expression"
