@@ -2337,6 +2337,41 @@
 													}
 												}
 											}
+										},
+										{
+											"name": "insert CC_DATA_FACTORY exception",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'',''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('CC_ReviewDataFactorySendBilingNoProcessAccountNoList').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_ReviewDataFactorySendBilingNoProcessAccountNoList').Error.Message,'''','\"')),499),length(replace(activity('CC_ReviewDataFactorySendBilingNoProcessAccountNoList').Error.Message,'''','\"')),499)),''');')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
 										}
 									]
 								},
@@ -2392,6 +2427,41 @@
 														"type": "Expression"
 													}
 												}
+											}
+										},
+										{
+											"name": "insert CC_DATA_FACTORY exception_copy1",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'',''',substring(concat('CC_CaCreditLimitDataFatorySendAccntIdProcesFile Exception :',replace(activity('CC_CaCreditLimitDataFatorySendAccntIdProcesFile').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_CaCreditLimitDataFatorySendAccntIdProcesFile').Error.Message,'''','\"')),499),length(replace(activity('CC_CaCreditLimitDataFatorySendAccntIdProcesFile').Error.Message,'''','\"')),499)),''');')",
+															"type": "Expression"
+														}
+													}
+												]
 											}
 										}
 									]
@@ -3074,6 +3144,41 @@
 												"type": "Expression"
 											}
 										}
+									}
+								},
+								{
+									"name": "insert CC_DATA_FACTORY exception",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "CC_DataFactorySendFileProcessCrossway",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'',''',substring(concat('CC_DataFactorySendFileProcessCrossway Exception :',replace(activity('CC_DataFactorySendFileProcessCrossway').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_DataFactorySendFileProcessCrossway').Error.Message,'''','\"')),499),length(replace(activity('CC_DataFactorySendFileProcessCrossway').Error.Message,'''','\"')),499)),''');')",
+													"type": "Expression"
+												}
+											}
+										]
 									}
 								}
 							],
