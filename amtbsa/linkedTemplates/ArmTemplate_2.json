@@ -2685,7 +2685,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Set offset",
+								"activity": "Set inConditionCaId",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2713,6 +2713,26 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Set inConditionCaId",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set offset",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "inConditionCaId",
+							"value": {
+								"value": "@string(take(skip(pipeline().parameters.listCa,int(variables('offset'))),int(pipeline().parameters.limitPerRound)))",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -2766,6 +2786,9 @@
 						"type": "String"
 					},
 					"fileNameArchive": {
+						"type": "String"
+					},
+					"inConditionCaId": {
 						"type": "String"
 					}
 				},
