@@ -280,7 +280,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (',replace(replace(replace(replace(replace(replace(string(activity('SELECT CA_ID LIST').output.value),':',''),'{',''),'}',''),'[',''),']',''),'CA_ID',''),') UP\nINNER JOIN CREDIT_UAT.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID;')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO\nSET STATUS = ''P''\nWHERE CA_ID IN (',replace(replace(replace(replace(replace(replace(replace(string(activity('SELECT CA_ID LIST').output.value),':',''),'{',''),'}',''),'[',''),']',''),'CA_ID',''),'\"',''),');')",
 								"type": "Expression"
 							}
 						}
