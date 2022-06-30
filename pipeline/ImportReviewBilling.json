@@ -18,7 +18,7 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "FileServerReadSettings",
+							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
@@ -31,7 +31,7 @@
 						"writeBatchSize": 1000,
 						"writeBehavior": "upsert",
 						"upsertSettings": {
-							"useTempDB": false,
+							"useTempDB": true,
 							"keys": [
 								"ROW_ID"
 							]
