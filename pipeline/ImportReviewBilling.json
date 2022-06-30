@@ -34,8 +34,7 @@
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"ROW_ID",
-								"ACCNT_NO"
+								"ROW_ID"
 							]
 						},
 						"sqlWriterUseTableLock": false,
