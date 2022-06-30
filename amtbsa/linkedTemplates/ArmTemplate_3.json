@@ -4815,7 +4815,7 @@
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Get Config Value",
+								"activity": "Set Script Update",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4964,7 +4964,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT CA_ID FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'') UP\nINNER JOIN ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID\n')",
+													"value": "@variables('scriptUpdate')",
 													"type": "Expression"
 												}
 											}
@@ -5002,6 +5002,108 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Get Config Value",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT CAST(NULLIF(VAL1,'''') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE = ''CC_MAX_ROW'' AND c.LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND c.ACTIVE_FLG = ''Y'' ;')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Set MaxRow",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "maxRow",
+							"value": {
+								"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',if(empty(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.MAX_ROW)),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.MAX_ROW)))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set RunPerTimeFlag",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "RunPerTimeFlag",
+							"value": {
+								"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG)))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Script Update",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set RunPerTimeFlag",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set MaxRow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "scriptUpdate",
+							"value": {
+								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT ',if(and(\n                    and(not(empty(variables('maxRow')))\n                        ,not(lessOrEquals(variables('maxRow'),'0'))\n                        )\n                    ,equals(variables('RunPerTimeFlag'), 'Y')\n                    )\n,concat(' TOP ',variables('maxRow'))\n,''),' CA_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN CREDIT_DEV.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID')",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -5042,6 +5144,18 @@
 					"pipeLineProcessFileName": {
 						"type": "String",
 						"defaultValue": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile"
+					},
+					"maxRow": {
+						"type": "String"
+					},
+					"RunPerTimeFlag": {
+						"type": "String"
+					},
+					"scriptUpdate": {
+						"type": "String"
+					},
+					"test": {
+						"type": "Boolean"
 					}
 				},
 				"annotations": []
