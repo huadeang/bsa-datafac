@@ -15712,7 +15712,7 @@
 							"sink": {
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
-								"preCopyScript": "delete from credit.test_cc_billing",
+								"writeBatchTimeout": "00:30:00",
 								"writeBehavior": "upsert",
 								"upsertSettings": {
 									"useTempDB": true,
@@ -15724,6 +15724,7 @@
 								"disableMetricsCollection": false
 							},
 							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
 							"translator": {
 								"type": "TabularTranslator",
 								"mappings": [
