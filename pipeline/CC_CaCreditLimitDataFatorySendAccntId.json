@@ -35,7 +35,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set Script Update",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -272,7 +272,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileTypeOutputFile",
+					"variableName": "maxRow",
 					"value": {
 						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',if(empty(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.MAX_ROW)),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.MAX_ROW)))",
 						"type": "Expression"
@@ -292,7 +292,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileTypeOutputFile",
+					"variableName": "RunPerTimeFlag",
 					"value": {
 						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG)))",
 						"type": "Expression"
@@ -321,6 +321,26 @@
 					"variableName": "scriptUpdate",
 					"value": {
 						"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT ',if(and(not(empty(variables('maxRow'))),equals(variables('RunPerTimeFlag'), 'Y'))\n,concat(' TOP ',variables('maxRow'))\n,''),' CA_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN CREDIT_DEV.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Script Update",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@not(empty(variables('maxRow')))",
 						"type": "Expression"
 					}
 				}
@@ -368,6 +388,9 @@
 			},
 			"scriptUpdate": {
 				"type": "String"
+			},
+			"test": {
+				"type": "Boolean"
 			}
 		},
 		"annotations": []
