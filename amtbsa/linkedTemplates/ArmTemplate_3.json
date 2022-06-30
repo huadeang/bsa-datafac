@@ -1713,7 +1713,7 @@
 						"typeProperties": {
 							"variableName": "fileDatName",
 							"value": {
-								"value": "@split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]",
+								"value": "@trim(string(split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]))",
 								"type": "Expression"
 							}
 						}
