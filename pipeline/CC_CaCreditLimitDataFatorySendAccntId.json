@@ -214,7 +214,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('SELECT CAST(NULLIF(VAL1,'') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT WHERE LOV_TYPE = ''CC_MAX_ROW''\nAND LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND ACTIVE_FLG = ''Y'' ')",
+										"value": "@concat('SELECT CAST(NULLIF(VAL1,'''') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE = ''CC_MAX_ROW'' AND c.LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND c.ACTIVE_FLG = ''Y'' ;')",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -241,7 +241,7 @@
 							"typeProperties": {
 								"variableName": "fileTypeOutputFile",
 								"value": {
-									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG)",
+									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)))",
 									"type": "Expression"
 								}
 							}
@@ -261,7 +261,7 @@
 							"typeProperties": {
 								"variableName": "fileTypeOutputFile",
 								"value": {
-									"value": "@activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG",
+									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)))",
 									"type": "Expression"
 								}
 							}
