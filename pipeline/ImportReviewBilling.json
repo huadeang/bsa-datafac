@@ -29,18 +29,13 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBatchSize": 1000,
-						"writeBehavior": "upsert",
-						"upsertSettings": {
-							"useTempDB": true,
-							"keys": [
-								"ROW_ID"
-							]
-						},
+						"preCopyScript": "delete from credit.test_cc_billing",
+						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
+					"enableSkipIncompatibleRow": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
