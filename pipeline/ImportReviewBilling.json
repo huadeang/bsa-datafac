@@ -30,7 +30,13 @@
 						"type": "AzureSqlSink",
 						"writeBatchSize": 1000,
 						"preCopyScript": "delete from credit.test_cc_billing",
-						"writeBehavior": "insert",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"ROW_ID"
+							]
+						},
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
