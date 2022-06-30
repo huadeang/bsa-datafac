@@ -1516,6 +1516,189 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_TableDynamic')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlBillingDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Schema": {
+						"type": "string"
+					},
+					"Table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ROW_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "REF_ROW_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "CL_LEVEL",
+						"type": "varchar"
+					},
+					{
+						"name": "SCORE_RANGE",
+						"type": "varchar"
+					},
+					{
+						"name": "CL_TYPE",
+						"type": "varchar"
+					},
+					{
+						"name": "CL_CHANGE_REASON",
+						"type": "varchar"
+					},
+					{
+						"name": "OUTCOME_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "OUTCOME_REASON",
+						"type": "varchar"
+					},
+					{
+						"name": "CREDIT_LIMIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "PERM_CREDIT_LIMIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "TEMP_CREDIT_LIMIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "PREV_CREDIT_LIMIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "PREV_SCORE_RANGE",
+						"type": "varchar"
+					},
+					{
+						"name": "ACTUAL",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "ACTUAL_PERM",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "BILLING_CREDIT_LIMIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "BILLING_THRESHOLD_SET_ID",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 0
+					},
+					{
+						"name": "FBB_FLAG",
+						"type": "char"
+					},
+					{
+						"name": "LAST_REVIEW_DAT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "MIN_REVIEW",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "AVAILABLE_CREDIT",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "PAYMENT_FLG",
+						"type": "char"
+					},
+					{
+						"name": "BA_REGISTER_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().Schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().Table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1755,284 +1938,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_CreateFileAndArchive')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "create file output",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@pipeline().parameters.scriptQuery",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "LINE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileName",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Get Metadata file created",
-						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "create file output",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "CCLocalFileMasterNotSplit",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileName",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"exists",
-								"size",
-								"columnCount"
-							],
-							"storeSettings": {
-								"type": "FileServerReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "create file output archive",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata file created",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"additionalColumns": [
-									{
-										"name": "COLUMN",
-										"value": {
-											"value": "@coalesce(activity('Get Metadata file created').output?.size,'0')",
-											"type": "Expression"
-										}
-									}
-								],
-								"sqlReaderQuery": " SELECT 'ONE'",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "COLUMN"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileArchiveName",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Fail to create file",
-						"type": "Fail",
-						"dependsOn": [
-							{
-								"activity": "create file output",
-								"dependencyConditions": [
-									"Failed"
-								]
-							},
-							{
-								"activity": "create file output archive",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"message": "Fail to create file",
-							"errorCode": "500"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"fileName": {
-						"type": "string"
-					},
-					"outputPath": {
-						"type": "string"
-					},
-					"scriptQuery": {
-						"type": "string"
-					},
-					"fileArchiveName": {
-						"type": "string"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]"
-			]
 		}
 	]
 }
