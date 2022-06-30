@@ -342,7 +342,7 @@
 				"typeProperties": {
 					"variableName": "maxRow",
 					"value": {
-						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)",
+						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)))",
 						"type": "Expression"
 					}
 				}
@@ -362,7 +362,7 @@
 				"typeProperties": {
 					"variableName": "RunPerTimeFlag",
 					"value": {
-						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)",
+						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)))",
 						"type": "Expression"
 					}
 				}
