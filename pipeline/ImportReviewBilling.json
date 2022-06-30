@@ -18,7 +18,7 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
+							"type": "FileServerReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
@@ -28,12 +28,12 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"writeBatchSize": 1000,
 						"writeBehavior": "upsert",
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"ROW_ID"
+								"ROW_ID",
+								"ACCNT_NO"
 							]
 						},
 						"sqlWriterUseTableLock": false,
