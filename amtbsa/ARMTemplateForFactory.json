@@ -390,7 +390,7 @@
 						"typeProperties": {
 							"variableName": "scriptUpdate",
 							"value": {
-								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT ',if(and(\n                    and(not(empty(variables('maxRow')))\n                        ,not(equals(variables('maxRow'),'0'))\n                        )\n                    ,equals(variables('RunPerTimeFlag'), 'Y')\n                    )\n,concat(' TOP ',variables('maxRow'))\n,''),' CA_ID FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN CREDIT_DEV.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID')",
+								"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT ',if(and(\n                    and(not(empty(variables('maxRow')))\n                        ,not(equals(variables('maxRow'),'0'))\n                        )\n                    ,equals(variables('RunPerTimeFlag'), 'Y')\n                    )\n,concat(' TOP ',variables('maxRow'))\n,''),' CA_ID FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID')",
 								"type": "Expression"
 							}
 						}
