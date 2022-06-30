@@ -7,7 +7,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "UPDATE CC_UPDATE_CA_INFO O To P",
+						"activity": "Set inConditionCaId",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -250,41 +250,6 @@
 						"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT ''02|'' + T.LINE FROM (SELECT ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                  WHERE STATUS = ''P'' \n                                  AND CA_ID IN (',variables('inConditionCaId'),')\n                                   ) T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (SELECT ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \n                                                                        WHERE STATUS = ''P'' \n                                                                        AND CA_ID IN (',variables('inConditionCaId'),')\n                                                                        ) T2; ')",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "UPDATE CC_UPDATE_CA_INFO O To P",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Set inConditionCaId",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \nSET STATUS = ''P''\n WHERE CA_ID IN (',variables('inConditionCaId'),');\n')",
-								"type": "Expression"
-							}
-						}
-					]
 				}
 			},
 			{
