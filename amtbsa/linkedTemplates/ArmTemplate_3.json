@@ -4964,7 +4964,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT CA_ID FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'' ORDER BY CA_ID) UP\nINNER JOIN ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID\n')",
+													"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT CA_ID FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'') UP\nINNER JOIN ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID\n')",
 													"type": "Expression"
 												}
 											}
