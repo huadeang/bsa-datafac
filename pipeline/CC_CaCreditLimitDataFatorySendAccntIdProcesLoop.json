@@ -62,10 +62,6 @@
 									"limitPerRound": {
 										"value": "@pipeline().parameters.limitPerRound",
 										"type": "Expression"
-									},
-									"listCa": {
-										"value": "@activity('Select All Ca Status O').output.value",
-										"type": "Expression"
 									}
 								}
 							}
