@@ -31,7 +31,7 @@
 						"writeBatchSize": 1000,
 						"writeBehavior": "upsert",
 						"upsertSettings": {
-							"useTempDB": true,
+							"useTempDB": false,
 							"keys": [
 								"ROW_ID"
 							]
