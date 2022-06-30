@@ -2,16 +2,16 @@
 	"name": "CCBillingFile",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage1",
+			"referenceName": "LocalFileServer",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
+				"type": "FileServerLocation",
 				"fileName": "Large_CC_BILLING_202204221005.csv",
-				"container": "credit-control"
+				"folderPath": "review"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
