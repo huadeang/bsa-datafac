@@ -267,7 +267,7 @@
 				"typeProperties": {
 					"variableName": "scriptQuerySelect",
 					"value": {
-						"value": "@concat('SELECT ''02|''+ ACCNT_ID AS LINE FROM CREDIT_DEV.CC_UPDATE_CA_INFO \nWHERE STATUS = ''P'' \nORDER BY CA_ID ASC OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY')",
+						"value": "@concat('SELECT ''02|''+ ACCNT_ID AS LINE FROM ',pipeline().parameters.SCHEMA,'.CC_UPDATE_CA_INFO \nWHERE STATUS = ''P'' \nORDER BY CA_ID ASC OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY')",
 						"type": "Expression"
 					}
 				}
