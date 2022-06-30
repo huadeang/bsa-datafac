@@ -5,7 +5,14 @@
 			{
 				"name": "Get Config Value",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set RunPerTimeFlag_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -190,6 +197,74 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT CAST(NULLIF(VAL1,'') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT WHERE LOV_TYPE = ''CC_MAX_ROW''\nAND LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND ACTIVE_FLG = ''Y'' ')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set MaxRow",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileTypeOutputFile",
+								"value": {
+									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set RunPerTimeFlag",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileTypeOutputFile",
+								"value": {
+									"value": "@activity('Get MAX_ROW AND RUN_PER_TIME_FLAG').output.firstRow.RUN_PER_TIME_FLAG",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"ifTrueActivities": [
@@ -222,6 +297,74 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT CAST(NULLIF(VAL1,'') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT WHERE LOV_TYPE = ''CC_MAX_ROW''\n AND LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND ACTIVE_FLG = ''Y'' ')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set MaxRow_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "maxRow",
+					"value": {
+						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set RunPerTimeFlag_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set MaxRow_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "RunPerTimeFlag",
+					"value": {
+						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -258,6 +401,12 @@
 			"pipeLineProcessFileName": {
 				"type": "String",
 				"defaultValue": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile"
+			},
+			"maxRow": {
+				"type": "String"
+			},
+			"RunPerTimeFlag": {
+				"type": "String"
 			}
 		},
 		"annotations": []
