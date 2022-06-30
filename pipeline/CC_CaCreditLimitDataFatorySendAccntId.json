@@ -315,7 +315,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT CAST(NULLIF(VAL1,'') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT WHERE LOV_TYPE = ''CC_MAX_ROW''\n AND LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND ACTIVE_FLG = ''Y'' ')",
+							"value": "@concat('SELECT CAST(NULLIF(VAL1,'') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT WHERE LOV_TYPE = ''CC_MAX_ROW'' AND LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND ACTIVE_FLG = ''Y'' ')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
