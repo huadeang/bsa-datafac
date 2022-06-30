@@ -29,7 +29,6 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBatchSize": 1000,
-						"preCopyScript": "delete from credit.test_cc_billing",
 						"writeBehavior": "upsert",
 						"upsertSettings": {
 							"useTempDB": true,
