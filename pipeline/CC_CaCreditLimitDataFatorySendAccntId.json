@@ -5,14 +5,7 @@
 			{
 				"name": "Get Config Value",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set RunPerTimeFlag_copy1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -42,7 +35,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Config Value",
+						"activity": "Set Script Update",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -191,79 +184,11 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE INFO \nSET INFO.STATUS = ''P''\nFROM (SELECT CA_ID FROM ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO WHERE STATUS = ''O'') UP\nINNER JOIN ',variables('SCHEMA'),'.CC_UPDATE_CA_INFO INFO\nON UP.CA_ID = INFO.CA_ID\n')",
+											"value": "@variables('scriptUpdate')",
 											"type": "Expression"
 										}
 									}
 								]
-							}
-						},
-						{
-							"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "AzureSqlSource",
-									"sqlReaderQuery": {
-										"value": "@concat('SELECT CAST(NULLIF(VAL1,'''') AS NUMERIC(22,7)) AS MAX_ROW,VAL2 AS RUN_PER_TIME_FLAG\nFROM ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE = ''CC_MAX_ROW'' AND c.LOV_NAME = ''RUN_GEN_CA_CL_ROW'' AND c.ACTIVE_FLG = ''Y'' ;')",
-										"type": "Expression"
-									},
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
-								},
-								"dataset": {
-									"referenceName": "AzureSqlMaster",
-									"type": "DatasetReference"
-								}
-							}
-						},
-						{
-							"name": "Set MaxRow",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileTypeOutputFile",
-								"value": {
-									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)))",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set RunPerTimeFlag",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileTypeOutputFile",
-								"value": {
-									"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)))",
-									"type": "Expression"
-								}
 							}
 						}
 					],
@@ -300,9 +225,16 @@
 				}
 			},
 			{
-				"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1",
+				"name": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get Config Value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -328,11 +260,11 @@
 				}
 			},
 			{
-				"name": "Set MaxRow_copy1",
+				"name": "Set MaxRow",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1",
+						"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -340,7 +272,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "maxRow",
+					"variableName": "fileTypeOutputFile",
 					"value": {
 						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.MAX_ROW)))",
 						"type": "Expression"
@@ -348,11 +280,11 @@
 				}
 			},
 			{
-				"name": "Set RunPerTimeFlag_copy1",
+				"name": "Set RunPerTimeFlag",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set MaxRow_copy1",
+						"activity": "Get MAX_ROW AND RUN_PER_TIME_FLAG",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -360,12 +292,31 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "RunPerTimeFlag",
+					"variableName": "fileTypeOutputFile",
 					"value": {
 						"value": "@if(not(contains(string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output),'firstRow')),'',if(empty(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG),'',string(activity('Get MAX_ROW AND RUN_PER_TIME_FLAG_copy1').output.firstRow.RUN_PER_TIME_FLAG)))",
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Set Script Update",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set RunPerTimeFlag",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set MaxRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"variables": {
@@ -406,6 +357,9 @@
 				"type": "String"
 			},
 			"RunPerTimeFlag": {
+				"type": "String"
+			},
+			"scriptUpdate": {
 				"type": "String"
 			}
 		},
