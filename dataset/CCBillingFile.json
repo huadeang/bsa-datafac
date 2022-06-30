@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "FileServerLocation",
-				"fileName": "Large_CC_BILLING_202204221005.csv",
+				"fileName": "Large_CC_BILLING_202204221005.dat",
 				"folderPath": "review"
 			},
 			"columnDelimiter": ",",
