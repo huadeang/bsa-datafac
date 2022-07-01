@@ -35,8 +35,14 @@
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
-							"maxRowsPerFile": 50000,
-							"fileNamePrefix": "TESTBomb",
+							"maxRowsPerFile": {
+								"value": "@variables('limit')",
+								"type": "Expression"
+							},
+							"fileNamePrefix": {
+								"value": "@variables('prefixName')",
+								"type": "Expression"
+							},
 							"quoteAllText": true,
 							"fileExtension": ".csv"
 						}
@@ -353,6 +359,10 @@
 			},
 			"prefixName": {
 				"type": "String"
+			},
+			"limit": {
+				"type": "String",
+				"defaultValue": "50000"
 			}
 		},
 		"annotations": []
