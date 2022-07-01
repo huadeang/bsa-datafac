@@ -3491,7 +3491,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile",
+											"referenceName": "CC_SendTestCcBillingProcessFile",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -3595,7 +3595,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactorySendBilingNoProcesFile')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_SendTestCcBillingProcessFile')]"
 			]
 		},
 		{
