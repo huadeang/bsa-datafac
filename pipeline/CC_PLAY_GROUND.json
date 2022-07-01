@@ -341,7 +341,7 @@
 				"typeProperties": {
 					"variableName": "prefixName",
 					"value": {
-						"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.',pipeline().parameters.fileTypeOutputFile)",
+						"value": "@concat('REQ_REVIEW_BILLING_',variables('processTime'))",
 						"type": "Expression"
 					}
 				}
