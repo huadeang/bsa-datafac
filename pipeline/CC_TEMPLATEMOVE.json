@@ -273,7 +273,7 @@
 						"referenceName": "CC_TableDynamic",
 						"type": "DatasetReference",
 						"parameters": {
-							"Schema": "CREDIT_DEV",
+							"Schema": "CREDIT_DATA_FAC",
 							"Table": "CC_BILLING_REVIEW"
 						}
 					}
