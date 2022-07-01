@@ -28,7 +28,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"maxRowsPerFile": 50000,
-							"fileNamePrefix": "TEST_",
+							"fileNamePrefix": "TESTBomb",
 							"quoteAllText": true,
 							"fileExtension": ".csv"
 						}
@@ -44,9 +44,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "ROW_ID",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
+									"physicalType": "String"
 								}
 							},
 							{
@@ -56,9 +56,9 @@
 									"physicalType": "datetime2"
 								},
 								"sink": {
+									"name": "CREATED",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 2
+									"physicalType": "String"
 								}
 							},
 							{
@@ -68,9 +68,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "CREATED_BY",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 3
+									"physicalType": "String"
 								}
 							},
 							{
@@ -80,9 +80,9 @@
 									"physicalType": "datetime2"
 								},
 								"sink": {
+									"name": "LAST_UPD",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 4
+									"physicalType": "String"
 								}
 							},
 							{
@@ -92,9 +92,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "LAST_UPD_BY",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 5
+									"physicalType": "String"
 								}
 							},
 							{
@@ -104,9 +104,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "ACCNT_NO",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 6
+									"physicalType": "String"
 								}
 							},
 							{
@@ -116,9 +116,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "ACCNT_CATEGORY",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 7
+									"physicalType": "String"
 								}
 							},
 							{
@@ -128,9 +128,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "ACCNT_SUB_CATEGORY",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 8
+									"physicalType": "String"
 								}
 							},
 							{
@@ -140,9 +140,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "BILL_NAME",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 9
+									"physicalType": "String"
 								}
 							},
 							{
@@ -152,9 +152,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "BILL_CYCLE",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 10
+									"physicalType": "String"
 								}
 							},
 							{
@@ -164,9 +164,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "INVOICING_COMPANY",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 11
+									"physicalType": "String"
 								}
 							},
 							{
@@ -176,9 +176,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "PAYMENT_METHOD",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 12
+									"physicalType": "String"
 								}
 							},
 							{
@@ -188,9 +188,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "MASTER_ACCNT_ID",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 13
+									"physicalType": "String"
 								}
 							},
 							{
@@ -200,9 +200,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "STATUS_CD",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 14
+									"physicalType": "String"
 								}
 							},
 							{
@@ -212,9 +212,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "BILLING_STATUS_CD",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 15
+									"physicalType": "String"
 								}
 							},
 							{
@@ -224,9 +224,9 @@
 									"physicalType": "datetime2"
 								},
 								"sink": {
+									"name": "REGISTER_DT",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 16
+									"physicalType": "String"
 								}
 							},
 							{
@@ -238,9 +238,9 @@
 									"precision": 22
 								},
 								"sink": {
+									"name": "ARPU",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 17
+									"physicalType": "String"
 								}
 							},
 							{
@@ -252,9 +252,9 @@
 									"precision": 5
 								},
 								"sink": {
+									"name": "CREDIT_GRADE",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 18
+									"physicalType": "String"
 								}
 							},
 							{
@@ -264,9 +264,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "DEBT_NEGO_FLG",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 19
+									"physicalType": "String"
 								}
 							},
 							{
@@ -276,9 +276,9 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
+									"name": "PAYMENT_FLAG",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 20
+									"physicalType": "String"
 								}
 							}
 						],
@@ -297,10 +297,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterPath",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review"
+							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review",
+							"fileName": "Test"
 						}
 					}
 				]
