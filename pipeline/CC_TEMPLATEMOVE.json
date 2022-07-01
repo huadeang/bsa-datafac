@@ -48,7 +48,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 1
+									"physicalType": "String",
+									"ordinal": 2
 								},
 								"sink": {
 									"name": "ROW_ID",
@@ -59,7 +60,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 2
+									"physicalType": "String",
+									"ordinal": 3
 								},
 								"sink": {
 									"name": "CREATED",
@@ -70,7 +72,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 3
+									"physicalType": "String",
+									"ordinal": 4
 								},
 								"sink": {
 									"name": "CREATED_BY",
@@ -81,7 +84,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 4
+									"physicalType": "String",
+									"ordinal": 5
 								},
 								"sink": {
 									"name": "LAST_UPD",
@@ -92,7 +96,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 5
+									"physicalType": "String",
+									"ordinal": 6
 								},
 								"sink": {
 									"name": "LAST_UPD_BY",
@@ -103,7 +108,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 6
+									"physicalType": "String",
+									"ordinal": 7
 								},
 								"sink": {
 									"name": "ACCNT_NO",
@@ -114,7 +120,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 7
+									"physicalType": "String",
+									"ordinal": 8
 								},
 								"sink": {
 									"name": "ACCNT_CATEGORY",
@@ -125,7 +132,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 8
+									"physicalType": "String",
+									"ordinal": 9
 								},
 								"sink": {
 									"name": "ACCNT_SUB_CATEGORY",
@@ -136,7 +144,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 9
+									"physicalType": "String",
+									"ordinal": 10
 								},
 								"sink": {
 									"name": "BILL_CYCLE",
@@ -147,7 +156,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 10
+									"physicalType": "String",
+									"ordinal": 11
 								},
 								"sink": {
 									"name": "PAYMENT_METHOD",
@@ -158,7 +168,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 11
+									"physicalType": "String",
+									"ordinal": 12
 								},
 								"sink": {
 									"name": "MASTER_ACCNT_ID",
@@ -169,7 +180,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 12
+									"physicalType": "String",
+									"ordinal": 13
 								},
 								"sink": {
 									"name": "STATUS_CD",
@@ -180,7 +192,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 13
+									"physicalType": "String",
+									"ordinal": 14
 								},
 								"sink": {
 									"name": "BILLING_STATUS_CD",
@@ -191,7 +204,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 14
+									"physicalType": "String",
+									"ordinal": 15
 								},
 								"sink": {
 									"name": "REGISTER_DT",
@@ -202,7 +216,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 15
+									"physicalType": "String",
+									"ordinal": 16
 								},
 								"sink": {
 									"name": "FBB_FLAG",
@@ -213,7 +228,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 16
+									"physicalType": "String",
+									"ordinal": 17
 								},
 								"sink": {
 									"name": "COUNT_SME_MOBILE",
@@ -224,7 +240,8 @@
 							{
 								"source": {
 									"type": "String",
-									"ordinal": 17
+									"physicalType": "String",
+									"ordinal": 18
 								},
 								"sink": {
 									"name": "POST_PAID_FLAG",
@@ -237,7 +254,7 @@
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
 							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "YYYY-MM-dd hh:mm:ss"
+							"dateTimeFormat": "YYYY-MM-dd hh:mm:ss.fff"
 						}
 					}
 				},
