@@ -294,7 +294,7 @@
 			},
 			"DATA_TYPE": {
 				"type": "String",
-				"defaultValue": "CAT_SUBCAT_INSERT_BA"
+				"defaultValue": "CAT_SUBCAT_INSERT_PROFILE"
 			},
 			"CREDIT_USER": {
 				"type": "String",
