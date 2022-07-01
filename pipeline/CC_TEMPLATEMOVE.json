@@ -30,8 +30,8 @@
 						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review",
-							"fileName": "REQ_REVIEW_BILLING_20220701_102303.dat"
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_billing_review\\archive",
+							"fileName": "RES_REVIEW_BILLING_20220607_144603.dat"
 						}
 					},
 					"firstRowOnly": false
