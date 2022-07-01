@@ -2888,7 +2888,7 @@
 					},
 					"LOV_NAME": {
 						"type": "String",
-						"defaultValue": "cc_data_fac_cat_subcat_insert_billing_profile"
+						"defaultValue": "cc_data_fac_cat_subcat_insert_profile_change"
 					},
 					"LOV_TYPE": {
 						"type": "String",
@@ -5206,7 +5206,7 @@
 					},
 					"LOV_NAME": {
 						"type": "String",
-						"defaultValue": "cc_data_fac_score_value"
+						"defaultValue": "cc_data_fac_insert_score_value"
 					},
 					"LOV_TYPE": {
 						"type": "String",
@@ -5214,11 +5214,11 @@
 					},
 					"DATA_TYPE": {
 						"type": "String",
-						"defaultValue": "INSERT_UPDATE_SCORE_VALUE"
+						"defaultValue": "INSERT_SCORE"
 					},
 					"CREDIT_USER": {
 						"type": "String",
-						"defaultValue": "DATA_FAC_INSERT_UPDATE_SCORE_VALUE"
+						"defaultValue": "DATA_FAC_INSERT_SCORE"
 					},
 					"inputPath": {
 						"type": "String"
