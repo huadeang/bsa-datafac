@@ -6314,19 +6314,6 @@
 							"batchCount": 20,
 							"activities": [
 								{
-									"name": "Set line",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "line",
-										"value": {
-											"value": "@item().Prop_0",
-											"type": "Expression"
-										}
-									}
-								},
-								{
 									"name": "Insert or Update ScoreValue",
 									"type": "Switch",
 									"dependsOn": [
@@ -6651,14 +6638,7 @@
 								{
 									"name": "Set insertOrUpdateCase",
 									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set line",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"variableName": "insertOrUpdateCase",
@@ -6969,9 +6949,6 @@
 					"haveErrorRow": {
 						"type": "Boolean",
 						"defaultValue": false
-					},
-					"line": {
-						"type": "String"
 					},
 					"insertOrUpdateCase": {
 						"type": "String"
