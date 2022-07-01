@@ -28,7 +28,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"maxRowsPerFile": 50000,
-							"fileNamePrefix": "TEST",
+							"fileNamePrefix": "TEST_",
 							"quoteAllText": true,
 							"fileExtension": ".csv"
 						}
