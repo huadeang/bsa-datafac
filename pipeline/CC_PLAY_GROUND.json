@@ -301,7 +301,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review",
-							"fileName": "Test"
+							"fileName": "Test.csv"
 						}
 					}
 				]
