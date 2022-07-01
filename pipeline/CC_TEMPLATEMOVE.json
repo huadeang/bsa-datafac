@@ -352,7 +352,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ',activity('Filter Start With 02').output)",
+							"value": "@concat('SELECT ',activity('Filter Start With 02').output.Value)",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
