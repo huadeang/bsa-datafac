@@ -1336,7 +1336,7 @@
 						"typeProperties": {
 							"variableName": "baScriptQuery",
 							"value": {
-								"value": "@concat('SELECT ''02|''+ CONCAT(ROW_ID ,''|'',CREATED ,''|'',CREATED_BY ,''|'',LAST_UPD,''|'',LAST_UPD_BY \n\t\t\t\t,''|'',ACCNT_NO ,''|'',ACCNT_CATEGORY ,''|'',ACCNT_SUB_CATEGORY ,''|'',BILL_NAME ,''|'',BILL_CYCLE \n\t\t\t\t,''|'',INVOICING_COMPANY ,''|'',PAYMENT_METHOD ,''|'',MASTER_ACCNT_ID ,''|'',STATUS_CD \n\t\t\t\t,''|'',BILLING_STATUS_CD ,''|'',REGISTER_DT ,''|'',ARPU ,''|'',CREDIT_GRADE ,''|'',DEBT_NEGO_FLG \n\t\t\t\t,''|'',PAYMENT_FLAG) as LINE FROM CREDIT.TEST_CC_BILLING tcb OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY')",
+								"value": "@concat('SELECT ''02|''+ CONCAT(ROW_ID ,''|'',CREATED ,''|'',CREATED_BY ,''|'',LAST_UPD,''|'',LAST_UPD_BY \n\t\t\t\t,''|'',ACCNT_NO ,''|'',ACCNT_CATEGORY ,''|'',ACCNT_SUB_CATEGORY ,''|'',BILL_NAME ,''|'',BILL_CYCLE \n\t\t\t\t,''|'',INVOICING_COMPANY ,''|'',PAYMENT_METHOD ,''|'',MASTER_ACCNT_ID ,''|'',STATUS_CD \n\t\t\t\t,''|'',BILLING_STATUS_CD ,''|'',REGISTER_DT ,''|'',ARPU ,''|'',CREDIT_GRADE ,''|'',DEBT_NEGO_FLG \n\t\t\t\t,''|'',PAYMENT_FLAG) as LINE FROM CREDIT.TEST_CC_BILLING tcb ORDER BY ROW_ID OFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY')",
 								"type": "Expression"
 							}
 						}
