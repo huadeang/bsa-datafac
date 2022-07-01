@@ -286,7 +286,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_cat_subcat_insert_billing_profile"
+				"defaultValue": "cc_data_fac_cat_subcat_insert_profile_change"
 			},
 			"LOV_TYPE": {
 				"type": "String",
