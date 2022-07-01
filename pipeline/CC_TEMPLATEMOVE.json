@@ -67,117 +67,12 @@
 				}
 			},
 			{
-				"name": "ForEach row",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Filter Start With 02",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Filter Start With 02').output.Value",
-						"type": "Expression"
-					},
-					"batchCount": 50,
-					"activities": [
-						{
-							"name": "Script Insert Table CC_BILLING_CAT_SUBCAT",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_BILLING_CAT_SUBCAT \n    (ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_NO,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tNAME ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD,\n\tREGISTER_DT,\n\tFBB_FLAG,\n\tSUPPEND_FLAG,\n\tCOUNT_MOBILE,\n\tSUM_MAIN_PRO) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(equals(trim(coalesce(split(item().Prop_0,'|')[19],'')),''),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),');')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Script Insert Table CC_DATA_FACTORY_HIST onfail",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Set haveErrorRow",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert Table CC_BILLING_CAT_SUBCAT').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						},
-						{
-							"name": "Set haveErrorRow",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Script Insert Table CC_BILLING_CAT_SUBCAT",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "haveErrorRow",
-								"value": {
-									"value": "@bool(true)",
-									"type": "Expression"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST",
 				"description": "",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "ForEach row",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -212,7 +107,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "ForEach row",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -433,6 +328,69 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Filter Start With 02",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT ',activity('Filter Start With 02').output)",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": 1000,
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TestCCBilling",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
