@@ -216,7 +216,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_score_value"
+				"defaultValue": "cc_data_fac_insert_score_value"
 			},
 			"LOV_TYPE": {
 				"type": "String",
