@@ -263,8 +263,14 @@
 						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_billing_review\\archive",
-							"fileName": "RES_REVIEW_BILLING_20220607_144603.dat"
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileDatName",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -273,8 +279,14 @@
 						"referenceName": "CC_TableDynamic",
 						"type": "DatasetReference",
 						"parameters": {
-							"Schema": "CREDIT_DATA_FAC",
-							"Table": "CC_BILLING_REVIEW"
+							"Schema": {
+								"value": "@pipeline().parameters.SCHEMA",
+								"type": "Expression"
+							},
+							"Table": {
+								"value": "@pipeline().parameters.tableToUpsert",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -303,6 +315,9 @@
 				"type": "string"
 			},
 			"fileSyncName": {
+				"type": "string"
+			},
+			"tableToUpsert": {
 				"type": "string"
 			}
 		},
