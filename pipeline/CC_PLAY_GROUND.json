@@ -37,7 +37,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ACCNT_NO",
+									"name": "ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -97,7 +97,7 @@
 							},
 							{
 								"source": {
-									"name": "ACCNT_CATEGORY",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -109,7 +109,7 @@
 							},
 							{
 								"source": {
-									"name": "ACCNT_SUB_CATEGORY",
+									"name": "ACCNT_CATEGORY",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -121,7 +121,7 @@
 							},
 							{
 								"source": {
-									"name": "BILL_NAME",
+									"name": "ACCNT_SUB_CATEGORY",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -133,7 +133,7 @@
 							},
 							{
 								"source": {
-									"name": "BILL_CYCLE",
+									"name": "BILL_NAME",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -145,7 +145,7 @@
 							},
 							{
 								"source": {
-									"name": "INVOICING_COMPANY",
+									"name": "BILL_CYCLE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -157,7 +157,7 @@
 							},
 							{
 								"source": {
-									"name": "PAYMENT_METHOD",
+									"name": "INVOICING_COMPANY",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -169,7 +169,7 @@
 							},
 							{
 								"source": {
-									"name": "MASTER_ACCNT_ID",
+									"name": "PAYMENT_METHOD",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -181,7 +181,7 @@
 							},
 							{
 								"source": {
-									"name": "STATUS_CD",
+									"name": "MASTER_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -193,7 +193,7 @@
 							},
 							{
 								"source": {
-									"name": "BILLING_STATUS_CD",
+									"name": "STATUS_CD",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -205,6 +205,18 @@
 							},
 							{
 								"source": {
+									"name": "BILLING_STATUS_CD",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 15
+								}
+							},
+							{
+								"source": {
 									"name": "REGISTER_DT",
 									"type": "DateTime",
 									"physicalType": "datetime2"
@@ -212,7 +224,7 @@
 								"sink": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 15
+									"ordinal": 16
 								}
 							},
 							{
@@ -226,7 +238,7 @@
 								"sink": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 16
+									"ordinal": 17
 								}
 							},
 							{
@@ -240,7 +252,7 @@
 								"sink": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 17
+									"ordinal": 18
 								}
 							},
 							{
@@ -252,7 +264,7 @@
 								"sink": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 18
+									"ordinal": 19
 								}
 							},
 							{
@@ -264,7 +276,7 @@
 								"sink": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 19
+									"ordinal": 20
 								}
 							}
 						],
