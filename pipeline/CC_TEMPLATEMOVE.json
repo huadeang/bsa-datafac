@@ -30,14 +30,8 @@
 						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
+							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review",
+							"fileName": "REQ_REVIEW_BILLING_20220701_102303.dat"
 						}
 					},
 					"firstRowOnly": false
@@ -101,7 +95,10 @@
 						"writeBatchTimeout": "00:30:00",
 						"writeBehavior": "upsert",
 						"upsertSettings": {
-							"useTempDB": true
+							"useTempDB": true,
+							"keys": [
+								""
+							]
 						},
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
