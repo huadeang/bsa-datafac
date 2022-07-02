@@ -5601,7 +5601,7 @@
 												]
 											},
 											{
-												"value": "Not in Ca and Ba",
+												"value": "NotInCaAndBa",
 												"activities": [
 													{
 														"name": "Script Insert Table CC_DATA_FACTORY_HIST_copy2",
@@ -5671,7 +5671,7 @@
 									"typeProperties": {
 										"variableName": "insertOrUpdateCase",
 										"value": {
-											"value": "@if(and(not(equals(trim(coalesce(split(item().Prop_0,'|')[6],'')),'')),equals(string(split(item().Prop_0,'|')[9]),'CA')),'CA',\nif(and(and(not(equals(trim(coalesce(split(item().Prop_0,'|')[6],'')),'')),not(equals(trim(coalesce(split(item().Prop_0,'|')[7],'')),'')) ),equals(string(split(item().Prop_0,'|')[9]),'BA')),'BA',\n'No Case'))",
+											"value": "@if(and(not(equals(trim(coalesce(split(item().Prop_0,'|')[6],'')),'')),equals(string(split(item().Prop_0,'|')[9]),'CA')),'CA',\nif(and(and(not(equals(trim(coalesce(split(item().Prop_0,'|')[6],'')),'')),not(equals(trim(coalesce(split(item().Prop_0,'|')[7],'')),'')) ),equals(string(split(item().Prop_0,'|')[9]),'BA')),'BA',\n'NotInCaAndBa'))",
 											"type": "Expression"
 										}
 									}
