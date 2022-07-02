@@ -6645,7 +6645,7 @@
 														"typeProperties": {
 															"variableName": "v",
 															"value": {
-																"value": "@if(equals(trim(coalesce(split(variables('line'),'|')[9],'')),''),'clLevel data not found',\n\t\tif(and(equals(trim(coalesce(split(variables('line'),'|')[9],'')),'CA'),equals(trim(coalesce(split(variables('line'),'|')[6],'')),'')),'accntId data not found',\n\t\tif(and(equals(trim(coalesce(split(variables('line'),'|')[9],'')),'BA'),equals(trim(coalesce(split(variables('line'),'|')[6],'')),'')),'accntId data not found',\n\t\t'billingAccntId data not found')))",
+																"value": "@split(variables('line'),'|')[9]",
 																"type": "Expression"
 															}
 														}
