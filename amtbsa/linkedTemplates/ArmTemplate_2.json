@@ -6645,7 +6645,7 @@
 														"typeProperties": {
 															"variableName": "v",
 															"value": {
-																"value": "@split(variables('line'),'|')[9]",
+																"value": "@variables('line')",
 																"type": "Expression"
 															}
 														}
