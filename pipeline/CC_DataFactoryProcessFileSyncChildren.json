@@ -513,7 +513,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat_copy2",
+											"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
