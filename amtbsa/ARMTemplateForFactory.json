@@ -5444,7 +5444,7 @@
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "ForEach row",
+								"activity": "Get Error Record in CC_DATA_FACTORY_HIST",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5453,7 +5453,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@not(empty(concat('SELECT TOP(1) ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST WHERE DATA_ID = ''',pipeline().parameters.dataId,''' AND STATUS = ''E''')))\n",
+								"value": "@contains(string(activity('Get Error Record in CC_DATA_FACTORY_HIST').output),'firstRow')",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -5665,6 +5665,42 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Get Error Record in CC_DATA_FACTORY_HIST",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "ForEach row",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT TOP(1) ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST WHERE DATA_ID = ''',pipeline().parameters.dataId,''' AND STATUS = ''E''')\n",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlTableCurrent",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -5709,6 +5745,7 @@
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableCurrent')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_InsertOrUpdateScoreValueByClLevelCase')]"
 			]
 		},
