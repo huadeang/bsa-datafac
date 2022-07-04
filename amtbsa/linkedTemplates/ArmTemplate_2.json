@@ -1244,7 +1244,14 @@
 										{
 											"name": "Script Insert Table CC_DATA_FACTORY_HIST_copy2",
 											"type": "Script",
-											"dependsOn": [],
+											"dependsOn": [
+												{
+													"activity": "Set lineError",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
 											"policy": {
 												"timeout": "7.00:00:00",
 												"retry": 0,
@@ -1267,6 +1274,19 @@
 														}
 													}
 												]
+											}
+										},
+										{
+											"name": "Set lineError",
+											"type": "SetVariable",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "lineError",
+												"value": {
+													"value": "@split(pipeline().parameters.line,'|')[9]",
+													"type": "Expression"
+												}
 											}
 										}
 									]
@@ -1317,6 +1337,9 @@
 						"type": "String"
 					},
 					"insertOrUpdateCase": {
+						"type": "String"
+					},
+					"lineError": {
 						"type": "String"
 					}
 				},
