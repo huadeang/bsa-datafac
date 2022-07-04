@@ -1000,7 +1000,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@empty(concat('SELECT TOP(1) ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST c WHERE c.DATA_ID= ''',pipeline().parameters.dataId,'''  AND c.STATUS =''E'''))\n",
+								"value": "@empty(concat('SELECT TOP(1) ''Y'' FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST WHERE DATA_ID = ''',pipeline().parameters.dataId,''' AND STATUS = ''E'''))\n",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
