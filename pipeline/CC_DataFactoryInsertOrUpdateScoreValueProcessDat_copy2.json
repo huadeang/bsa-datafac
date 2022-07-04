@@ -147,7 +147,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_InsertOrUpdateScoreValueCheckClLevel",
+									"referenceName": "CC_InsertOrUpdateScoreValueCheckClLevel_copy1",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -162,6 +162,10 @@
 									},
 									"CREDIT_USER": {
 										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"dataId": {
+										"value": "@pipeline().parameters.dataId",
 										"type": "Expression"
 									}
 								}
@@ -464,15 +468,6 @@
 			"haveErrorRow": {
 				"type": "Boolean",
 				"defaultValue": false
-			},
-			"insertOrUpdateCase": {
-				"type": "String"
-			},
-			"line": {
-				"type": "String"
-			},
-			"v": {
-				"type": "String"
 			}
 		},
 		"annotations": []
