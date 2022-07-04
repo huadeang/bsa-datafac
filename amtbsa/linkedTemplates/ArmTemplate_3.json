@@ -4752,7 +4752,7 @@
 											"userProperties": [],
 											"typeProperties": {
 												"pipeline": {
-													"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat_copy1",
+													"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat_copy2",
 													"type": "PipelineReference"
 												},
 												"waitOnCompletion": true,
@@ -4979,6 +4979,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactoryInsertBillingAccountNoProcessDat')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertProfileChangeProcessDat')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertOrUpdateScoreValueProcessDat_copy2')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertUpdateCaBillingProcessDat')]"
 			]
 		},
