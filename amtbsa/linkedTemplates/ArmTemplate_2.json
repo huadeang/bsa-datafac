@@ -582,6 +582,113 @@
 											"parameters": {}
 										}
 									}
+								},
+								{
+									"name": "Script Insert or Update Table CC_SCORE_VALUE_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set Update Ba Case",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set Insert Ba Case",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set Existing Ba Case",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(variables('existing'),variables('scriptInsert'),variables('scriptUpdate'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set Existing Ba Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "existing",
+										"value": {
+											"value": "@not(contains(string(activity('Get Exiting Value').output),'firstRow'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set Update Ba Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "scriptUpdate",
+										"value": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE\n    SET\n\tCREATED =',if(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',\n\tACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',\n\tBILLING_ACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',\n\tACCNT_NO =',if(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',\n\tCL_LEVEL =',if(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',\n\tSCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',\n\tCL_TYPE =',if(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',\n\tCL_CHANGE_REASON =',if(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_CD =',if(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_REASON =',if(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',\n\tCREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',\n\tPERM_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',\n\tTEMP_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',\n\tPREV_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',\n\tPREV_SCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',\n\tACTUAL =',if(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',\n\tACTUAL_PERM =',if(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',\n\tBILLING_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',\n\tBILLING_THRESHOLD_SET_ID =',if(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',\n\tFBB_FLAG =',if(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',\n\tLAST_REVIEW_DAT =',if(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',\n\tMIN_REVIEW =',if(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',\n\tAVAILABLE_CREDIT =',if(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',\n\tPAYMENT_FLG =',if(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',\n\tBA_REGISTER_DT =',if(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),'\n\tWHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''' AND BILLING_ACCNT_ID = ''',split(pipeline().parameters.line,'|')[7],''';')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set Insert Ba Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "scriptInsert",
+										"value": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_ID,\n\tBILLING_ACCNT_ID,\n\tACCNT_NO,\n\tCL_LEVEL,\n\tSCORE_RANGE,\n\tCL_TYPE,\n\tCL_CHANGE_REASON,\n\tOUTCOME_CD,\n\tOUTCOME_REASON,\n\tCREDIT_LIMIT,\n\tPERM_CREDIT_LIMIT,\n\tTEMP_CREDIT_LIMIT,\n\tPREV_CREDIT_LIMIT,\n\tPREV_SCORE_RANGE,\n\tACTUAL,\n\tACTUAL_PERM,\n\tBILLING_CREDIT_LIMIT,\n\tBILLING_THRESHOLD_SET_ID,\n\tFBB_FLAG,\n\tLAST_REVIEW_DAT,\n\tMIN_REVIEW,\n\tAVAILABLE_CREDIT,\n\tPAYMENT_FLG,\n\tBA_REGISTER_DT) VALUES ('\n    ,if(empty(split(pipeline().parameters.line,'|')[1]),'NULL',concat('''',split(pipeline().parameters.line,'|')[1],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[13],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),');')",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"ifTrueActivities": [
@@ -615,11 +722,23 @@
 									}
 								},
 								{
-									"name": "Script Insert or Update Table CC_SCORE_VALUE_copy1",
+									"name": "Script Insert or Update Table CC_SCORE_VALUE",
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Get Exiting Value by accntId",
+											"activity": "Set Existing Ca Case",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set Update Ca Case",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set Insert Ca Case",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -642,11 +761,71 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(not(contains(string(activity('Get Exiting Value by accntId').output),'firstRow'))\n,concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_ID,\n\tBILLING_ACCNT_ID,\n\tACCNT_NO,\n\tCL_LEVEL,\n\tSCORE_RANGE,\n\tCL_TYPE,\n\tCL_CHANGE_REASON,\n\tOUTCOME_CD,\n\tOUTCOME_REASON,\n\tCREDIT_LIMIT,\n\tPERM_CREDIT_LIMIT,\n\tTEMP_CREDIT_LIMIT,\n\tPREV_CREDIT_LIMIT,\n\tPREV_SCORE_RANGE,\n\tACTUAL,\n\tACTUAL_PERM,\n\tBILLING_CREDIT_LIMIT,\n\tBILLING_THRESHOLD_SET_ID,\n\tFBB_FLAG,\n\tLAST_REVIEW_DAT,\n\tMIN_REVIEW,\n\tAVAILABLE_CREDIT,\n\tPAYMENT_FLG,\n\tBA_REGISTER_DT) VALUES ('\n    ,if(empty(split(pipeline().parameters.line,'|')[1]),'NULL',concat('''',split(pipeline().parameters.line,'|')[1],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[13],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),');')\n\n,concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE\n    SET\n\tCREATED =',if(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',\n\tACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',\n\tBILLING_ACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',\n\tACCNT_NO =',if(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',\n\tCL_LEVEL =',if(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',\n\tSCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',\n\tCL_TYPE =',if(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',\n\tCL_CHANGE_REASON =',if(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_CD =',if(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_REASON =',if(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',\n\tCREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',\n\tPERM_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',\n\tTEMP_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',\n\tPREV_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',\n\tPREV_SCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',\n\tACTUAL =',if(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',\n\tACTUAL_PERM =',if(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',\n\tBILLING_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',\n\tBILLING_THRESHOLD_SET_ID =',if(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',\n\tFBB_FLAG =',if(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',\n\tLAST_REVIEW_DAT =',if(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',\n\tMIN_REVIEW =',if(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',\n\tAVAILABLE_CREDIT =',if(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',\n\tPAYMENT_FLG =',if(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',\n\tBA_REGISTER_DT =',if(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),'\n\tWHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''';'))",
+													"value": "@if(variables('existing'),variables('scriptInsert'),variables('scriptUpdate'))",
 													"type": "Expression"
 												}
 											}
 										]
+									}
+								},
+								{
+									"name": "Set Existing Ca Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value by accntId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "existing",
+										"value": {
+											"value": "@not(contains(string(activity('Get Exiting Value by accntId').output),'firstRow'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set Update Ca Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value by accntId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "scriptUpdate",
+										"value": {
+											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE\n    SET\n\tCREATED =',if(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',\n\tACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',\n\tBILLING_ACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',\n\tACCNT_NO =',if(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',\n\tCL_LEVEL =',if(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',\n\tSCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',\n\tCL_TYPE =',if(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',\n\tCL_CHANGE_REASON =',if(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_CD =',if(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_REASON =',if(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',\n\tCREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',\n\tPERM_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',\n\tTEMP_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',\n\tPREV_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',\n\tPREV_SCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',\n\tACTUAL =',if(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',\n\tACTUAL_PERM =',if(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',\n\tBILLING_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',\n\tBILLING_THRESHOLD_SET_ID =',if(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',\n\tFBB_FLAG =',if(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',\n\tLAST_REVIEW_DAT =',if(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',\n\tMIN_REVIEW =',if(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',\n\tAVAILABLE_CREDIT =',if(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',\n\tPAYMENT_FLG =',if(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',\n\tBA_REGISTER_DT =',if(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),'\n\tWHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''';')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set Insert Ca Case",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting Value by accntId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "scriptInsert",
+										"value": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_ID,\n\tBILLING_ACCNT_ID,\n\tACCNT_NO,\n\tCL_LEVEL,\n\tSCORE_RANGE,\n\tCL_TYPE,\n\tCL_CHANGE_REASON,\n\tOUTCOME_CD,\n\tOUTCOME_REASON,\n\tCREDIT_LIMIT,\n\tPERM_CREDIT_LIMIT,\n\tTEMP_CREDIT_LIMIT,\n\tPREV_CREDIT_LIMIT,\n\tPREV_SCORE_RANGE,\n\tACTUAL,\n\tACTUAL_PERM,\n\tBILLING_CREDIT_LIMIT,\n\tBILLING_THRESHOLD_SET_ID,\n\tFBB_FLAG,\n\tLAST_REVIEW_DAT,\n\tMIN_REVIEW,\n\tAVAILABLE_CREDIT,\n\tPAYMENT_FLG,\n\tBA_REGISTER_DT) VALUES ('\n    ,if(empty(split(pipeline().parameters.line,'|')[1]),'NULL',concat('''',split(pipeline().parameters.line,'|')[1],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[13],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),');')\n",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -666,6 +845,17 @@
 					},
 					"CREDIT_USER": {
 						"type": "string"
+					}
+				},
+				"variables": {
+					"existing": {
+						"type": "Boolean"
+					},
+					"scriptInsert": {
+						"type": "String"
+					},
+					"scriptUpdate": {
+						"type": "String"
 					}
 				},
 				"annotations": []
