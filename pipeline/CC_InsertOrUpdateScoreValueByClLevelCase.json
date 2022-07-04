@@ -1,5 +1,5 @@
 {
-	"name": "CC_InsertOrUpdateScoreValueCheckClLevel_copy1",
+	"name": "CC_InsertOrUpdateScoreValueByClLevelCase",
 	"properties": {
 		"activities": [
 			{
@@ -376,14 +376,7 @@
 								{
 									"name": "Script Insert Table CC_DATA_FACTORY_HIST_copy2",
 									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set lineError",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "7.00:00:00",
 										"retry": 0,
@@ -406,19 +399,6 @@
 												}
 											}
 										]
-									}
-								},
-								{
-									"name": "Set lineError",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "lineError",
-										"value": {
-											"value": "@split(pipeline().parameters.line,'|')[9]",
-											"type": "Expression"
-										}
 									}
 								}
 							]

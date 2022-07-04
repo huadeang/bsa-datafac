@@ -1,5 +1,5 @@
 {
-	"name": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat_copy2",
+	"name": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
 	"properties": {
 		"activities": [
 			{
@@ -127,7 +127,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_InsertOrUpdateScoreValueCheckClLevel_copy1",
+									"referenceName": "CC_InsertOrUpdateScoreValueByClLevelCase",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
