@@ -6616,9 +6616,9 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Set haveErrorRow",
+											"activity": "Insert or update scoreValue",
 											"dependencyConditions": [
-												"Succeeded"
+												"Failed"
 											]
 										}
 									],
@@ -6644,26 +6644,6 @@
 												}
 											}
 										]
-									}
-								},
-								{
-									"name": "Set haveErrorRow",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Insert or update scoreValue",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "haveErrorRow",
-										"value": {
-											"value": "@bool(true)",
-											"type": "Expression"
-										}
 									}
 								},
 								{
@@ -6750,7 +6730,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@variables('haveErrorRow')",
+								"value": "@empty(concat('SELECT TOP(1) ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST c WHERE c.DATA_ID= ''',pipeline().parameters.dataId,'''  AND c.STATUS =''E'''))\n",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
