@@ -19,22 +19,22 @@
 						"type": "DelimitedTextSource",
 						"additionalColumns": [
 							{
-								"name": "CREATED",
+								"name": "CREATED_BY",
 								"value": "TEST"
 							},
 							{
-								"name": "CREATED_BY",
+								"name": "CREATED",
 								"value": {
 									"value": "@utcNow()",
 									"type": "Expression"
 								}
 							},
 							{
-								"name": "LAST_UPD",
+								"name": "LAST_UPD_BY",
 								"value": "TEST"
 							},
 							{
-								"name": "LAST_UPD_BY",
+								"name": "LAST_UPD",
 								"value": {
 									"value": "@utcNow()",
 									"type": "Expression"
@@ -66,7 +66,7 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
+					"enableSkipIncompatibleRow": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
