@@ -155,9 +155,8 @@
 						],
 						"typeConversion": true,
 						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "yyyy-MM-dd HH:mm:ss"
+							"allowDataTruncation": false,
+							"treatBooleanAsNumber": false
 						}
 					}
 				},
