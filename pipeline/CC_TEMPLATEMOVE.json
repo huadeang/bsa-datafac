@@ -25,7 +25,7 @@
 							{
 								"name": "CREATED",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							},
@@ -36,7 +36,7 @@
 							{
 								"name": "LAST_UPD",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							}
