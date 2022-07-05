@@ -68,19 +68,6 @@
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
 					"validateDataConsistency": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "AzureBlobStorage3",
-								"type": "LinkedServiceReference"
-							}
-						}
-					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -210,7 +197,8 @@
 		],
 		"parameters": {
 			"SCHEMA": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "CREDIT_UAT"
 			},
 			"DATA_TYPE": {
 				"type": "string"
@@ -219,13 +207,15 @@
 				"type": "string"
 			},
 			"inputPath": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade"
 			},
 			"moveInputPath": {
 				"type": "string"
 			},
 			"fileDatName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "CCS_ACCNT_CGRADE_TEST.dat"
 			},
 			"dataId": {
 				"type": "string"
@@ -234,7 +224,8 @@
 				"type": "string"
 			},
 			"tableToUpsert": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "CC_BILLING_INFO"
 			}
 		},
 		"annotations": []
