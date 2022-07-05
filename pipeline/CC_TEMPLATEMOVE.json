@@ -17,6 +17,30 @@
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "CREATED",
+								"value": "TEST"
+							},
+							{
+								"name": "CREATED_BY",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "LAST_UPD",
+								"value": "TEST"
+							},
+							{
+								"name": "LAST_UPD_BY",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
@@ -54,6 +78,50 @@
 								},
 								"sink": {
 									"name": "ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATED",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATED_BY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_UPD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_UPD",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_UPD_BY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_UPD_BY",
 									"type": "String",
 									"physicalType": "varchar"
 								}
