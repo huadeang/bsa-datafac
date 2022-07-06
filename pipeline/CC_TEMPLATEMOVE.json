@@ -187,10 +187,16 @@
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "last",
+								"value": ""
+							}
+						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
-							"enablePartitionDiscovery": true
+							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings",
@@ -209,18 +215,10 @@
 						}
 					},
 					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 1
-								},
-								"sink": {
-									"path": "$['Prop_0']"
-								}
-							},
 							{
 								"source": {
 									"type": "String",
@@ -246,6 +244,15 @@
 								},
 								"sink": {
 									"path": "$['CREDIT_GRADE']"
+								}
+							},
+							{
+								"source": {
+									"name": "last",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['Column_1']"
 								}
 							}
 						]
