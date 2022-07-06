@@ -5,6 +5,14 @@
 			"referenceName": "LocalFileServer",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"filePath": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
