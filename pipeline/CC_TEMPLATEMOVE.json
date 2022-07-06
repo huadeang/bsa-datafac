@@ -111,6 +111,26 @@
 									"name": "ARPU",
 									"type": "Decimal"
 								}
+							},
+							{
+								"source": {
+									"name": "CREATED",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATED_BY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String"
+								}
 							}
 						]
 					}
