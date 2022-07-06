@@ -20,7 +20,7 @@
 						"additionalColumns": [
 							{
 								"name": "CREATED_BY",
-								"value": "TEST"
+								"value": "UPDATE_CREDIT_GRADE"
 							},
 							{
 								"name": "CREATED",
@@ -31,7 +31,7 @@
 							},
 							{
 								"name": "LAST_UPD_BY",
-								"value": "TEST"
+								"value": "UPDATE_CREDIT_GRADE"
 							},
 							{
 								"name": "LAST_UPD",
@@ -214,7 +214,7 @@
 			},
 			"fileDatName": {
 				"type": "string",
-				"defaultValue": "CCS_ACCNT_CGRADE_TEST.dat"
+				"defaultValue": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
 			},
 			"dataId": {
 				"type": "string"
