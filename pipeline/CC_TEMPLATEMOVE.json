@@ -94,46 +94,6 @@
 							},
 							{
 								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"type": "String",
 									"ordinal": 1
 								},
