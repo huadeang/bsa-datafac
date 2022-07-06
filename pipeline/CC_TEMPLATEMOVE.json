@@ -5,7 +5,14 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Write File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -16,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "JsonSource",
 						"additionalColumns": [
 							{
 								"name": "CREATED_BY",
@@ -28,7 +35,7 @@
 							{
 								"name": "CREATED",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							},
@@ -42,7 +49,7 @@
 							{
 								"name": "LAST_UPD",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							}
@@ -53,7 +60,7 @@
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "JsonReadSettings"
 						}
 					},
 					"sink": {
@@ -72,113 +79,84 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
 							{
 								"source": {
-									"name": "ACCNT_ID",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "ACCNT_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "ACCNT_ON",
-									"type": "String",
-									"physicalType": "String"
+									"path": "['Prop_1']"
 								},
 								"sink": {
 									"name": "ACCNT_NO",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "CREDIT_GRADE",
-									"type": "String",
-									"physicalType": "String"
+									"path": "['Prop_2']"
+								},
+								"sink": {
+									"name": "ACCNT_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['Prop_3']"
 								},
 								"sink": {
 									"name": "CREDIT_GRADE",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 0,
-									"precision": 5
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CREATED_BY']"
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CREATED']"
+								},
+								"sink": {
+									"name": "CREATED",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LAST_UPD_BY']"
+								},
+								"sink": {
+									"name": "LAST_UPD_BY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LAST_UPD']"
+								},
+								"sink": {
+									"name": "LAST_UPD",
+									"type": "DateTime"
 								}
 							}
 						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": false,
-							"treatBooleanAsNumber": false
-						}
+						"collectionReference": "$['data']",
+						"mapComplexValuesToString": false
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileJson",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"fileName": "TEST.json"
 						}
 					}
 				],
@@ -187,17 +165,155 @@
 						"referenceName": "CC_TableDynamic",
 						"type": "DatasetReference",
 						"parameters": {
-							"Schema": {
-								"value": "@pipeline().parameters.SCHEMA",
-								"type": "Expression"
-							},
-							"Table": {
-								"value": "@pipeline().parameters.tableToUpsert",
-								"type": "Expression"
-							}
+							"Schema": "CREDIT_DEV",
+							"Table": "CC_BILLING_INFO"
 						}
 					}
 				]
+			},
+			{
+				"name": "Read File But Limit 5000 row",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 1
+						}
+					},
+					"dataset": {
+						"referenceName": "CCLocalFileMasterSplitPipe",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"fileName": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Write File",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Filter Start With 02 And AccountId Not Null",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "line",
+								"value": {
+									"value": "@concat('{ \"data\" :',string(activity('Filter1').output.value),'}')",
+									"type": "Expression"
+								}
+							}
+						],
+						"sqlReaderQuery": "SELECT 'Y'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "FileServerWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "line"
+								},
+								"sink": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 1
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CCLocalFileToWrite",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"fileName": "TEST.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Filter Start With 02 And AccountId Not Null",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Read File But Limit 5000 row",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Read File But Limit 5000 row').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(equals(item().Prop_0,'02'),not(empty(item().Prop_2)))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
