@@ -233,7 +233,7 @@
 							{
 								"name": "line",
 								"value": {
-									"value": "@concat('{ \"data\" :',string(activity('Filter1').output.value),'}')",
+									"value": "@concat('{ \"data\" :',replace(replace(replace(string(activity('Read File But Limit 5000 row').output.value),'Prop_1','ACCNT_NO'),'Prop_2','ACCNT_ID'),'Prop_3','CREDIT_GRADE'),'}')",
 									"type": "Expression"
 								}
 							}
