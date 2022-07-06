@@ -221,7 +221,7 @@
 			},
 			"fileDatName": {
 				"type": "string",
-				"defaultValue": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
+				"defaultValue": "CCS_ACCNT_CGRADE_TEST.dat"
 			},
 			"dataId": {
 				"type": "string"
