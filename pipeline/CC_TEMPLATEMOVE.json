@@ -20,23 +20,29 @@
 						"additionalColumns": [
 							{
 								"name": "CREATED_BY",
-								"value": "UPDATE_CREDIT_GRADE"
+								"value": {
+									"value": "@pipeline().parameters.CREDIT_USER",
+									"type": "Expression"
+								}
 							},
 							{
 								"name": "CREATED",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							},
 							{
 								"name": "LAST_UPD_BY",
-								"value": "UPDATE_CREDIT_GRADE"
+								"value": {
+									"value": "@pipeline().parameters.CREDIT_USER",
+									"type": "Expression"
+								}
 							},
 							{
 								"name": "LAST_UPD",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							}
@@ -203,7 +209,8 @@
 				"type": "string"
 			},
 			"CREDIT_USER": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "UPDATE_CREDIT_GRADE"
 			},
 			"inputPath": {
 				"type": "string",
