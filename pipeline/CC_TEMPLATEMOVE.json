@@ -84,11 +84,6 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['Prop_0']"
-								}
-							},
-							{
-								"source": {
 									"path": "$['ACCNT_NO']"
 								},
 								"sink": {
