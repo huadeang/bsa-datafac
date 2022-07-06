@@ -30,7 +30,8 @@
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
-			"quoteChar": ""
+			"nullValue": "\"\"",
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
