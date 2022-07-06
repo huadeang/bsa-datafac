@@ -75,10 +75,9 @@
 							]
 						},
 						"sqlWriterUseTableLock": false,
-						"disableMetricsCollection": false
+						"disableMetricsCollection": true
 					},
 					"enableStaging": false,
-					"parallelCopies": 4,
 					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
@@ -148,7 +147,7 @@
 							}
 						],
 						"collectionReference": "$['data']",
-						"mapComplexValuesToString": false
+						"mapComplexValuesToString": true
 					}
 				},
 				"inputs": [
@@ -175,7 +174,14 @@
 			{
 				"name": "Write File_copy1",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy data1_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -187,12 +193,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
-						"additionalColumns": [
-							{
-								"name": "last",
-								"value": ""
-							}
-						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
@@ -206,8 +206,7 @@
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
-							"type": "FileServerWriteSettings",
-							"copyBehavior": "MergeFiles"
+							"type": "FileServerWriteSettings"
 						},
 						"formatSettings": {
 							"type": "JsonWriteSettings",
@@ -245,15 +244,6 @@
 								"sink": {
 									"path": "$['CREDIT_GRADE']"
 								}
-							},
-							{
-								"source": {
-									"name": "last",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$['Column_1']"
-								}
 							}
 						]
 					}
@@ -275,6 +265,168 @@
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
 							"fileName": "TEST1.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy data1_copy1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"additionalColumns": [
+							{
+								"name": "CREATED_BY",
+								"value": {
+									"value": "@pipeline().parameters.CREDIT_USER",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "CREATED",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "LAST_UPD_BY",
+								"value": {
+									"value": "@pipeline().parameters.CREDIT_USER",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "LAST_UPD",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": 1000,
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"ACCNT_ID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['ACCNT_NO']"
+								},
+								"sink": {
+									"name": "ACCNT_NO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ACCNT_ID']"
+								},
+								"sink": {
+									"name": "ACCNT_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CREDIT_GRADE']"
+								},
+								"sink": {
+									"name": "CREDIT_GRADE",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CREATED_BY']"
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CREATED']"
+								},
+								"sink": {
+									"name": "CREATED",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LAST_UPD_BY']"
+								},
+								"sink": {
+									"name": "LAST_UPD_BY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LAST_UPD']"
+								},
+								"sink": {
+									"name": "LAST_UPD",
+									"type": "DateTime"
+								}
+							}
+						],
+						"collectionReference": "$['data']",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "CC_LocalFileJson",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"fileName": "TEST1.json"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CC_TableDynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "CREDIT_DEV",
+							"Table": "CC_BILLING_INFO"
 						}
 					}
 				]
