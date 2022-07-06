@@ -3,177 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Write File_copy1",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Write File",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"additionalColumns": [
-							{
-								"name": "CREATED_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED",
-								"value": {
-									"value": "@utcNow()",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD",
-								"value": {
-									"value": "@utcNow()",
-									"type": "Expression"
-								}
-							}
-						],
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBatchSize": 1000,
-						"writeBatchTimeout": "00:30:00",
-						"writeBehavior": "upsert",
-						"upsertSettings": {
-							"useTempDB": true,
-							"keys": [
-								"ACCNT_ID"
-							]
-						},
-						"sqlWriterUseTableLock": false,
-						"disableMetricsCollection": false
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"path": "['ACCNT_NO']"
-								},
-								"sink": {
-									"name": "ACCNT_NO",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['ACCNT_ID']"
-								},
-								"sink": {
-									"name": "ACCNT_ID",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['CREDIT_GRADE']"
-								},
-								"sink": {
-									"name": "CREDIT_GRADE",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"path": "$['CREATED_BY']"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['CREATED']"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"path": "$['LAST_UPD_BY']"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['LAST_UPD']"
-								},
-								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime"
-								}
-							}
-						],
-						"collectionReference": "$['data']",
-						"mapComplexValuesToString": false
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CC_LocalFileJson",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "TEST.json"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CC_TableDynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"Schema": "CREDIT_DEV",
-							"Table": "CC_BILLING_INFO"
-						}
-					}
-				]
-			},
-			{
-				"name": "Read File But Limit 5000 row",
-				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -196,61 +27,14 @@
 							"skipLineCount": 1
 						}
 					},
-					"dataset": {
-						"referenceName": "CCLocalFileMasterSplitPipe",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
-						}
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "Write File",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Filter Start With 02 And AccountId Not Null",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"additionalColumns": [
-							{
-								"name": "line",
-								"value": {
-									"value": "@concat('{ \"data\" :',replace(replace(replace(string(activity('Read File But Limit 5000 row').output.value),'Prop_1','ACCNT_NO'),'Prop_2','ACCNT_ID'),'Prop_3','CREDIT_GRADE'),'}')",
-									"type": "Expression"
-								}
-							}
-						],
-						"sqlReaderQuery": "SELECT 'Y'",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "JsonSink",
 						"storeSettings": {
 							"type": "FileServerWriteSettings"
 						},
 						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"type": "JsonWriteSettings",
+							"filePattern": "arrayOfObjects"
 						}
 					},
 					"enableStaging": false,
@@ -259,31 +43,52 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "line"
+									"ordinal": 1
 								},
 								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
+									"path": "$['Prop_0']"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 2
+								},
+								"sink": {
+									"path": "$['ACCNT_NO']"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 3
+								},
+								"sink": {
+									"path": "$['ACCNT_ID']"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 4
+								},
+								"sink": {
+									"path": "$['CREDIT_GRADE']"
 								}
 							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
+						]
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
+						"referenceName": "CCLocalFileMasterSplitPipe",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"fileName": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
+						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileToWrite",
+						"referenceName": "CC_LocalFileJson",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
@@ -291,29 +96,6 @@
 						}
 					}
 				]
-			},
-			{
-				"name": "Filter Start With 02 And AccountId Not Null",
-				"type": "Filter",
-				"dependsOn": [
-					{
-						"activity": "Read File But Limit 5000 row",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Read File But Limit 5000 row').output.value",
-						"type": "Expression"
-					},
-					"condition": {
-						"value": "@and(equals(item().Prop_0,'02'),not(empty(item().Prop_2)))",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
