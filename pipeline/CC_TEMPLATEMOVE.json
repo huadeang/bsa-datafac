@@ -72,9 +72,9 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "ACCNT_ID",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 3
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "ACCNT_ID",
@@ -128,9 +128,9 @@
 							},
 							{
 								"source": {
+									"name": "ACCNT_ON",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 2
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "ACCNT_NO",
@@ -140,9 +140,9 @@
 							},
 							{
 								"source": {
+									"name": "CREDIT_GRADE",
 									"type": "String",
-									"physicalType": "String",
-									"ordinal": 4
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "CREDIT_GRADE",
