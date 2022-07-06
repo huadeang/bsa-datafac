@@ -35,7 +35,7 @@
 							{
 								"name": "CREATED",
 								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
+									"value": "@utcNow()",
 									"type": "Expression"
 								}
 							},
@@ -49,7 +49,7 @@
 							{
 								"name": "LAST_UPD",
 								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
+									"value": "@utcNow()",
 									"type": "Expression"
 								}
 							}
@@ -84,7 +84,7 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "['Prop_1']"
+									"path": "['ACCNT_NO']"
 								},
 								"sink": {
 									"name": "ACCNT_NO",
@@ -93,7 +93,7 @@
 							},
 							{
 								"source": {
-									"path": "['Prop_2']"
+									"path": "['ACCNT_ID']"
 								},
 								"sink": {
 									"name": "ACCNT_ID",
@@ -102,7 +102,7 @@
 							},
 							{
 								"source": {
-									"path": "['Prop_3']"
+									"path": "['CREDIT_GRADE']"
 								},
 								"sink": {
 									"name": "CREDIT_GRADE",
