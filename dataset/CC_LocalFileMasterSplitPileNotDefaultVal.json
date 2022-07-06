@@ -1,0 +1,20 @@
+{
+	"name": "CC_LocalFileMasterSplitPileNotDefaultVal",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LocalFileServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": ""
+		},
+		"schema": []
+	}
+}
