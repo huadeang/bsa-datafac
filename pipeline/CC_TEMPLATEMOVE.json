@@ -148,7 +148,7 @@
 									"ordinal": 3
 								},
 								"sink": {
-									"name": "CREDIT_GRADE",
+									"name": "ARPU",
 									"type": "Decimal"
 								}
 							}
@@ -160,7 +160,7 @@
 						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
 							"fileName": "TEST_TEMP.csv"
 						}
 					}
@@ -252,8 +252,8 @@
 						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+							"fileName": "CSR_ACCNT_ARPU_20220525_112235_20220705153517.dat"
 						}
 					}
 				],
@@ -262,7 +262,7 @@
 						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
 							"fileName": "TEST_TEMP.csv"
 						}
 					}
@@ -279,7 +279,7 @@
 			},
 			"CREDIT_USER": {
 				"type": "string",
-				"defaultValue": "UPDATE_CREDIT_GRADE"
+				"defaultValue": "UPDATE_ARPU"
 			},
 			"inputPath": {
 				"type": "string",
