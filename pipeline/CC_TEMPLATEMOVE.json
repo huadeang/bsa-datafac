@@ -78,6 +78,7 @@
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
+					"parallelCopies": 4,
 					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
