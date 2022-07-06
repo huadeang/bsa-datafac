@@ -75,7 +75,7 @@
 							]
 						},
 						"sqlWriterUseTableLock": false,
-						"disableMetricsCollection": true
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
