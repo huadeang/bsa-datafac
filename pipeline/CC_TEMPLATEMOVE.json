@@ -144,7 +144,7 @@
 							},
 							{
 								"source": {
-									"type": "String",
+									"type": "Decimal",
 									"ordinal": 3
 								},
 								"sink": {
@@ -253,7 +253,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "CCS_ACCNT_CGRADE_TEST.dat"
+							"fileName": "CCS_ACCNT_CGRADE_20211008_092400_20220705154036.dat"
 						}
 					}
 				],
