@@ -213,6 +213,7 @@
 						"mappings": [
 							{
 								"source": {
+									"type": "String",
 									"ordinal": 1
 								},
 								"sink": {
@@ -221,6 +222,7 @@
 							},
 							{
 								"source": {
+									"type": "String",
 									"ordinal": 2
 								},
 								"sink": {
@@ -229,6 +231,7 @@
 							},
 							{
 								"source": {
+									"type": "String",
 									"ordinal": 3
 								},
 								"sink": {
@@ -237,6 +240,7 @@
 							},
 							{
 								"source": {
+									"type": "String",
 									"ordinal": 4
 								},
 								"sink": {
