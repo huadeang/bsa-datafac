@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Write File_copy1",
+						"activity": "Write File_copy1_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "JsonSource",
+						"type": "DelimitedTextSource",
 						"additionalColumns": [
 							{
 								"name": "CREATED_BY",
@@ -60,7 +60,7 @@
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "JsonReadSettings"
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -84,16 +84,8 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['ACCNT_NO']"
-								},
-								"sink": {
-									"name": "ACCNT_NO",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['ACCNT_ID']"
+									"type": "String",
+									"ordinal": 2
 								},
 								"sink": {
 									"name": "ACCNT_ID",
@@ -102,25 +94,8 @@
 							},
 							{
 								"source": {
-									"path": "$['CREDIT_GRADE']"
-								},
-								"sink": {
-									"name": "CREDIT_GRADE",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"path": "$['CREATED_BY']"
-								},
-								"sink": {
-									"name": "CREATED_BY",
+									"name": "CREATED",
 									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['CREATED']"
 								},
 								"sink": {
 									"name": "CREATED",
@@ -129,7 +104,28 @@
 							},
 							{
 								"source": {
-									"path": "$['LAST_UPD_BY']"
+									"name": "CREATED_BY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_UPD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_UPD",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_UPD_BY",
+									"type": "String"
 								},
 								"sink": {
 									"name": "LAST_UPD_BY",
@@ -138,25 +134,34 @@
 							},
 							{
 								"source": {
-									"path": "$['LAST_UPD']"
+									"type": "String",
+									"ordinal": 1
 								},
 								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime"
+									"name": "ACCNT_NO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"ordinal": 3
+								},
+								"sink": {
+									"name": "CREDIT_GRADE",
+									"type": "Decimal"
 								}
 							}
-						],
-						"collectionReference": "$['data']",
-						"mapComplexValuesToString": true
+						]
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CC_LocalFileJson",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "TEST1.json"
+							"fileName": "TEST_TEMP.csv"
 						}
 					}
 				],
@@ -172,7 +177,7 @@
 				]
 			},
 			{
-				"name": "Write File_copy1",
+				"name": "Write File_copy1_copy1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -197,12 +202,14 @@
 						}
 					},
 					"sink": {
-						"type": "JsonSink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
 							"type": "FileServerWriteSettings"
 						},
 						"formatSettings": {
-							"type": "JsonWriteSettings"
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false,
@@ -216,7 +223,7 @@
 									"ordinal": 2
 								},
 								"sink": {
-									"path": "$['ACCNT_NO']"
+									"ordinal": 1
 								}
 							},
 							{
@@ -225,7 +232,7 @@
 									"ordinal": 3
 								},
 								"sink": {
-									"path": "$['ACCNT_ID']"
+									"ordinal": 2
 								}
 							},
 							{
@@ -234,7 +241,7 @@
 									"ordinal": 4
 								},
 								"sink": {
-									"path": "$['CREDIT_GRADE']"
+									"ordinal": 3
 								}
 							}
 						]
@@ -252,11 +259,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CC_LocalFileJson",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "TEST1.json"
+							"fileName": "TEST_TEMP.csv"
 						}
 					}
 				]
