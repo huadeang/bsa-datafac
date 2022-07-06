@@ -156,7 +156,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "TEST.json"
+							"fileName": "TEST1.json"
 						}
 					}
 				],
@@ -261,7 +261,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_credit_grade",
-							"fileName": "TEST.json"
+							"fileName": "TEST1.json"
 						}
 					}
 				]
