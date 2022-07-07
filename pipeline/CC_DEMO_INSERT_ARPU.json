@@ -118,7 +118,7 @@
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
 							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "ััััyyyymmdd"
+							"dateTimeFormat": "yyyyMMdd"
 						}
 					}
 				},
