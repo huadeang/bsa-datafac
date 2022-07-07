@@ -83,22 +83,10 @@
 								"source": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 3
-								},
-								"sink": {
-									"name": "CA_NO",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
 									"ordinal": 2
 								},
 								"sink": {
-									"name": "BA_NO",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -107,7 +95,17 @@
 								"source": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 4
+									"ordinal": 3
+								},
+								"sink": {
+									"name": "BILLING_ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 64
 								},
 								"sink": {
 									"name": "ARPU",
@@ -136,7 +134,7 @@
 									"ordinal": 6
 								},
 								"sink": {
-									"name": "ARPU_REMARK",
+									"name": "REMARK",
 									"type": "String",
 									"physicalType": "varchar"
 								}
