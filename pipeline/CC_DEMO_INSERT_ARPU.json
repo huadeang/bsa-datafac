@@ -107,7 +107,7 @@
 								"source": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 6
+									"ordinal": 4
 								},
 								"sink": {
 									"name": "ARPU",
