@@ -5,14 +5,7 @@
 			{
 				"name": "Get Config Value in Clound Storage",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Clear Data Temp Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -35,69 +28,6 @@
 						"referenceName": "AzureSqlMaster",
 						"type": "DatasetReference"
 					}
-				}
-			},
-			{
-				"name": "Clear Data Temp Table Detail",
-				"type": "Script",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL \n    WHERE FILE_ID IN(SELECT FILE_ID \n                        FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n                        WHERE STATUS = ''S'' \n                        AND FILE_TYPE = ''',variables('FILE_TYPE'),''')')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Clear Data Temp Table",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Clear Data Temp Table Detail",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n            WHERE STATUS = ''S'' \n            AND FILE_TYPE = ''',variables('FILE_TYPE'),'''')",
-								"type": "Expression"
-							}
-						}
-					]
 				}
 			},
 			{
