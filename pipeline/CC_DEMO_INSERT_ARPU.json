@@ -129,8 +129,14 @@
 						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
-							"fileName": "CSR_ACCNT_ARPU_20220525_112235_20220705153517.dat"
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileDatName",
+								"type": "Expression"
+							}
 						}
 					}
 				],
