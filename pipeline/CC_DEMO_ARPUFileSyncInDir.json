@@ -64,7 +64,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewProcessFileSync",
+									"referenceName": "CC_DEMO_ARPUProcessFileSync",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
