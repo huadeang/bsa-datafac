@@ -3600,7 +3600,9 @@
 									},
 									{
 										"source": {
-											"ordinal": 64
+											"type": "String",
+											"physicalType": "String",
+											"ordinal": 4
 										},
 										"sink": {
 											"name": "ARPU",
