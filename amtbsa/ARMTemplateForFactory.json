@@ -3463,13 +3463,7 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 2000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "upsert",
-								"upsertSettings": {
-									"useTempDB": true,
-									"keys": [
-										"ACCNT_ID"
-									]
-								},
+								"writeBehavior": "insert",
 								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
@@ -3634,7 +3628,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Clean Up File line Null",
+								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -3886,41 +3880,6 @@
 									"type": "Query",
 									"text": {
 										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''', substring(concat('Datafac Exception ',replace(string(activity('Copy data to CC_TEMP_FILE_DETAIL')),'''','''''')),0,499),'''',\n\t' WHERE REVIEW_ID =',pipeline().parameters.reviewId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Clean Up File line Null",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_ARPU '\n    ,'WHERE ACCNT_ID IS NULL;')",
 										"type": "Expression"
 									}
 								}
@@ -18402,73 +18361,33 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "upsert",
-								"upsertSettings": {
-									"useTempDB": true,
-									"keys": [
-										"ACCNT_ID"
-									]
+								"sqlWriterStoredProcedureName": "[[CREDIT_DEV].[insertOrUpdateBillingInfo]",
+								"sqlWriterTableType": "CREDIT_DEV.CC_BILLING_INFO",
+								"storedProcedureTableTypeParameterName": "CC_BILLING_INFO",
+								"storedProcedureParameters": {
+									"accntId": {
+										"type": "String"
+									},
+									"accntNo": {
+										"type": "String"
+									},
+									"arpu": {
+										"type": "Decimal"
+									},
+									"creditGrade": {
+										"type": "Decimal"
+									},
+									"current_dt": {
+										"type": "DateTime"
+									},
+									"user": {
+										"type": "String"
+									}
 								},
-								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
 							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 2
-										},
-										"sink": {
-											"name": "ACCNT_ID",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 1
-										},
-										"sink": {
-											"name": "ACCNT_NO",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"type": "Decimal",
-											"ordinal": 3
-										},
-										"sink": {
-											"name": "ARPU",
-											"type": "Decimal"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String"
-										}
-									}
-								]
-							}
+							"enableSkipIncompatibleRow": true
 						},
 						"inputs": [
 							{
@@ -18568,7 +18487,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
-									"fileName": "CSR_ACCNT_ARPU_20220525_112235_20220705153517.dat"
+									"fileName": "CSR_ACCNT_ARPU_20220525_112235.dat"
 								}
 							}
 						],
