@@ -4194,7 +4194,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU (FILE_ID,PROCESS_TYPE) VALUES (',variables('tempFileDatId'),',''',activity('Lookup FIle Dat').output.firstRow.Prop_0,''')')",
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU (FILE_ID,PROCESS_TYPE) VALUES (',variables('tempFileDatId'),',''',activity('Read 01').output.firstRow.Prop_0,''')')",
 										"type": "Expression"
 									}
 								}
