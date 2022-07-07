@@ -362,53 +362,6 @@
 						"type": "Expression"
 					}
 				}
-			},
-			{
-				"name": "Execute CC_ReviewProcessFileSyncChildren",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "CC_ReviewProcessFileSyncChildren",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"inputPath": {
-							"value": "@pipeline().parameters.inputPath",
-							"type": "Expression"
-						},
-						"SCHEMA": {
-							"value": "@pipeline().parameters.SCHEMA",
-							"type": "Expression"
-						},
-						"CREDIT_USER": {
-							"value": "@pipeline().parameters.CREDIT_USER",
-							"type": "Expression"
-						},
-						"LOV_TYPE_REVIEW": {
-							"value": "@pipeline().parameters.LOV_TYPE_REVIEW",
-							"type": "Expression"
-						},
-						"FILE_TYPE": {
-							"value": "@pipeline().parameters.FILE_TYPE",
-							"type": "Expression"
-						},
-						"moveInputPath": {
-							"value": "@pipeline().parameters.moveInputPath",
-							"type": "Expression"
-						},
-						"FILE_UPDATE_TYPE": {
-							"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
-							"type": "Expression"
-						},
-						"fileInputName": {
-							"value": "@item().name",
-							"type": "Expression"
-						}
-					}
-				}
 			}
 		],
 		"parameters": {
