@@ -67,73 +67,33 @@
 						"type": "AzureSqlSink",
 						"writeBatchSize": 1000,
 						"writeBatchTimeout": "00:30:00",
-						"writeBehavior": "upsert",
-						"upsertSettings": {
-							"useTempDB": true,
-							"keys": [
-								"ACCNT_ID"
-							]
+						"sqlWriterStoredProcedureName": "[CREDIT_DEV].[insertOrUpdateBillingInfo]",
+						"sqlWriterTableType": "CREDIT_DEV.CC_BILLING_INFO",
+						"storedProcedureTableTypeParameterName": "CC_BILLING_INFO",
+						"storedProcedureParameters": {
+							"accntId": {
+								"type": "String"
+							},
+							"accntNo": {
+								"type": "String"
+							},
+							"arpu": {
+								"type": "Decimal"
+							},
+							"creditGrade": {
+								"type": "Decimal"
+							},
+							"current_dt": {
+								"type": "DateTime"
+							},
+							"user": {
+								"type": "String"
+							}
 						},
-						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 2
-								},
-								"sink": {
-									"name": "ACCNT_ID",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 1
-								},
-								"sink": {
-									"name": "ACCNT_NO",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"type": "Decimal",
-									"ordinal": 3
-								},
-								"sink": {
-									"name": "ARPU",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String"
-								}
-							}
-						]
-					}
+					"enableSkipIncompatibleRow": true
 				},
 				"inputs": [
 					{
@@ -233,7 +193,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
-							"fileName": "CSR_ACCNT_ARPU_20220525_112235_20220705153517.dat"
+							"fileName": "CSR_ACCNT_ARPU_20220525_112235.dat"
 						}
 					}
 				],
