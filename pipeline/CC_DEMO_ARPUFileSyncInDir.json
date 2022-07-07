@@ -1,0 +1,195 @@
+{
+	"name": "CC_DEMO_ARPUFileSyncInDir",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get All FIle in Config directory",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "CCLocalFileMasterPath",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"exists"
+					],
+					"storeSettings": {
+						"type": "FileServerReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "If not Have file input",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Filter file Sync",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(empty(activity('Filter file Sync').output.Value),not(activity('Get All FIle in Config directory').output.exists))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Execute ProcessFileSync",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_ReviewProcessFileSync",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"inputPath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"SCHEMA": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"CREDIT_USER": {
+										"value": "@pipeline().parameters.CREDIT_USER",
+										"type": "Expression"
+									},
+									"LOV_TYPE_REVIEW": {
+										"value": "@pipeline().parameters.LOV_TYPE_REVIEW",
+										"type": "Expression"
+									},
+									"FILE_TYPE": {
+										"value": "@pipeline().parameters.FILE_TYPE",
+										"type": "Expression"
+									},
+									"moveInputPath": {
+										"value": "@pipeline().parameters.moveInputPath",
+										"type": "Expression"
+									},
+									"fileNameList": {
+										"value": "@activity('Filter file Sync').output.Value",
+										"type": "Expression"
+									},
+									"FILE_UPDATE_TYPE": {
+										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "insert review process file sync not have input file",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''S'',''File prefix : ',pipeline().parameters.prefixInputFile,' data not found in path ',pipeline().parameters.inputPath,''');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Filter file Sync",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get All FIle in Config directory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get All FIle in Config directory').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"inputPath": {
+				"type": "string"
+			},
+			"prefixInputFile": {
+				"type": "string"
+			},
+			"fileTypeInputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"FILE_TYPE": {
+				"type": "string"
+			},
+			"LOV_TYPE_REVIEW": {
+				"type": "string"
+			},
+			"moveInputPath": {
+				"type": "string"
+			},
+			"FILE_UPDATE_TYPE": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
