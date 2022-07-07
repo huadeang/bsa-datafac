@@ -5351,7 +5351,7 @@
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Set temp file dat Id",
+								"activity": "insert 01",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5368,6 +5368,15 @@
 						"typeProperties": {
 							"source": {
 								"type": "DelimitedTextSource",
+								"additionalColumns": [
+									{
+										"name": "FILE_ID",
+										"value": {
+											"value": "@variables('tempFileDatId')",
+											"type": "Expression"
+										}
+									}
+								],
 								"storeSettings": {
 									"type": "FileServerReadSettings",
 									"recursive": true,
@@ -5393,12 +5402,35 @@
 								"mappings": [
 									{
 										"source": {
+											"name": "FILE_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FILE_ID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"physicalType": "String",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "PROCESS_TYPE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
 											"type": "String",
 											"physicalType": "String",
 											"ordinal": 2
 										},
 										"sink": {
-											"name": "ACCNT_NO",
+											"name": "CA_NO",
 											"type": "String",
 											"physicalType": "varchar"
 										}
@@ -5410,7 +5442,7 @@
 											"ordinal": 3
 										},
 										"sink": {
-											"name": "ACCNT_ID",
+											"name": "BA_NO",
 											"type": "String",
 											"physicalType": "varchar"
 										}
@@ -5433,22 +5465,24 @@
 										"source": {
 											"type": "String",
 											"physicalType": "String",
+											"ordinal": 5
+										},
+										"sink": {
+											"name": "ARPU_DT",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"physicalType": "String",
 											"ordinal": 6
 										},
 										"sink": {
 											"name": "ARPU_REMARK",
 											"type": "String",
 											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "ARPU_DT",
-											"physicalType": "datetime"
 										}
 									}
 								],
@@ -5482,7 +5516,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"Schema": "CREDIT_DEV",
-									"Table": "CC_ARPU"
+									"Table": "CC_TEMP_FILE_ARPU"
 								}
 							}
 						]
@@ -5547,7 +5581,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+								"activity": "Update 09",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6046,6 +6080,123 @@
 												}
 											}
 										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "insert 01",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Read 01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU (FILE_ID,PROCESS_TYPE) VALUES (',variables('tempFileDatId'),',''',activity('Lookup FIle Dat').output.firstRow.Prop_0,''')')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Read 01",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Set temp file dat Id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileDatName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					},
+					{
+						"name": "Update 09",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU \n    SET PROCESS_TYPE = ''09|',string(sub(int(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead),1)),'''\n    WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
+										"type": "Expression"
 									}
 								}
 							]
