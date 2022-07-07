@@ -2571,7 +2571,14 @@
 					{
 						"name": "Write File_copy1_copy1",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "ForEach1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2659,6 +2666,145 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@range(10,37)",
+								"type": "Expression"
+							},
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "Copy data1_copy1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "FileServerReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "FileServerWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true
+									},
+									"inputs": [
+										{
+											"referenceName": "CCLocalFileMasterSplitPipe",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+												"fileName": "CSR_ACCNT_ARPU_20220525_112235_01.dat"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CCLocalFileMasterSplitPipe",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+												"fileName": {
+													"value": "@concat('CSR_ACCNT_ARPU_20220525_112235_',item(),'.dat')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy data1_copy1_copy1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "FileServerReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "FileServerWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true
+									},
+									"inputs": [
+										{
+											"referenceName": "CCLocalFileMasterSplitPipe",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+												"fileName": "CSR_ACCNT_ARPU_20220525_112235_01.sync"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CCLocalFileMasterSplitPipe",
+											"type": "DatasetReference",
+											"parameters": {
+												"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+												"fileName": {
+													"value": "@concat('CSR_ACCNT_ARPU_20220525_112235_',item(),'.sync')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
 					}
 				],
 				"policy": {
