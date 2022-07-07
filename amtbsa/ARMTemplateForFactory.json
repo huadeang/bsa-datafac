@@ -3520,18 +3520,6 @@
 										"source": {
 											"type": "String",
 											"physicalType": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "ARPU_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"physicalType": "String",
 											"ordinal": 6
 										},
 										"sink": {
