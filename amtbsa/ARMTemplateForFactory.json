@@ -3543,7 +3543,7 @@
 								],
 								"typeConversion": true,
 								"typeConversionSettings": {
-									"allowDataTruncation": false,
+									"allowDataTruncation": true,
 									"treatBooleanAsNumber": false,
 									"dateTimeFormat": "yyyyymmdd"
 								}
@@ -3922,7 +3922,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL '\n    ,'WHERE FILE_ID = ',variables('tempFileDatId'),' AND FILE_LINE IS NULL;')",
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_ARPU '\n    ,'WHERE ACCNT_ID IS NULL;')",
 										"type": "Expression"
 									}
 								}
