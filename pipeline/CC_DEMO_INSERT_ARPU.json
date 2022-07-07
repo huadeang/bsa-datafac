@@ -24,61 +24,27 @@
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
-						"additionalColumns": [
-							{
-								"name": "STATUS",
-								"value": "S"
-							},
-							{
-								"name": "FILE_ID",
-								"value": {
-									"value": "@variables('tempFileDatId')",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED",
-								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD",
-								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
-									"type": "Expression"
-								}
-							}
-						],
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 1
 						}
 					},
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBatchSize": 2000,
 						"writeBatchTimeout": "00:30:00",
-						"writeBehavior": "insert",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"ACCNT_ID"
+							]
+						},
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
@@ -89,44 +55,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
 									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "String"
+									"physicalType": "String",
+									"ordinal": 2
 								},
 								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -135,64 +69,79 @@
 								"source": {
 									"type": "String",
 									"physicalType": "String",
-									"ordinal": 1
+									"ordinal": 3
 								},
 								"sink": {
-									"name": "FILE_LINE",
+									"name": "ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "FILE_ID",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 4
 								},
 								"sink": {
-									"name": "FILE_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
+									"name": "ARPU",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
 								"source": {
-									"name": "STATUS",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 5
 								},
 								"sink": {
-									"name": "STATUS",
+									"name": "ARPU_DT",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
 									"type": "String",
-									"physicalType": "char"
+									"physicalType": "String",
+									"ordinal": 6
+								},
+								"sink": {
+									"name": "ARPU_REMARK",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							}
 						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": false,
-							"treatBooleanAsNumber": false
+							"treatBooleanAsNumber": false,
+							"dateTimeFormat": "yyyyyMMdd"
 						}
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
+							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
+							"fileName": "CSR_ACCNT_ARPU_20220525_112235_20220705153517.dat"
 						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "CCTableFileTempDetailSchemaUAT",
-						"type": "DatasetReference"
+						"referenceName": "CC_TableDynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "CREDIT_DEV",
+							"Table": "CC_ARPU"
+						}
 					}
 				]
 			},
