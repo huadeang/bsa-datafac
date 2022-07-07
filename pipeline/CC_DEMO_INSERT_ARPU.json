@@ -102,13 +102,23 @@
 									"type": "String",
 									"physicalType": "varchar"
 								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 5
+								},
+								"sink": {
+									"name": "ARPU_DT",
+									"physicalType": "datetime"
+								}
 							}
 						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
 							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "yyyyymmdd"
+							"dateTimeFormat": "ััััyyyymmdd"
 						}
 					}
 				},
