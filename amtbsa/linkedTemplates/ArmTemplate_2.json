@@ -5427,7 +5427,7 @@
 										"source": {
 											"type": "String",
 											"physicalType": "String",
-											"ordinal": 2
+											"ordinal": 3
 										},
 										"sink": {
 											"name": "CA_NO",
@@ -5439,7 +5439,7 @@
 										"source": {
 											"type": "String",
 											"physicalType": "String",
-											"ordinal": 3
+											"ordinal": 2
 										},
 										"sink": {
 											"name": "BA_NO",
@@ -6172,7 +6172,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+								"activity": "SELECT old 09",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6195,11 +6195,47 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU \n    SET PROCESS_TYPE = ''09|',string(sub(int(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead),1)),'''\n    WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU \n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,CA_NO = NULL \n    WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
 										"type": "Expression"
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "SELECT old 09",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT CA_NO AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_ARPU WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
 						}
 					}
 				],
