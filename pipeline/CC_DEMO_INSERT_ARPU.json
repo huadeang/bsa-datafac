@@ -237,7 +237,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Update 09",
+						"activity": "Update File_Line",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -892,6 +892,303 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Update File_Line",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Update 09",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT FILE_ARPU_ID,IIF(PROCESS_TYPE LIKE ''02%'',CONCAT(PROCESS_TYPE,''|'',ACCNT_NO,''|'',BILLING_ACCNT_ID,''|'',ARPU,''|'',ARPU_DT,''|'',REMARK),PROCESS_TYPE) AS FILE_LINE FROM CREDIT_DEV.CC_TEMP_FILE_ARPU ctfa WHERE FILE_ID = ',variables('tempFileDatId'),';')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": 2000,
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"FILE_ARPU_ID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "FILE_ARPU_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "FILE_LINE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "REF_ROW_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FILE_ID"
+								},
+								"sink": {
+									"name": "CREATED",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"sink": {
+									"name": "CREATED_BY",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "LAST_UPD",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"sink": {
+									"name": "LAST_UPD_BY",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "BILLING_ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "ACCNT_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "CL_LEVEL",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "CL_TYPE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "CL_CHANGE_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "OUTCOME_CD",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "OUTCOME_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "PERM_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "TEMP_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "PREV_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"sink": {
+									"name": "ACTUAL",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "ACTUAL_PERM",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "BILLING_THRESHOLD_SET_ID",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "FBB_FLAG",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"sink": {
+									"name": "LAST_REVIEW_DAT",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"sink": {
+									"name": "MIN_REVIEW",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "AVAILABLE_CREDIT",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "PAYMENT_FLG",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"sink": {
+									"name": "BA_REGISTER_DT",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false,
+							"dateTimeFormat": "yyyyMMdd"
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CC_TableDynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "CREDIT_DEV",
+							"Table": "CC_TEMP_FILE_ARPU"
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
