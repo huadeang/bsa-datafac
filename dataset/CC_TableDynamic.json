@@ -2,7 +2,7 @@
 	"name": "CC_TableDynamic",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlBillingDatabase",
+			"referenceName": "AzureSqlDatabase1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
