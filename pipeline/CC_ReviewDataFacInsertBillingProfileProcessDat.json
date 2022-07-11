@@ -469,8 +469,7 @@
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "yyyyMMdd"
+							"treatBooleanAsNumber": false
 						}
 					}
 				},
@@ -949,8 +948,7 @@
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false,
-							"dateTimeFormat": "yyyyMMdd"
+							"treatBooleanAsNumber": false
 						}
 					}
 				},
