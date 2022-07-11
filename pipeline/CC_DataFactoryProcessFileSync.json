@@ -83,6 +83,9 @@
 			},
 			"executePipeLineName": {
 				"type": "string"
+			},
+			"oldDataIdList": {
+				"type": "string"
 			}
 		},
 		"variables": {
