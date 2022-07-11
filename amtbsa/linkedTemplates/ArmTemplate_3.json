@@ -1817,9 +1817,8 @@
 									},
 									{
 										"source": {
-											"type": "String",
 											"physicalType": "String",
-											"ordinal": 17
+											"ordinal": 18
 										},
 										"sink": {
 											"name": "POST_PAID_FLAG",
@@ -1829,9 +1828,8 @@
 									},
 									{
 										"source": {
-											"type": "String",
 											"physicalType": "String",
-											"ordinal": 18
+											"ordinal": 17
 										},
 										"sink": {
 											"name": "COUNT_SME_MOBILE",
