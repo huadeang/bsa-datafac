@@ -7000,7 +7000,6 @@
 								"value": "@activity('Filter Start With 02').output.Value",
 								"type": "Expression"
 							},
-							"isSequential": false,
 							"batchCount": 20,
 							"activities": [
 								{
