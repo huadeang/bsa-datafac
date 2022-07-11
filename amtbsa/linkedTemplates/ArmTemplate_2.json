@@ -7606,61 +7606,6 @@
 								"mappings": [
 									{
 										"source": {
-											"physicalType": "String",
-											"ordinal": 2
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 3
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 4
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 6
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
 											"name": "DATA_ID"
 										},
 										"sink": {
@@ -7676,7 +7621,56 @@
 										},
 										"sink": {
 											"name": "PROCESS_TYPE",
-											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 2
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 3
+										},
+										"sink": {
+											"name": "CREATED",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 4
+										},
+										"sink": {
+											"name": "CREATED_BY",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 5
+										},
+										"sink": {
+											"name": "LAST_UPD",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 6
+										},
+										"sink": {
+											"name": "LAST_UPD_BY",
 											"physicalType": "varchar"
 										}
 									},
@@ -7687,7 +7681,6 @@
 										},
 										"sink": {
 											"name": "ACCNT_NO",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7698,7 +7691,6 @@
 										},
 										"sink": {
 											"name": "ACCNT_CATEGORY",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7709,7 +7701,6 @@
 										},
 										"sink": {
 											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7720,7 +7711,6 @@
 										},
 										"sink": {
 											"name": "BILL_CYCLE",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7731,7 +7721,6 @@
 										},
 										"sink": {
 											"name": "PAYMENT_METHOD",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7742,7 +7731,6 @@
 										},
 										"sink": {
 											"name": "MASTER_ACCNT_ID",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7753,7 +7741,6 @@
 										},
 										"sink": {
 											"name": "STATUS_CD",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7764,7 +7751,6 @@
 										},
 										"sink": {
 											"name": "BILLING_STATUS_CD",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7775,7 +7761,6 @@
 										},
 										"sink": {
 											"name": "REGISTER_DT",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -7786,7 +7771,6 @@
 										},
 										"sink": {
 											"name": "FBB_FLAG",
-											"type": "String",
 											"physicalType": "char"
 										}
 									},
