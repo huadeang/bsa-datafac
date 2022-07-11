@@ -22592,7 +22592,6 @@
 					"columnDelimiter": "|",
 					"escapeChar": "\\",
 					"firstRowAsHeader": false,
-					"nullValue": "\"\"",
 					"quoteChar": "\""
 				},
 				"schema": []
