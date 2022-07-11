@@ -58,6 +58,10 @@
 									"fileInputName": {
 										"value": "@item().name",
 										"type": "Expression"
+									},
+									"processDatName": {
+										"value": "@pipeline().parameters.processDatName",
+										"type": "Expression"
 									}
 								}
 							}

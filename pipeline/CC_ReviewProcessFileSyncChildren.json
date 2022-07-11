@@ -388,6 +388,9 @@
 			},
 			"fileInputName": {
 				"type": "string"
+			},
+			"processDatName": {
+				"type": "string"
 			}
 		},
 		"variables": {
