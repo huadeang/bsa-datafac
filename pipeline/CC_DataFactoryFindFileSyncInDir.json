@@ -181,6 +181,9 @@
 			},
 			"DATA_TYPE": {
 				"type": "string"
+			},
+			"oldDataIdList": {
+				"type": "string"
 			}
 		},
 		"annotations": []

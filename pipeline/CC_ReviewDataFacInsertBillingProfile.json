@@ -178,6 +178,10 @@
 									"DATA_TYPE": {
 										"value": "@variables('DATA_TYPE')",
 										"type": "Expression"
+									},
+									"oldDataIdList": {
+										"value": "@variables('oldDataIdList')",
+										"type": "Expression"
 									}
 								}
 							}
