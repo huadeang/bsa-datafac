@@ -58,7 +58,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL \n    WHERE FILE_ID IN(SELECT FILE_ID \n                        FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n                        WHERE STATUS = ''S'' \n                        AND FILE_TYPE = ''',variables('FILE_TYPE'),''')')",
+								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_ARPU \n    WHERE FILE_ID IN(SELECT FILE_ID \n                        FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n                        WHERE STATUS = ''S'' \n                        AND FILE_TYPE = ''',variables('FILE_TYPE'),''')')",
 								"type": "Expression"
 							}
 						}
