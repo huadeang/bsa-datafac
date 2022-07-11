@@ -7608,6 +7608,41 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "DELETE OLD RECORD",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "For Each file Sync",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID IN (',replace(replace(replace(replace(replace(replace(replace(string(pipeline().parameters.oldDataIdList),'[',''),']',''),'{',''),'}',''),'\"',''),':',''),'[','DATA_ID'),')')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -7634,6 +7669,9 @@
 						"type": "array"
 					},
 					"executePipeLineName": {
+						"type": "string"
+					},
+					"oldDataIdList": {
 						"type": "string"
 					}
 				},

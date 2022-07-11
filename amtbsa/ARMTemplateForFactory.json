@@ -3591,6 +3591,10 @@
 											"executePipeLineName": {
 												"value": "@pipeline().parameters.executePipeLineName",
 												"type": "Expression"
+											},
+											"oldDataIdList": {
+												"value": "@pipeline().parameters.oldDataIdList",
+												"type": "Expression"
 											}
 										}
 									}
@@ -3679,6 +3683,9 @@
 						"type": "string"
 					},
 					"DATA_TYPE": {
+						"type": "string"
+					},
+					"oldDataIdList": {
 						"type": "string"
 					}
 				},
@@ -8509,6 +8516,41 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "DELETE OLD RECORD",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "For Each file Sync",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID IN (',replace(replace(replace(replace(replace(replace(replace(string(pipeline().parameters.oldDataIdList),'[',''),']',''),'{',''),'}',''),'\"',''),':',''),'[','DATA_ID'),')')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -8536,6 +8578,9 @@
 					},
 					"executePipeLineName": {
 						"type": "string"
+					},
+					"oldDataIdList": {
+						"type": "string"
 					}
 				},
 				"variables": {
@@ -8558,6 +8603,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryProcessFileSyncChildren')]"
 			]
 		},
@@ -12356,6 +12402,10 @@
 											},
 											"DATA_TYPE": {
 												"value": "@variables('DATA_TYPE')",
+												"type": "Expression"
+											},
+											"oldDataIdList": {
+												"value": "@variables('oldDataIdList')",
 												"type": "Expression"
 											}
 										}
