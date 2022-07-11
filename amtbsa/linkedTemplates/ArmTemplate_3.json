@@ -1843,8 +1843,7 @@
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false,
-									"dateTimeFormat": "yyyyMMdd"
+									"treatBooleanAsNumber": false
 								}
 							}
 						},
@@ -2093,7 +2092,13 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"ROW_ID"
+									]
+								},
 								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
@@ -2324,8 +2329,7 @@
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false,
-									"dateTimeFormat": "yyyyMMdd"
+									"treatBooleanAsNumber": false
 								}
 							}
 						},
