@@ -99,55 +99,6 @@
 				}
 			},
 			{
-				"name": "If file size equal and exist",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "Get File size Dat",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@and(activity('Get File size Dat').output.exists,equals(variables('fileDatSize'), string(string(if(contains(activity('Get File size Dat').output,'size'),activity('Get File size Dat').output?.size,0)))))",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "update file dat data not mapping",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''file name data not found/file size no mapping file result ',variables('fileinputName'),'''',\n\t' WHERE REVIEW_ID =',variables('reviewId'),';')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "Setfor file Dat Name",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -260,7 +211,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "If file size equal and exist",
+						"activity": "Get File size Dat",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -277,7 +228,7 @@
 							"value": "file size/name not map",
 							"activities": [
 								{
-									"name": "update file dat data not mapping_copy1",
+									"name": "update file dat data not mapping",
 									"type": "Script",
 									"dependsOn": [],
 									"policy": {
