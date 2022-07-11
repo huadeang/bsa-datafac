@@ -220,7 +220,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Clear Data Temp Table Detail",
+						"activity": "Set old data id list",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -251,7 +251,7 @@
 				}
 			},
 			{
-				"name": "Clear Data Temp Table Detail",
+				"name": "SELECT old data id",
 				"type": "Script",
 				"dependsOn": [],
 				"policy": {
@@ -271,11 +271,31 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_DATA_FACTORY_BILLING_REVIEW  WHERE DATA_ID IN (SELECT DATA_ID  FROM ',variables('SCHEMA'),'.CC_DATA_FACTORY WHERE DATA_TYPE = ''REVIEW_INSERT_BA'') ')",
+								"value": "@concat('SELECT DATA_ID  FROM ',variables('SCHEMA'),'.CC_DATA_FACTORY WHERE DATA_TYPE = ''',variables('DATA_TYPE'),'''')",
 								"type": "Expression"
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Set old data id list",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SELECT old data id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "oldDataIdList",
+					"value": {
+						"value": "@activity('SELECT old data id').output.resultSets[0].rows",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -302,7 +322,7 @@
 			},
 			"executeDatPipeLineName": {
 				"type": "String",
-				"defaultValue": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat"
+				"defaultValue": "CC_ReviewDataFacInsertBillingProfileProcessDat"
 			},
 			"inputPath": {
 				"type": "String"
@@ -315,6 +335,9 @@
 			},
 			"moveInputPath": {
 				"type": "String"
+			},
+			"oldDataIdList": {
+				"type": "Array"
 			}
 		},
 		"annotations": []

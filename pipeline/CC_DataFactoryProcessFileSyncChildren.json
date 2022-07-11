@@ -296,16 +296,16 @@
 							]
 						},
 						{
-							"value": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+							"value": "CC_ReviewDataFacInsertBillingProfileProcessDat",
 							"activities": [
 								{
-									"name": "Execute CC_ReviewInsertBillingAccountNoProcessDat",
+									"name": "Execute CC_ReviewDataFacInsertBillingProfileProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+											"referenceName": "CC_ReviewDataFacInsertBillingProfileProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
