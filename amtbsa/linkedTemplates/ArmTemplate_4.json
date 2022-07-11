@@ -184,6 +184,10 @@
 											"fileInputName": {
 												"value": "@item().name",
 												"type": "Expression"
+											},
+											"processDatName": {
+												"value": "@pipeline().parameters.processDatName",
+												"type": "Expression"
 											}
 										}
 									}
@@ -219,6 +223,9 @@
 						"type": "array"
 					},
 					"FILE_UPDATE_TYPE": {
+						"type": "string"
+					},
+					"processDatName": {
 						"type": "string"
 					}
 				},
@@ -1068,6 +1075,10 @@
 											"FILE_UPDATE_TYPE": {
 												"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
 												"type": "Expression"
+											},
+											"processDatName": {
+												"value": "@pipeline().parameters.processDatName",
+												"type": "Expression"
 											}
 										}
 									}
@@ -1159,6 +1170,9 @@
 						"type": "string"
 					},
 					"FILE_UPDATE_TYPE": {
+						"type": "string"
+					},
+					"processDatName": {
 						"type": "string"
 					}
 				},
@@ -4353,7 +4367,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_DETAIL \n    WHERE FILE_ID IN(SELECT FILE_ID \n                        FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n                        WHERE STATUS = ''S'' \n                        AND FILE_TYPE = ''',variables('FILE_TYPE'),''')')",
+										"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_TEMP_FILE_ARPU \n    WHERE FILE_ID IN(SELECT FILE_ID \n                        FROM ',variables('SCHEMA'),'.CC_TEMP_FILE \n                        WHERE STATUS = ''S'' \n                        AND FILE_TYPE = ''',variables('FILE_TYPE'),''')')",
 										"type": "Expression"
 									}
 								}
@@ -4540,6 +4554,10 @@
 											"FILE_UPDATE_TYPE": {
 												"value": "@variables('FILE_UPDATE_TYPE')",
 												"type": "Expression"
+											},
+											"processDatName": {
+												"value": "@variables('processDatName')",
+												"type": "Expression"
 											}
 										}
 									}
@@ -4625,6 +4643,10 @@
 					"FILE_UPDATE_TYPE": {
 						"type": "String",
 						"defaultValue": "arpu"
+					},
+					"processDatName": {
+						"type": "String",
+						"defaultValue": "CC_ReviewUpdateArpuProcessDat"
 					}
 				},
 				"annotations": []
@@ -4883,6 +4905,10 @@
 											"FILE_UPDATE_TYPE": {
 												"value": "@variables('FILE_UPDATE_TYPE')",
 												"type": "Expression"
+											},
+											"processDatName": {
+												"value": "@variables('processDatName')",
+												"type": "Expression"
 											}
 										}
 									}
@@ -4968,6 +4994,10 @@
 					"FILE_UPDATE_TYPE": {
 						"type": "String",
 						"defaultValue": "credit grade"
+					},
+					"processDatName": {
+						"type": "String",
+						"defaultValue": "CC_ReviewUpdateCreditgradeProcessDat"
 					}
 				},
 				"annotations": []
@@ -5226,6 +5256,10 @@
 											"FILE_UPDATE_TYPE": {
 												"value": "@variables('FILE_UPDATE_TYPE')",
 												"type": "Expression"
+											},
+											"processDatName": {
+												"value": "@variables('processDatName')",
+												"type": "Expression"
 											}
 										}
 									}
@@ -5315,6 +5349,9 @@
 					"FILE_UPDATE_TYPE": {
 						"type": "String",
 						"defaultValue": "payment"
+					},
+					"processDatName": {
+						"type": "String"
 					}
 				},
 				"annotations": []
