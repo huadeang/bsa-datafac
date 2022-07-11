@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewInsertBilling",
+	"name": "CC_ReviewDataFacInsertBillingProfile",
 	"properties": {
 		"activities": [
 			{
