@@ -5586,7 +5586,8 @@
 								"upsertSettings": {
 									"useTempDB": true,
 									"keys": [
-										"ROW_ID"
+										"ROW_ID",
+										"PROFILE_CHG_NO"
 									]
 								},
 								"sqlWriterUseTableLock": false,
