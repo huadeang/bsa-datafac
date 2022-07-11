@@ -659,7 +659,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_DATA_FACTORY_BILLING_CAT_SUBCAT"
+							"Table": "CC_BILLING_CAT_SUBCAT"
 						}
 					}
 				]
