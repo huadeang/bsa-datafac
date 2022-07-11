@@ -326,6 +326,9 @@
 			"FILE_UPDATE_TYPE": {
 				"type": "String",
 				"defaultValue": "arpu"
+			},
+			"processDatName": {
+				"type": "String"
 			}
 		},
 		"annotations": []
