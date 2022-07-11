@@ -332,7 +332,8 @@
 				"defaultValue": "arpu"
 			},
 			"processDatName": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "CC_ReviewUpdateArpuProcessDat"
 			}
 		},
 		"annotations": []
