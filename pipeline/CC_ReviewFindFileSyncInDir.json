@@ -188,6 +188,9 @@
 			},
 			"FILE_UPDATE_TYPE": {
 				"type": "string"
+			},
+			"processDatName": {
+				"type": "string"
 			}
 		},
 		"annotations": []
