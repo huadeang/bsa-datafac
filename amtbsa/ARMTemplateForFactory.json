@@ -14545,7 +14545,7 @@
 						"typeProperties": {
 							"variableName": "fileDatSize",
 							"value": {
-								"value": "@split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1]",
+								"value": "@trim(split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1])",
 								"type": "Expression"
 							}
 						}
