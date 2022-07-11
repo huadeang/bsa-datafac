@@ -735,7 +735,6 @@
 								},
 								"sink": {
 									"name": "PROCESS_TYPE",
-									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
@@ -815,8 +814,7 @@
 									"ordinal": 9
 								},
 								"sink": {
-									"name": "BILLING_STATUS_CD",
-									"type": "String",
+									"name": "ACCNT_SUB_CATEGORY",
 									"physicalType": "varchar"
 								}
 							},
@@ -826,7 +824,7 @@
 									"ordinal": 10
 								},
 								"sink": {
-									"name": "ACCNT_SUB_CATEGORY",
+									"name": "BILL_CYCLE",
 									"physicalType": "varchar"
 								}
 							},
