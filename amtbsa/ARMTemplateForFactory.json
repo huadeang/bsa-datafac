@@ -2281,7 +2281,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_REVIEW",
+								"activity": "Copy data to CC_PROFILE_CHANGE",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2312,7 +2312,7 @@
 						}
 					},
 					{
-						"name": "Copy data to CC_BILLING_REVIEW",
+						"name": "Copy data to CC_PROFILE_CHANGE",
 						"type": "Copy",
 						"dependsOn": [
 							{
