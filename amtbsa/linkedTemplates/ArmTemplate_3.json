@@ -3269,31 +3269,7 @@
 											"ordinal": 4
 										},
 										"sink": {
-											"name": "ARPU",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "ARPU_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 6
-										},
-										"sink": {
-											"name": "REMARK",
+											"name": "CREDIT_GRADE",
 											"type": "String",
 											"physicalType": "varchar"
 										}

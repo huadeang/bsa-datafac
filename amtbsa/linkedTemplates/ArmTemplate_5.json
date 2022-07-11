@@ -296,13 +296,6 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "CC_ReviewUpdateCreditgrade",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					},
-					{
-						"pipelineReference": {
 							"referenceName": "CC_ReviewUpdatePayment",
 							"type": "PipelineReference"
 						},
