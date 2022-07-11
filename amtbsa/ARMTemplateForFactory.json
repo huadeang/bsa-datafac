@@ -5161,6 +5161,7 @@
 									{
 										"source": {
 											"name": "ROW_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5172,6 +5173,7 @@
 									{
 										"source": {
 											"name": "CREATED",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5183,6 +5185,7 @@
 									{
 										"source": {
 											"name": "CREATED_BY",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5194,6 +5197,7 @@
 									{
 										"source": {
 											"name": "LAST_UPD",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5205,6 +5209,7 @@
 									{
 										"source": {
 											"name": "LAST_UPD_BY",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5216,6 +5221,7 @@
 									{
 										"source": {
 											"name": "ACCNT_NO",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5227,6 +5233,7 @@
 									{
 										"source": {
 											"name": "ACCNT_CATEGORY",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5238,6 +5245,7 @@
 									{
 										"source": {
 											"name": "ACCNT_SUB_CATEGORY",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5249,6 +5257,7 @@
 									{
 										"source": {
 											"name": "BILL_CYCLE",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5260,6 +5269,7 @@
 									{
 										"source": {
 											"name": "PAYMENT_METHOD",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5271,6 +5281,7 @@
 									{
 										"source": {
 											"name": "MASTER_ACCNT_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5282,6 +5293,7 @@
 									{
 										"source": {
 											"name": "STATUS_CD",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5293,6 +5305,7 @@
 									{
 										"source": {
 											"name": "BILLING_STATUS_CD",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5304,6 +5317,7 @@
 									{
 										"source": {
 											"name": "REGISTER_DT",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -5315,7 +5329,8 @@
 									{
 										"source": {
 											"name": "FBB_FLAG",
-											"physicalType": "char"
+											"type": "String",
+											"physicalType": "varchar"
 										},
 										"sink": {
 											"name": "FBB_FLAG",
@@ -5326,30 +5341,39 @@
 									{
 										"source": {
 											"name": "SUPPEND_FLAG",
+											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
-											"name": "SUPPEND_FLAG ",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"name": "COUNT_MOBILE",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "COUNT_MOBILE",
+											"name": "SUPPEND_FLAG",
+											"type": "String",
 											"physicalType": "char"
 										}
 									},
 									{
 										"source": {
-											"name": "SUM_MAIN_PRO"
+											"name": "COUNT_MOBILE",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "COUNT_MOBILE",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "SUM_MAIN_PRO",
+											"type": "String",
+											"physicalType": "varchar"
 										},
 										"sink": {
 											"name": "SUM_MAIN_PRO",
-											"physicalType": "int"
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 7,
+											"precision": 22
 										}
 									}
 								],
