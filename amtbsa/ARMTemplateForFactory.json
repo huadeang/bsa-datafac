@@ -8545,7 +8545,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID IN (',replace(replace(replace(replace(replace(replace(replace(string(pipeline().parameters.oldDataIdList),'[',''),']',''),'{',''),'}',''),'\"',''),':',''),'[','DATA_ID'),')')",
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID IN (',replace(replace(replace(replace(replace(replace(string(pipeline().parameters.oldDataIdList),'[',''),']',''),'{',''),'}',''),':',''),'[','\"DATA_ID\"'),')')",
 										"type": "Expression"
 									}
 								}
