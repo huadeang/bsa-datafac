@@ -346,6 +346,9 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "CC_ChangeCatSubcatDataFactoryInsertProfileChangeProcessDat"
 						}
 					],
 					"defaultActivities": [
