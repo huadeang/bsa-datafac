@@ -3768,7 +3768,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFactoryInsertBillingAccountNo')]",
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFacInsertBillingProfile')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -3990,7 +3990,14 @@
 					{
 						"name": "Clear CC_BILLING_REVIEW",
 						"type": "Script",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set old data id list",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -4013,6 +4020,54 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "SELECT old data id",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('SELECT DATA_ID  FROM ',variables('SCHEMA'),'.CC_DATA_FACTORY WHERE DATA_TYPE = ''',variables('DATA_TYPE'),'''')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set old data id list",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SELECT old data id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "oldDataIdList",
+							"value": {
+								"value": "@activity('SELECT old data id').output.resultSets[0].rows",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -4043,7 +4098,7 @@
 					},
 					"executeDatPipeLineName": {
 						"type": "String",
-						"defaultValue": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat"
+						"defaultValue": "CC_ReviewDataFacInsertBillingProfileProcessDat"
 					},
 					"inputPath": {
 						"type": "String"
@@ -4056,6 +4111,9 @@
 					},
 					"moveInputPath": {
 						"type": "String"
+					},
+					"oldDataIdList": {
+						"type": "Array"
 					}
 				},
 				"annotations": []
@@ -4620,7 +4678,7 @@
 					},
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_UAT"
+						"defaultValue": "CREDIT_DEV"
 					},
 					"moveInputPath": {
 						"type": "String"
