@@ -100,6 +100,10 @@
 									"FILE_UPDATE_TYPE": {
 										"value": "@pipeline().parameters.FILE_UPDATE_TYPE",
 										"type": "Expression"
+									},
+									"processDatName": {
+										"value": "@pipeline().parameters.processDatName",
+										"type": "Expression"
 									}
 								}
 							}
