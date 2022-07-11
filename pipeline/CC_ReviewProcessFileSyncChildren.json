@@ -267,7 +267,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewTempfileProcessFileDat",
+											"referenceName": "CC_ReviewUpdateArpuProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
