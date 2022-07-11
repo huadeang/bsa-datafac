@@ -245,6 +245,10 @@
 									"FILE_UPDATE_TYPE": {
 										"value": "@variables('FILE_UPDATE_TYPE')",
 										"type": "Expression"
+									},
+									"processDatName": {
+										"value": "@variables('processDatName')",
+										"type": "Expression"
 									}
 								}
 							}
