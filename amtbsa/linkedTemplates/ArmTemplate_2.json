@@ -7315,7 +7315,6 @@
 									{
 										"source": {
 											"name": "ROW_ID",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7327,7 +7326,6 @@
 									{
 										"source": {
 											"name": "CREATED",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7339,7 +7337,6 @@
 									{
 										"source": {
 											"name": "CREATED_BY",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7351,7 +7348,6 @@
 									{
 										"source": {
 											"name": "LAST_UPD",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7363,7 +7359,6 @@
 									{
 										"source": {
 											"name": "LAST_UPD_BY",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7375,7 +7370,6 @@
 									{
 										"source": {
 											"name": "ACCNT_NO",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7387,7 +7381,6 @@
 									{
 										"source": {
 											"name": "ACCNT_CATEGORY",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7399,7 +7392,6 @@
 									{
 										"source": {
 											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7411,7 +7403,6 @@
 									{
 										"source": {
 											"name": "BILL_CYCLE",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7423,7 +7414,6 @@
 									{
 										"source": {
 											"name": "PAYMENT_METHOD",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7435,7 +7425,6 @@
 									{
 										"source": {
 											"name": "MASTER_ACCNT_ID",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7447,7 +7436,6 @@
 									{
 										"source": {
 											"name": "STATUS_CD",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7459,7 +7447,6 @@
 									{
 										"source": {
 											"name": "BILLING_STATUS_CD",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7471,7 +7458,6 @@
 									{
 										"source": {
 											"name": "REGISTER_DT",
-											"type": "String",
 											"physicalType": "varchar"
 										},
 										"sink": {
@@ -7483,7 +7469,6 @@
 									{
 										"source": {
 											"name": "FBB_FLAG",
-											"type": "String",
 											"physicalType": "char"
 										},
 										"sink": {
