@@ -614,8 +614,7 @@
 							},
 							{
 								"source": {
-									"name": "COUNT_MOBILE",
-									"physicalType": "varchar"
+									"name": "SUM_MAIN_PRO"
 								},
 								"sink": {
 									"name": "SUM_MAIN_PRO",
