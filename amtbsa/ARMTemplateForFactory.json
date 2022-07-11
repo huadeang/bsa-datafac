@@ -5066,7 +5066,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_REVIEW",
+								"activity": "Copy data to CC_BILLING_CAT_SUBCAT",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5097,7 +5097,7 @@
 						}
 					},
 					{
-						"name": "Copy data to CC_BILLING_REVIEW",
+						"name": "Copy data to CC_BILLING_CAT_SUBCAT",
 						"type": "Copy",
 						"dependsOn": [
 							{
