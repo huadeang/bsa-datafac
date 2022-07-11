@@ -326,6 +326,10 @@
 			"FILE_UPDATE_TYPE": {
 				"type": "String",
 				"defaultValue": "credit grade"
+			},
+			"processDatName": {
+				"type": "String",
+				"defaultValue": "CC_ReviewUpdateCreditgradeProcessDat"
 			}
 		},
 		"annotations": []
