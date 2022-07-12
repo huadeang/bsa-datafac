@@ -402,7 +402,8 @@
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"ROW_ID"
+								"ACCNT_ID",
+								"BILLING_ACCNT_ID"
 							]
 						},
 						"sqlWriterUseTableLock": false,
