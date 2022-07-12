@@ -1,5 +1,5 @@
 {
-	"name": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat_copy1",
+	"name": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat",
 	"properties": {
 		"activities": [
 			{
