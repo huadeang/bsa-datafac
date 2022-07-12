@@ -636,30 +636,13 @@
 				"inputs": [
 					{
 						"referenceName": "CCLocalFileMasterSplitPipe",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "CC_TableDynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"Schema": {
-								"value": "@pipeline().parameters.SCHEMA",
-								"type": "Expression"
-							},
-							"Table": "CC_DATA_FACTORY_SCORE_VALUE"
-						}
+						"type": "DatasetReference"
 					}
 				]
 			},
