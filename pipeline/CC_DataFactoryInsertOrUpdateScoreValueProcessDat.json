@@ -909,18 +909,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "DATA_SCORE_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
-								},
-								"sink": {
-									"name": "ROW_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
-								}
-							},
-							{
-								"source": {
 									"name": "ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
