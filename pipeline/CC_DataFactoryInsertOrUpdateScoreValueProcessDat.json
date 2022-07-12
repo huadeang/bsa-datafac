@@ -624,17 +624,6 @@
 									"type": "String",
 									"physicalType": "varchar"
 								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 31
-								},
-								"sink": {
-									"name": "PROFILE_COMPLETE_FLG",
-									"type": "String",
-									"physicalType": "varchar"
-								}
 							}
 						],
 						"typeConversion": true,
