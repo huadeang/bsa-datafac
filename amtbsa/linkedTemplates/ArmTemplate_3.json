@@ -831,7 +831,13 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_SCORE_VALUE",
+								"activity": "Merge ca To cc_scorevalue",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Merge Ba To cc_scorevalue",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -862,488 +868,13 @@
 						}
 					},
 					{
-						"name": "Copy data to CC_SCORE_VALUE",
-						"type": "Copy",
+						"name": "Merge Ba To cc_scorevalue",
+						"type": "Script",
 						"dependsOn": [
 							{
 								"activity": "Update 09",
 								"dependencyConditions": [
 									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "upsert",
-								"upsertSettings": {
-									"useTempDB": true,
-									"keys": [
-										"ACCNT_ID",
-										"BILLING_ACCNT_ID"
-									]
-								},
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									},
-									"path": "credit-control/logs"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "DATA_SCORE_ID",
-											"type": "Int64",
-											"physicalType": "bigint"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "Int64",
-											"physicalType": "bigint"
-										}
-									},
-									{
-										"source": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "REF_ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILLING_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CL_LEVEL",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CL_LEVEL",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "SCORE_RANGE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "SCORE_RANGE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CL_TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CL_TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CL_CHANGE_REASON",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CL_CHANGE_REASON",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "OUTCOME_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "OUTCOME_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "OUTCOME_REASON",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "OUTCOME_REASON",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										},
-										"sink": {
-											"name": "CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "PERM_CREDIT_LIMIT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PERM_CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "TEMP_CREDIT_LIMIT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "TEMP_CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "PREV_CREDIT_LIMIT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PREV_CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "PREV_SCORE_RANGE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PREV_SCORE_RANGE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACTUAL",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACTUAL",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "ACTUAL_PERM",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACTUAL_PERM",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_CREDIT_LIMIT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILLING_CREDIT_LIMIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_THRESHOLD_SET_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILLING_THRESHOLD_SET_ID",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 0,
-											"precision": 10
-										}
-									},
-									{
-										"source": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										},
-										"sink": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_REVIEW_DAT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_REVIEW_DAT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "MIN_REVIEW",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "MIN_REVIEW",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "AVAILABLE_CREDIT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "AVAILABLE_CREDIT",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									},
-									{
-										"source": {
-											"name": "PAYMENT_FLG",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PAYMENT_FLG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									},
-									{
-										"source": {
-											"name": "BA_REGISTER_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BA_REGISTER_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CC_TableDynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"Schema": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"Table": "CC_SCORE_VALUE"
-								}
-							}
-						]
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception1",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Copy data to CC_SCORE_VALUE",
-								"dependencyConditions": [
-									"Failed"
 								]
 							}
 						],
@@ -1364,7 +895,42 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Copy data to CC_SCORE_VALUE').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('MERGE CREDIT_DATA_FAC.CC_SCORE_VALUE AS TARGET\nUSING CREDIT_DATA_FAC.CC_DATA_FACTORY_SCORE_VALUE AS SOURCE\nON (TARGET.ACCNT_ID = SOURCE.ACCNT_ID)\nWHEN MATCHED AND SOURCE.DATA_ID = ',pipeline().parameters.dataId,' AND SOURCE.CL_LEVEL = ''BA'' AND SOURCE.PROCESS_TYPE LIKE ''02%'' AND TARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID \nTHEN \nUPDATE\nSET\n\tTARGET.REF_ROW_ID = SOURCE.ROW_ID ,\n\tTARGET.CREATED = SOURCE.CREATED ,\n\tTARGET.CREATED_BY = SOURCE. CREATED_BY,\n\tTARGET.LAST_UPD = SOURCE.LAST_UPD ,\n\tTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\n\tTARGET.ACCNT_ID = SOURCE.ACCNT_ID ,\n\tTARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID,\n\tTARGET.ACCNT_NO = SOURCE.ACCNT_NO ,\n\tTARGET.CL_LEVEL = SOURCE.CL_LEVEL ,\n\tTARGET.SCORE_RANGE = SOURCE.SCORE_RANGE,\n\tTARGET.CL_TYPE = SOURCE.CL_TYPE ,\n\tTARGET.CL_CHANGE_REASON = SOURCE.CL_CHANGE_REASON,\n\tTARGET.OUTCOME_CD = SOURCE.OUTCOME_CD,\n\tTARGET.OUTCOME_REASON = SOURCE.OUTCOME_REASON,\n\tTARGET.CREDIT_LIMIT = SOURCE.CREDIT_LIMIT,\n\tTARGET.PERM_CREDIT_LIMIT = SOURCE.PERM_CREDIT_LIMIT,\n\tTARGET.TEMP_CREDIT_LIMIT = SOURCE.TEMP_CREDIT_LIMIT,\n\tTARGET.PREV_CREDIT_LIMIT = SOURCE.PREV_CREDIT_LIMIT,\n\tTARGET.PREV_SCORE_RANGE = SOURCE.PREV_SCORE_RANGE,\n\tTARGET.ACTUAL = SOURCE.ACTUAL,\n\tTARGET.ACTUAL_PERM = SOURCE.ACTUAL_PERM,\n\tTARGET.BILLING_CREDIT_LIMIT = SOURCE.BILLING_CREDIT_LIMIT ,\n\tTARGET.BILLING_THRESHOLD_SET_ID = SOURCE.BILLING_THRESHOLD_SET_ID ,\n\tTARGET.FBB_FLAG = SOURCE.FBB_FLAG ,\n\tTARGET.LAST_REVIEW_DAT = SOURCE.LAST_REVIEW_DAT ,\n\tTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW ,\n\tTARGET.AVAILABLE_CREDIT = SOURCE.AVAILABLE_CREDIT ,\n\tTARGET.PAYMENT_FLG = SOURCE.PAYMENT_FLG ,\n\tTARGET.BA_REGISTER_DT = SOURCE.BA_REGISTER_DT\nWHEN NOT MATCHED BY TARGET AND SOURCE.DATA_ID = ',pipeline().parameters.dataId,' AND SOURCE.CL_LEVEL = ''BA'' AND SOURCE.PROCESS_TYPE LIKE ''02%'' \nTHEN INSERT (REF_ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tBILLING_ACCNT_ID ,\n\tACCNT_NO ,\n\tCL_LEVEL ,\n\tSCORE_RANGE ,\n\tCL_TYPE ,\n\tCL_CHANGE_REASON ,\n\tOUTCOME_CD ,\n\tOUTCOME_REASON ,\n\tCREDIT_LIMIT ,\n\tPERM_CREDIT_LIMIT ,\n\tTEMP_CREDIT_LIMIT ,\n\tPREV_CREDIT_LIMIT ,\n\tPREV_SCORE_RANGE ,\n\tACTUAL ,\n\tACTUAL_PERM ,\n\tBILLING_CREDIT_LIMIT ,\n\tBILLING_THRESHOLD_SET_ID ,\n\tFBB_FLAG ,\n\tLAST_REVIEW_DAT ,\n\tMIN_REVIEW ,\n\tAVAILABLE_CREDIT ,\n\tPAYMENT_FLG ,\n\tBA_REGISTER_DT ) VALUES (SOURCE.ROW_ID ,\n\tSOURCE.CREATED ,\n\tSOURCE. CREATED_BY,\n\tSOURCE.LAST_UPD ,\n\tSOURCE.LAST_UPD_BY,\n\tSOURCE.ACCNT_ID ,\n\tSOURCE.BILLING_ACCNT_ID,\n\tSOURCE.ACCNT_NO ,\n\tSOURCE.CL_LEVEL ,\n\tSOURCE.SCORE_RANGE,\n\tSOURCE.CL_TYPE ,\n\tSOURCE.CL_CHANGE_REASON,\n\tSOURCE.OUTCOME_CD,\n\tSOURCE.OUTCOME_REASON,\n\tSOURCE.CREDIT_LIMIT,\n\tSOURCE.PERM_CREDIT_LIMIT,\n\tSOURCE.TEMP_CREDIT_LIMIT,\n\tSOURCE.PREV_CREDIT_LIMIT,\n\tSOURCE.PREV_SCORE_RANGE,\n\tSOURCE.ACTUAL,\n\tSOURCE.ACTUAL_PERM,\n\tSOURCE.BILLING_CREDIT_LIMIT ,\n\tSOURCE.BILLING_THRESHOLD_SET_ID ,\n\tSOURCE.FBB_FLAG ,\n\tSOURCE.LAST_REVIEW_DAT ,\n\tSOURCE.MIN_REVIEW ,\n\tSOURCE.AVAILABLE_CREDIT ,\n\tSOURCE.PAYMENT_FLG ,\n\tSOURCE.BA_REGISTER_DT);')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Merge ca To cc_scorevalue",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Update 09",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('MERGE CREDIT_DATA_FAC.CC_SCORE_VALUE AS TARGET\n\tUSING CREDIT_DATA_FAC.CC_DATA_FACTORY_SCORE_VALUE AS SOURCE\nON\n(TARGET.ACCNT_ID = SOURCE.ACCNT_ID)\nWHEN MATCHED\nAND SOURCE.DATA_ID = ',pipeline().parameters.dataId,'\nAND SOURCE.PROCESS_TYPE LIKE ''02%''\nAND SOURCE.CL_LEVEL = ''CA''\nTHEN \nUPDATE\nSET\n\tTARGET.REF_ROW_ID = SOURCE.ROW_ID ,\n\tTARGET.CREATED = SOURCE.CREATED ,\n\tTARGET.CREATED_BY = SOURCE. CREATED_BY,\n\tTARGET.LAST_UPD = SOURCE.LAST_UPD ,\n\tTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\n\tTARGET.ACCNT_ID = SOURCE.ACCNT_ID ,\n\tTARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID,\n\tTARGET.ACCNT_NO = SOURCE.ACCNT_NO ,\n\tTARGET.CL_LEVEL = SOURCE.CL_LEVEL ,\n\tTARGET.SCORE_RANGE = SOURCE.SCORE_RANGE,\n\tTARGET.CL_TYPE = SOURCE.CL_TYPE ,\n\tTARGET.CL_CHANGE_REASON = SOURCE.CL_CHANGE_REASON,\n\tTARGET.OUTCOME_CD = SOURCE.OUTCOME_CD,\n\tTARGET.OUTCOME_REASON = SOURCE.OUTCOME_REASON,\n\tTARGET.CREDIT_LIMIT = SOURCE.CREDIT_LIMIT,\n\tTARGET.PERM_CREDIT_LIMIT = SOURCE.PERM_CREDIT_LIMIT,\n\tTARGET.TEMP_CREDIT_LIMIT = SOURCE.TEMP_CREDIT_LIMIT,\n\tTARGET.PREV_CREDIT_LIMIT = SOURCE.PREV_CREDIT_LIMIT,\n\tTARGET.PREV_SCORE_RANGE = SOURCE.PREV_SCORE_RANGE,\n\tTARGET.ACTUAL = SOURCE.ACTUAL,\n\tTARGET.ACTUAL_PERM = SOURCE.ACTUAL_PERM,\n\tTARGET.BILLING_CREDIT_LIMIT = SOURCE.BILLING_CREDIT_LIMIT ,\n\tTARGET.BILLING_THRESHOLD_SET_ID = SOURCE.BILLING_THRESHOLD_SET_ID ,\n\tTARGET.FBB_FLAG = SOURCE.FBB_FLAG ,\n\tTARGET.LAST_REVIEW_DAT = SOURCE.LAST_REVIEW_DAT ,\n\tTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW ,\n\tTARGET.AVAILABLE_CREDIT = SOURCE.AVAILABLE_CREDIT ,\n\tTARGET.PAYMENT_FLG = SOURCE.PAYMENT_FLG ,\n\tTARGET.BA_REGISTER_DT = SOURCE.BA_REGISTER_DT\n\tWHEN NOT MATCHED BY TARGET\n\tAND SOURCE.DATA_ID = ',pipeline().parameters.dataId,'\n\tAND SOURCE.PROCESS_TYPE LIKE ''02%''\n\tAND SOURCE.CL_LEVEL = ''CA''\nTHEN\nINSERT\n\t(REF_ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tBILLING_ACCNT_ID ,\n\tACCNT_NO ,\n\tCL_LEVEL ,\n\tSCORE_RANGE ,\n\tCL_TYPE ,\n\tCL_CHANGE_REASON ,\n\tOUTCOME_CD ,\n\tOUTCOME_REASON ,\n\tCREDIT_LIMIT ,\n\tPERM_CREDIT_LIMIT ,\n\tTEMP_CREDIT_LIMIT ,\n\tPREV_CREDIT_LIMIT ,\n\tPREV_SCORE_RANGE ,\n\tACTUAL ,\n\tACTUAL_PERM ,\n\tBILLING_CREDIT_LIMIT ,\n\tBILLING_THRESHOLD_SET_ID ,\n\tFBB_FLAG ,\n\tLAST_REVIEW_DAT ,\n\tMIN_REVIEW ,\n\tAVAILABLE_CREDIT ,\n\tPAYMENT_FLG ,\n\tBA_REGISTER_DT )\nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE. CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.ACCNT_ID ,\n SOURCE.BILLING_ACCNT_ID,\n SOURCE.ACCNT_NO ,\n SOURCE.CL_LEVEL ,\n SOURCE.SCORE_RANGE,\n SOURCE.CL_TYPE ,\n SOURCE.CL_CHANGE_REASON,\n SOURCE.OUTCOME_CD,\n SOURCE.OUTCOME_REASON,\n SOURCE.CREDIT_LIMIT,\n SOURCE.PERM_CREDIT_LIMIT,\n SOURCE.TEMP_CREDIT_LIMIT,\n SOURCE.PREV_CREDIT_LIMIT,\n SOURCE.PREV_SCORE_RANGE,\n SOURCE.ACTUAL,\n SOURCE.ACTUAL_PERM,\n SOURCE.BILLING_CREDIT_LIMIT ,\n SOURCE.BILLING_THRESHOLD_SET_ID ,\n SOURCE.FBB_FLAG ,\n SOURCE.LAST_REVIEW_DAT ,\n SOURCE.MIN_REVIEW ,\n SOURCE.AVAILABLE_CREDIT ,\n SOURCE.PAYMENT_FLG ,\n SOURCE.BA_REGISTER_DT);')",
 										"type": "Expression"
 									}
 								}
