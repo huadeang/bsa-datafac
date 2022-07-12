@@ -1,5 +1,5 @@
 {
-	"name": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat_copy1",
+	"name": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat",
 	"properties": {
 		"activities": [
 			{
