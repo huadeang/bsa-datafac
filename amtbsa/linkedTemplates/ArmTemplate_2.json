@@ -8671,6 +8671,18 @@
 								"mappings": [
 									{
 										"source": {
+											"name": "DATA_NEGO_ID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										}
+									},
+									{
+										"source": {
 											"name": "ROW_ID",
 											"type": "String",
 											"physicalType": "varchar"
