@@ -8346,7 +8346,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
-							"batchCount": 5,
+							"batchCount": 10,
 							"activities": [
 								{
 									"name": "Execute CC_ReviewProcessFileSyncChildren",

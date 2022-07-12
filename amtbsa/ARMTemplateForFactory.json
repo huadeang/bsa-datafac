@@ -9667,7 +9667,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
-							"batchCount": 5,
+							"batchCount": 10,
 							"activities": [
 								{
 									"name": "Execute CC_ReviewProcessFileSyncChildren",
@@ -20724,7 +20724,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT * FROM CREDIT_DEV.CC_TEMP_FILE WHERE FILE_ID = 675;",
+								"sqlReaderQuery": "SELECT * FROM CREDIT_DATA_FAC.CC_DATA_FACTORY_NEGOTIATION_VALUE WHERE DATA_ID = 396 AND PROCESS_TYPE LIKE '02%';",
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -20732,12 +20732,267 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"REF_ROW_ID"
+									]
+								},
 								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
 							"enableStaging": false,
-							"enableSkipIncompatibleRow": true
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobStorage3",
+										"type": "LinkedServiceReference"
+									},
+									"path": "credit-control/logs"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REF_ROW_ID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CREATED",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED_BY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CREATED_BY",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD_BY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD_BY",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "REQ_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REQ_ID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCNT_ID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BILLING_ACCNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BILLING_ACCNT_ID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NEGO_CREDIT_LIMIT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NEGO_CREDIT_LIMIT",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "AR_BALANCE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AR_BALANCE",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "AVAILABLE_FOR_MONTHLY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AVAILABLE_FOR_MONTHLY",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "PRICE_MAIN_PRO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRICE_MAIN_PRO",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "MULTIPLIER",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MULTIPLIER",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "BA_SCORE_RANGE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BA_SCORE_RANGE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CL_BEFORE_NEGO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CL_BEFORE_NEGO",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "REASON_BEF_NEGO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REASON_BEF_NEGO",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CUSTOMER_REQUEST_FLG",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CUSTOMER_REQUEST_FLG",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CUS_REQ_BALANCE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CUS_REQ_BALANCE",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "NEGO_STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NEGO_STATUS",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "REASON_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REASON_CODE",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CHANNEL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CHANNEL",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CL_BEFORE_NEGO_PERM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CL_BEFORE_NEGO_PERM",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "CL_BEFORE_NEGO_TEMP",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CL_BEFORE_NEGO_TEMP",
+											"type": "Decimal"
+										}
+									}
+								]
+							}
 						},
 						"inputs": [
 							{
@@ -20751,8 +21006,8 @@
 								"referenceName": "CC_TableDynamic",
 								"type": "DatasetReference",
 								"parameters": {
-									"Schema": "CREDIT_UAT",
-									"Table": "CC_TEMP_FILE"
+									"Schema": "CREDIT_DATA_FAC",
+									"Table": "CC_NEGOTIATION_VALUE"
 								}
 							}
 						]
@@ -20801,7 +21056,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]",
 				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage3')]"
 			]
 		},
 		{
