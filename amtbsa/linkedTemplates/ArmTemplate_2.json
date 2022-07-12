@@ -5851,14 +5851,7 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "upsert",
-								"upsertSettings": {
-									"useTempDB": true,
-									"keys": [
-										"ROW_ID",
-										"PROFILE_CHG_NO"
-									]
-								},
+								"writeBehavior": "insert",
 								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
@@ -7107,13 +7100,7 @@
 								"type": "AzureSqlSink",
 								"writeBatchSize": 1000,
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "upsert",
-								"upsertSettings": {
-									"useTempDB": true,
-									"keys": [
-										"ROW_ID"
-									]
-								},
+								"writeBehavior": "insert",
 								"sqlWriterUseTableLock": false,
 								"disableMetricsCollection": false
 							},
@@ -8679,7 +8666,8 @@
 								"upsertSettings": {
 									"useTempDB": true,
 									"keys": [
-										"ROW_ID"
+										"ACCNT_ID",
+										"BILLING_ACCNT_ID"
 									]
 								},
 								"sqlWriterUseTableLock": false,
