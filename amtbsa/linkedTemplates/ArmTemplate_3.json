@@ -835,7 +835,8 @@
 								"mappings": [
 									{
 										"source": {
-											"name": "DATA_ID"
+											"name": "DATA_ID",
+											"type": "String"
 										},
 										"sink": {
 											"name": "DATA_ID",
@@ -845,160 +846,194 @@
 									},
 									{
 										"source": {
+											"type": "String",
+											"physicalType": "String",
 											"ordinal": 1
 										},
 										"sink": {
 											"name": "PROCESS_TYPE",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 2
 										},
 										"sink": {
 											"name": "ROW_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 3
 										},
 										"sink": {
 											"name": "CREATED",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 4
 										},
 										"sink": {
 											"name": "CREATED_BY",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 5
 										},
 										"sink": {
 											"name": "LAST_UPD",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 6
 										},
 										"sink": {
 											"name": "LAST_UPD_BY",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 7
 										},
 										"sink": {
 											"name": "REQ_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 8
 										},
 										"sink": {
 											"name": "ACCNT_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 9
 										},
 										"sink": {
 											"name": "BILLING_ACCNT_ID",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 10
 										},
 										"sink": {
 											"name": "NEGO_CREDIT_LIMIT",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
+											"physicalType": "String",
 											"ordinal": 11
 										},
 										"sink": {
 											"name": "AR_BALANCE",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 12
 										},
 										"sink": {
 											"name": "AVAILABLE_FOR_MONTHLY",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 13
 										},
 										"sink": {
 											"name": "PRICE_MAIN_PRO",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 14
 										},
 										"sink": {
 											"name": "MULTIPLIER",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 15
 										},
 										"sink": {
 											"name": "BA_SCORE_RANGE",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 16
 										},
 										"sink": {
 											"name": "CL_BEFORE_NEGO",
-											"physicalType": "char"
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
@@ -1008,6 +1043,7 @@
 										},
 										"sink": {
 											"name": "REASON_BEF_NEGO",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
@@ -1018,58 +1054,79 @@
 										},
 										"sink": {
 											"name": "CUSTOMER_REQUEST_FLG",
+											"type": "String",
 											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 17
 										},
 										"sink": {
-											"name": "CUS_REQ_BALANCE"
+											"name": "CUS_REQ_BALANCE",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 18
 										},
 										"sink": {
-											"name": "NEGO_STATUS"
+											"name": "NEGO_STATUS",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"physicalType": "String",
 											"ordinal": 19
 										},
 										"sink": {
-											"name": "REASON_CODE"
+											"name": "REASON_CODE",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
+											"physicalType": "String",
 											"ordinal": 20
 										},
 										"sink": {
-											"name": "CHANNEL"
+											"name": "CHANNEL",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
+											"physicalType": "String",
 											"ordinal": 21
 										},
 										"sink": {
-											"name": "CL_BEFORE_NEGO_PERM"
+											"name": "CL_BEFORE_NEGO_PERM",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									},
 									{
 										"source": {
+											"type": "String",
 											"ordinal": 22
 										},
 										"sink": {
-											"name": "CL_BEFORE_NEGO_TEMP"
+											"name": "CL_BEFORE_NEGO_TEMP",
+											"type": "String",
+											"physicalType": "varchar"
 										}
 									}
 								],
