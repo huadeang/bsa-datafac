@@ -909,6 +909,18 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "DATA_SCORE_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
 									"name": "ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
@@ -969,7 +981,7 @@
 							},
 							{
 								"source": {
-									"name": "ACCNT_ID",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -1017,7 +1029,7 @@
 							},
 							{
 								"source": {
-									"name": "SCORE_RANGE",
+									"name": "PREV_SCORE_RANGE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -1077,8 +1089,8 @@
 							},
 							{
 								"source": {
-									"name": "CREDIT_LIMIT",
-									"type": "Decimal",
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "String",
 									"physicalType": "decimal",
 									"scale": 7,
 									"precision": 22
