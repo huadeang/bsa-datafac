@@ -981,7 +981,7 @@
 							},
 							{
 								"source": {
-									"name": "BILLING_ACCNT_ID",
+									"name": "ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -1029,7 +1029,7 @@
 							},
 							{
 								"source": {
-									"name": "PREV_SCORE_RANGE",
+									"name": "SCORE_RANGE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -1089,8 +1089,8 @@
 							},
 							{
 								"source": {
-									"name": "BILLING_CREDIT_LIMIT",
-									"type": "String",
+									"name": "CREDIT_LIMIT",
+									"type": "Decimal",
 									"physicalType": "decimal",
 									"scale": 7,
 									"precision": 22
