@@ -357,7 +357,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat_copy1",
+											"referenceName": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
