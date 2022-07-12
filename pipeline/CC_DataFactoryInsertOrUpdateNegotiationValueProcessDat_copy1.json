@@ -402,7 +402,8 @@
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"ROW_ID"
+								"ACCNT_ID",
+								"BILLING_ACCNT_ID"
 							]
 						},
 						"sqlWriterUseTableLock": false,
@@ -1014,28 +1015,6 @@
 								},
 								"sink": {
 									"name": "CL_BEFORE_NEGO",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"physicalType": "String",
-									"ordinal": 23
-								},
-								"sink": {
-									"name": "REASON_BEF_NEGO",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"physicalType": "String",
-									"ordinal": 24
-								},
-								"sink": {
-									"name": "CUSTOMER_REQUEST_FLG",
 									"type": "String",
 									"physicalType": "varchar"
 								}
