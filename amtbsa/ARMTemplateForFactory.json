@@ -8037,7 +8037,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_TEMP_FILE_DETAIL').Error),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_TEMP_FILE_DETAIL').Error),0,if(greater(length(activity('Copy data to CC_TEMP_FILE_DETAIL').Error),499),499,length(activity('Copy data to CC_TEMP_FILE_DETAIL').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -8481,17 +8481,6 @@
 										},
 										"sink": {
 											"name": "BA_REGISTER_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 31
-										},
-										"sink": {
-											"name": "PROFILE_COMPLETE_FLG",
 											"type": "String",
 											"physicalType": "varchar"
 										}
