@@ -282,7 +282,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_CAT_SUBCAT WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+							"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_NEGOTIATION_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -322,7 +322,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_CAT_SUBCAT \n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_NEGOTIATION_VALUE \n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 								"type": "Expression"
 							}
 						}
@@ -335,7 +335,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Copy data to CC_BILLING_CAT_SUBCAT",
+						"activity": "Copy data to CC_NEGOTIATION_VALUE",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -366,7 +366,7 @@
 				}
 			},
 			{
-				"name": "Copy data to CC_BILLING_CAT_SUBCAT",
+				"name": "Copy data to CC_NEGOTIATION_VALUE",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -388,7 +388,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_CAT_SUBCAT WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
+							"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_NEGOTIATION_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -429,12 +429,24 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "DATA_NEGO_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
 									"name": "ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ROW_ID",
+									"name": "REF_ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -489,156 +501,232 @@
 							},
 							{
 								"source": {
-									"name": "ACCNT_NO",
+									"name": "REQ_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ACCNT_NO",
+									"name": "REQ_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "ACCNT_CATEGORY",
+									"name": "ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ACCNT_CATEGORY",
+									"name": "ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "ACCNT_SUB_CATEGORY",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ACCNT_SUB_CATEGORY",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "BILL_CYCLE",
+									"name": "NEGO_CREDIT_LIMIT",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "BILL_CYCLE",
+									"name": "NEGO_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "AR_BALANCE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AR_BALANCE",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "AVAILABLE_FOR_MONTHLY",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AVAILABLE_FOR_MONTHLY",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "PRICE_MAIN_PRO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PRICE_MAIN_PRO",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "MULTIPLIER",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "MULTIPLIER",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 1,
+									"precision": 2
+								}
+							},
+							{
+								"source": {
+									"name": "BA_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BA_SCORE_RANGE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "PAYMENT_METHOD",
+									"name": "CL_BEFORE_NEGO",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "PAYMENT_METHOD",
+									"name": "CL_BEFORE_NEGO",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "REASON_BEF_NEGO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "REASON_BEF_NEGO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "MASTER_ACCNT_ID",
+									"name": "CUSTOMER_REQUEST_FLG",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "MASTER_ACCNT_ID",
+									"name": "CUSTOMER_REQUEST_FLG",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "STATUS_CD",
+									"name": "CUS_REQ_BALANCE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "STATUS_CD",
+									"name": "CUS_REQ_BALANCE",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "NEGO_STATUS",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "NEGO_STATUS",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "BILLING_STATUS_CD",
+									"name": "REASON_CODE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "BILLING_STATUS_CD",
+									"name": "REASON_CODE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "REGISTER_DT",
+									"name": "CHANNEL",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "REGISTER_DT",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "CHANNEL",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "FBB_FLAG",
+									"name": "CL_BEFORE_NEGO_PERM",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "FBB_FLAG",
-									"type": "String",
-									"physicalType": "char"
+									"name": "CL_BEFORE_NEGO_PERM",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
 								"source": {
-									"name": "SUPPEND_FLAG",
+									"name": "CL_BEFORE_NEGO_TEMP",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "SUPPEND_FLAG",
-									"type": "String",
-									"physicalType": "char"
-								}
-							},
-							{
-								"source": {
-									"name": "COUNT_MOBILE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "COUNT_MOBILE",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "SUM_MAIN_PRO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "SUM_MAIN_PRO",
+									"name": "CL_BEFORE_NEGO_TEMP",
 									"type": "Decimal",
 									"physicalType": "decimal",
 									"scale": 7,
@@ -668,7 +756,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_BILLING_CAT_SUBCAT"
+							"Table": "CC_NEGOTIATION_VALUE"
 						}
 					}
 				]
@@ -726,6 +814,247 @@
 					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "DATA_ID"
+								},
+								"sink": {
+									"name": "DATA_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 1
+								},
+								"sink": {
+									"name": "PROCESS_TYPE",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 2
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 3
+								},
+								"sink": {
+									"name": "CREATED",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 4
+								},
+								"sink": {
+									"name": "CREATED_BY",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 5
+								},
+								"sink": {
+									"name": "LAST_UPD",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 6
+								},
+								"sink": {
+									"name": "LAST_UPD_BY",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 7
+								},
+								"sink": {
+									"name": "REQ_ID",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 8
+								},
+								"sink": {
+									"name": "ACCNT_ID",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 9
+								},
+								"sink": {
+									"name": "BILLING_ACCNT_ID",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 10
+								},
+								"sink": {
+									"name": "NEGO_CREDIT_LIMIT",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 11
+								},
+								"sink": {
+									"name": "AR_BALANCE",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 12
+								},
+								"sink": {
+									"name": "AVAILABLE_FOR_MONTHLY",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 13
+								},
+								"sink": {
+									"name": "PRICE_MAIN_PRO",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 14
+								},
+								"sink": {
+									"name": "MULTIPLIER",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 15
+								},
+								"sink": {
+									"name": "BA_SCORE_RANGE",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 16
+								},
+								"sink": {
+									"name": "CL_BEFORE_NEGO",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 23
+								},
+								"sink": {
+									"name": "REASON_BEF_NEGO",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 24
+								},
+								"sink": {
+									"name": "CUSTOMER_REQUEST_FLG",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 17
+								},
+								"sink": {
+									"name": "CUS_REQ_BALANCE"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 18
+								},
+								"sink": {
+									"name": "NEGO_STATUS"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 19
+								},
+								"sink": {
+									"name": "REASON_CODE"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 20
+								},
+								"sink": {
+									"name": "CHANNEL"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 21
+								},
+								"sink": {
+									"name": "CL_BEFORE_NEGO_PERM"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 22
+								},
+								"sink": {
+									"name": "CL_BEFORE_NEGO_TEMP"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
