@@ -8621,7 +8621,7 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderQuery": {
-									"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+									"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
@@ -8742,7 +8742,8 @@
 								"upsertSettings": {
 									"useTempDB": true,
 									"keys": [
-										"REF_ROW_ID"
+										"ACCNT_ID",
+										"BILLING_ACCNT_ID"
 									]
 								},
 								"sqlWriterUseTableLock": false,
