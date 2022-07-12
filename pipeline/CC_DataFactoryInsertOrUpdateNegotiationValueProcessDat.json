@@ -502,7 +502,7 @@
 							},
 							{
 								"source": {
-									"name": "ACCNT_ID",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
