@@ -342,7 +342,7 @@
 									"ordinal": 7
 								},
 								"sink": {
-									"name": "TYPE",
+									"name": "ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -354,7 +354,7 @@
 									"ordinal": 8
 								},
 								"sink": {
-									"name": "ACCNT_ID",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -366,7 +366,7 @@
 									"ordinal": 9
 								},
 								"sink": {
-									"name": "STATUS_CD",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -378,7 +378,7 @@
 									"ordinal": 10
 								},
 								"sink": {
-									"name": "STATUS_DT",
+									"name": "CL_LEVEL",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -390,7 +390,7 @@
 									"ordinal": 11
 								},
 								"sink": {
-									"name": "EFFECTIVE_DT",
+									"name": "SCORE_RANGE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -402,7 +402,7 @@
 									"ordinal": 12
 								},
 								"sink": {
-									"name": "REMARK",
+									"name": "CL_TYPE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -414,7 +414,7 @@
 									"ordinal": 13
 								},
 								"sink": {
-									"name": "PROFILE_CHG_NO",
+									"name": "CL_CHANGE_REASON",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -426,7 +426,7 @@
 									"ordinal": 14
 								},
 								"sink": {
-									"name": "NEW_ACCNT_CATEGORY",
+									"name": "OUTCOME_CD",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -438,7 +438,7 @@
 									"ordinal": 15
 								},
 								"sink": {
-									"name": "NEW_ACCNT_SUB_CATEGORY",
+									"name": "OUTCOME_REASON",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -450,9 +450,11 @@
 									"ordinal": 16
 								},
 								"sink": {
-									"name": "OLD_ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
 								}
 							},
 							{
@@ -462,7 +464,174 @@
 									"ordinal": 17
 								},
 								"sink": {
-									"name": "OLD_ACCNT_SUB_CATEGORY",
+									"name": "PERM_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 18
+								},
+								"sink": {
+									"name": "TEMP_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 19
+								},
+								"sink": {
+									"name": "PREV_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 20
+								},
+								"sink": {
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 21
+								},
+								"sink": {
+									"name": "ACTUAL",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 22
+								},
+								"sink": {
+									"name": "ACTUAL_PERM",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 23
+								},
+								"sink": {
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 24
+								},
+								"sink": {
+									"name": "BILLING_THRESHOLD_SET_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 25
+								},
+								"sink": {
+									"name": "FBB_FLAG",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 26
+								},
+								"sink": {
+									"name": "LAST_REVIEW_DAT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 27
+								},
+								"sink": {
+									"name": "MIN_REVIEW",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 28
+								},
+								"sink": {
+									"name": "AVAILABLE_CREDIT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 29
+								},
+								"sink": {
+									"name": "PAYMENT_FLG",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 30
+								},
+								"sink": {
+									"name": "BA_REGISTER_DT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"ordinal": 31
+								},
+								"sink": {
+									"name": "PROFILE_COMPLETE_FLG",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -500,7 +669,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_DATA_FACTORY_PROFILE_CHANGE"
+							"Table": "CC_DATA_FACTORY_SCORE_VALUE"
 						}
 					}
 				]
@@ -533,7 +702,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
 								"type": "Expression"
 							}
 						}
@@ -643,7 +812,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 								"type": "Expression"
 							}
 						}
@@ -709,7 +878,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
+							"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -723,8 +892,7 @@
 						"upsertSettings": {
 							"useTempDB": true,
 							"keys": [
-								"ROW_ID",
-								"PROFILE_CHG_NO"
+								"REF_ROW_ID"
 							]
 						},
 						"sqlWriterUseTableLock": false,
@@ -756,7 +924,7 @@
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ROW_ID",
+									"name": "REF_ROW_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -811,19 +979,7 @@
 							},
 							{
 								"source": {
-									"name": "TYPE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TYPE",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "ACCNT_ID",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -835,110 +991,300 @@
 							},
 							{
 								"source": {
-									"name": "STATUS_CD",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "STATUS_CD",
+									"name": "BILLING_ACCNT_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "STATUS_DT",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "STATUS_DT",
+									"name": "ACCNT_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CL_LEVEL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CL_LEVEL",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CL_TYPE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CL_TYPE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CL_CHANGE_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CL_CHANGE_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OUTCOME_CD",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OUTCOME_CD",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OUTCOME_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OUTCOME_REASON",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								},
+								"sink": {
+									"name": "CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "PERM_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PERM_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "TEMP_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TEMP_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "PREV_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PREV_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PREV_SCORE_RANGE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ACTUAL",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_PERM",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ACTUAL_PERM",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BILLING_CREDIT_LIMIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "BILLING_THRESHOLD_SET_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BILLING_THRESHOLD_SET_ID",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "FBB_FLAG",
+									"type": "String",
+									"physicalType": "char"
+								},
+								"sink": {
+									"name": "FBB_FLAG",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_REVIEW_DAT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "LAST_REVIEW_DAT",
 									"type": "DateTime",
 									"physicalType": "datetime"
 								}
 							},
 							{
 								"source": {
-									"name": "EFFECTIVE_DT",
+									"name": "MIN_REVIEW",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "EFFECTIVE_DT",
+									"name": "MIN_REVIEW",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "AVAILABLE_CREDIT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AVAILABLE_CREDIT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 7,
+									"precision": 22
+								}
+							},
+							{
+								"source": {
+									"name": "PAYMENT_FLG",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PAYMENT_FLG",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "BA_REGISTER_DT",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BA_REGISTER_DT",
 									"type": "DateTime",
 									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "REMARK",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "REMARK",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PROFILE_CHG_NO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PROFILE_CHG_NO",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "NEW_ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "NEW_ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "NEW_ACCNT_SUB_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "NEW_ACCNT_SUB_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "OLD_ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OLD_ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "OLD_ACCNT_SUB_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OLD_ACCNT_SUB_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
 								}
 							}
 						],
@@ -964,7 +1310,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_PROFILE_CHANGE"
+							"Table": "CC_SCORE_VALUE"
 						}
 					}
 				]
