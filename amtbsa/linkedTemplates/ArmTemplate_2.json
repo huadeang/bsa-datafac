@@ -8679,8 +8679,7 @@
 								"upsertSettings": {
 									"useTempDB": true,
 									"keys": [
-										"ACCNT_ID",
-										"BILLING_ACCNT_ID"
+										"ROW_ID"
 									]
 								},
 								"sqlWriterUseTableLock": false,
@@ -8705,18 +8704,6 @@
 							"translator": {
 								"type": "TabularTranslator",
 								"mappings": [
-									{
-										"source": {
-											"name": "DATA_NEGO_ID",
-											"type": "Int64",
-											"physicalType": "bigint"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "Int64",
-											"physicalType": "bigint"
-										}
-									},
 									{
 										"source": {
 											"name": "ROW_ID",

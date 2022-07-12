@@ -5887,6 +5887,58 @@
 											}
 										}
 									]
+								},
+								{
+									"value": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+									"activities": [
+										{
+											"name": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+											"type": "ExecutePipeline",
+											"dependsOn": [],
+											"userProperties": [],
+											"typeProperties": {
+												"pipeline": {
+													"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+													"type": "PipelineReference"
+												},
+												"waitOnCompletion": true,
+												"parameters": {
+													"SCHEMA": {
+														"value": "@pipeline().parameters.SCHEMA",
+														"type": "Expression"
+													},
+													"DATA_TYPE": {
+														"value": "@pipeline().parameters.DATA_TYPE",
+														"type": "Expression"
+													},
+													"CREDIT_USER": {
+														"value": "@pipeline().parameters.CREDIT_USER",
+														"type": "Expression"
+													},
+													"inputPath": {
+														"value": "@pipeline().parameters.inputPath",
+														"type": "Expression"
+													},
+													"moveInputPath": {
+														"value": "@pipeline().parameters.moveInputPath",
+														"type": "Expression"
+													},
+													"fileDatName": {
+														"value": "@variables('fileDatName')",
+														"type": "Expression"
+													},
+													"dataId": {
+														"value": "@variables('dataId')",
+														"type": "Expression"
+													},
+													"fileSyncName": {
+														"value": "@variables('fileinputName')",
+														"type": "Expression"
+													}
+												}
+											}
+										}
+									]
 								}
 							],
 							"defaultActivities": [
@@ -5967,7 +6019,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFacInsertBillingProfileProcessDat')]"
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFacInsertBillingProfileProcessDat')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertOrUpdateScoreValueProcessDat')]"
 			]
 		},
 		{
