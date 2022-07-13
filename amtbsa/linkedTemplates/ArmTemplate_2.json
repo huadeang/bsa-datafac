@@ -5847,7 +5847,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE to CC_PROFILE_CHANGE').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE to CC_PROFILE_CHANGE').Error),'''','\"')),0,if(greater(length(string(activity('MERGE to CC_PROFILE_CHANGE').Error)),499 ),499,length(string(activity('MERGE to CC_PROFILE_CHANGE').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -5882,7 +5882,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_PROFILE_CHANGE(ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT,\n\tEFFECTIVE_DT,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY,\n\tNEW_ACCNT_SUB_CATEGORY,\n\tOLD_ACCNT_CATEGORY,\n\tOLD_ACCNT_SUB_CATEGORY)\nSELECT ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT ,\n\tEFFECTIVE_DT ,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY ,\n\tNEW_ACCNT_SUB_CATEGORY ,\n\tOLD_ACCNT_CATEGORY ,\n\tOLD_ACCNT_SUB_CATEGORY\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,'  AND PROCESS_TYPE =''02'' ORDER BY DATA_BILLING_ID ASC OFFSET 0 ROWS;')",
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_PROFILE_CHANGE(ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT,\n\tEFFECTIVE_DT,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY,\n\tNEW_ACCNT_SUB_CATEGORY,\n\tOLD_ACCNT_CATEGORY,\n\tOLD_ACCNT_SUB_CATEGORY)\nSELECT ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT ,\n\tEFFECTIVE_DT ,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY ,\n\tNEW_ACCNT_SUB_CATEGORY ,\n\tOLD_ACCNT_CATEGORY ,\n\tOLD_ACCNT_SUB_CATEGORY\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,'  AND PROCESS_TYPE =''02'' ORDER BY DATA_PROFILE_ID ASC OFFSET 0 ROWS;')",
 										"type": "Expression"
 									}
 								}
