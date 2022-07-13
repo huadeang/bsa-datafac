@@ -629,8 +629,7 @@
 									"ordinal": 17
 								},
 								"sink": {
-									"name": "CUS_REQ_BALANCE",
-									"type": "String",
+									"name": "REASON_BEF_NEGO",
 									"physicalType": "varchar"
 								}
 							},
@@ -641,8 +640,7 @@
 									"ordinal": 18
 								},
 								"sink": {
-									"name": "NEGO_STATUS",
-									"type": "String",
+									"name": "CUSTOMER_REQUEST_FLG",
 									"physicalType": "varchar"
 								}
 							},
@@ -653,8 +651,7 @@
 									"ordinal": 19
 								},
 								"sink": {
-									"name": "REASON_CODE",
-									"type": "String",
+									"name": "CUS_REQ_BALANCE",
 									"physicalType": "varchar"
 								}
 							},
@@ -665,8 +662,7 @@
 									"ordinal": 20
 								},
 								"sink": {
-									"name": "CHANNEL",
-									"type": "String",
+									"name": "NEGO_STATUS",
 									"physicalType": "varchar"
 								}
 							},
@@ -677,8 +673,7 @@
 									"ordinal": 21
 								},
 								"sink": {
-									"name": "CL_BEFORE_NEGO_PERM",
-									"type": "String",
+									"name": "REASON_CODE",
 									"physicalType": "varchar"
 								}
 							},
@@ -688,8 +683,26 @@
 									"ordinal": 22
 								},
 								"sink": {
+									"name": "CHANNEL",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 23
+								},
+								"sink": {
+									"name": "CL_BEFORE_NEGO_PERM",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 24
+								},
+								"sink": {
 									"name": "CL_BEFORE_NEGO_TEMP",
-									"type": "String",
 									"physicalType": "varchar"
 								}
 							}
