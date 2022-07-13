@@ -2295,7 +2295,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_PROFILE_CHANGE",
+								"activity": "MERGE to CC_PROFILE_CHANGE",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2326,289 +2326,12 @@
 						}
 					},
 					{
-						"name": "Copy data to CC_PROFILE_CHANGE",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update 09",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									},
-									"path": "credit-control/logs"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "STATUS_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "STATUS_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "EFFECTIVE_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "EFFECTIVE_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "REMARK",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "REMARK",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "PROFILE_CHG_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PROFILE_CHG_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "NEW_ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "NEW_ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "NEW_ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "NEW_ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "OLD_ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "OLD_ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "OLD_ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "OLD_ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CC_TableDynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"Schema": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"Table": "CC_PROFILE_CHANGE"
-								}
-							}
-						]
-					},
-					{
 						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy1",
 						"description": "",
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_PROFILE_CHANGE",
+								"activity": "MERGE to CC_PROFILE_CHANGE",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2631,7 +2354,42 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Copy data to CC_PROFILE_CHANGE').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE to CC_PROFILE_CHANGE').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "MERGE to CC_PROFILE_CHANGE",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Update 09",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_PROFILE_CHANGE(ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT,\n\tEFFECTIVE_DT,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY,\n\tNEW_ACCNT_SUB_CATEGORY,\n\tOLD_ACCNT_CATEGORY,\n\tOLD_ACCNT_SUB_CATEGORY)\nSELECT ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_ID ,\n\tSTATUS_CD ,\n\tSTATUS_DT ,\n\tEFFECTIVE_DT ,\n\tREMARK ,\n\tPROFILE_CHG_NO ,\n\tNEW_ACCNT_CATEGORY ,\n\tNEW_ACCNT_SUB_CATEGORY ,\n\tOLD_ACCNT_CATEGORY ,\n\tOLD_ACCNT_SUB_CATEGORY\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_PROFILE_CHANGE WHERE DATA_ID = ',pipeline().parameters.dataId,'  AND PROCESS_TYPE =''02'' ORDER BY DATA_BILLING_ID ASC OFFSET 0 ROWS;')",
 										"type": "Expression"
 									}
 								}
@@ -6714,8 +6472,7 @@
 											"ordinal": 17
 										},
 										"sink": {
-											"name": "CUS_REQ_BALANCE",
-											"type": "String",
+											"name": "REASON_BEF_NEGO",
 											"physicalType": "varchar"
 										}
 									},
@@ -6726,8 +6483,7 @@
 											"ordinal": 18
 										},
 										"sink": {
-											"name": "NEGO_STATUS",
-											"type": "String",
+											"name": "CUSTOMER_REQUEST_FLG",
 											"physicalType": "varchar"
 										}
 									},
@@ -6738,8 +6494,7 @@
 											"ordinal": 19
 										},
 										"sink": {
-											"name": "REASON_CODE",
-											"type": "String",
+											"name": "CUS_REQ_BALANCE",
 											"physicalType": "varchar"
 										}
 									},
@@ -6750,8 +6505,7 @@
 											"ordinal": 20
 										},
 										"sink": {
-											"name": "CHANNEL",
-											"type": "String",
+											"name": "NEGO_STATUS",
 											"physicalType": "varchar"
 										}
 									},
@@ -6762,8 +6516,7 @@
 											"ordinal": 21
 										},
 										"sink": {
-											"name": "CL_BEFORE_NEGO_PERM",
-											"type": "String",
+											"name": "REASON_CODE",
 											"physicalType": "varchar"
 										}
 									},
@@ -6773,8 +6526,26 @@
 											"ordinal": 22
 										},
 										"sink": {
+											"name": "CHANNEL",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"ordinal": 23
+										},
+										"sink": {
+											"name": "CL_BEFORE_NEGO_PERM",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"physicalType": "String",
+											"ordinal": 24
+										},
+										"sink": {
 											"name": "CL_BEFORE_NEGO_TEMP",
-											"type": "String",
 											"physicalType": "varchar"
 										}
 									}
@@ -13543,7 +13314,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_REVIEW",
+								"activity": "MERGE to CC_BILLING_REVIEW",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -13574,301 +13345,12 @@
 						}
 					},
 					{
-						"name": "Copy data to CC_BILLING_REVIEW",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update 09",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									},
-									"path": "credit-control/logs"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "REGISTER_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "REGISTER_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										},
-										"sink": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									},
-									{
-										"source": {
-											"name": "COUNT_SME_MOBILE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "COUNT_SME_MOBILE",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"name": "POST_PAID_FLAG",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "POST_PAID_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CC_TableDynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"Schema": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"Table": "CC_BILLING_REVIEW"
-								}
-							}
-						]
-					},
-					{
 						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy1",
 						"description": "",
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_REVIEW",
+								"activity": "MERGE to CC_BILLING_REVIEW",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -13891,7 +13373,42 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Copy data to CC_BILLING_REVIEW').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE to CC_BILLING_REVIEW').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "MERGE to CC_BILLING_REVIEW",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Update 09",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_BILLING_REVIEW (ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_NO ,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD ,\n\tREGISTER_DT ,\n\tFBB_FLAG ,\n\tCOUNT_SME_MOBILE,\n\tPOST_PAID_FLAG)\nSELECT ROW_ID ,\n\tCREATED ,\n\tCREATED_BY ,\n\tLAST_UPD ,\n\tLAST_UPD_BY ,\n\tACCNT_NO ,\n\tACCNT_CATEGORY ,\n\tACCNT_SUB_CATEGORY ,\n\tBILL_CYCLE ,\n\tPAYMENT_METHOD ,\n\tMASTER_ACCNT_ID ,\n\tSTATUS_CD ,\n\tBILLING_STATUS_CD ,\n\tREGISTER_DT ,\n\tFBB_FLAG ,\n\tCOUNT_SME_MOBILE ,\n\tPOST_PAID_FLAG \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_REVIEW WHERE DATA_ID = ',pipeline().parameters.dataId,'  AND PROCESS_TYPE =''02'' ORDER BY DATA_BILLING_ID ASC OFFSET 0 ROWS;')",
 										"type": "Expression"
 									}
 								}
@@ -13955,8 +13472,7 @@
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]",
 				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]"
 			]
 		},
 		{
