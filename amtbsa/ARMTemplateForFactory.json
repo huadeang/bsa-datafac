@@ -4626,7 +4626,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_CAT_SUBCAT",
+								"activity": "Merge ca To CC_BILLING_CAT_SUBCAT",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4655,309 +4655,6 @@
 								}
 							]
 						}
-					},
-					{
-						"name": "Copy data to CC_BILLING_CAT_SUBCAT",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update 09",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_BILLING_CAT_SUBCAT WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE LIKE ''02%'';')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									},
-									"path": "credit-control/logs"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "ACCNT_SUB_CATEGORY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILL_CYCLE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "PAYMENT_METHOD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "MASTER_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "BILLING_STATUS_CD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "REGISTER_DT",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "REGISTER_DT",
-											"type": "DateTime",
-											"physicalType": "datetime"
-										}
-									},
-									{
-										"source": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "FBB_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									},
-									{
-										"source": {
-											"name": "SUPPEND_FLAG",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "SUPPEND_FLAG",
-											"type": "String",
-											"physicalType": "char"
-										}
-									},
-									{
-										"source": {
-											"name": "COUNT_MOBILE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "COUNT_MOBILE",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"name": "SUM_MAIN_PRO",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "SUM_MAIN_PRO",
-											"type": "Decimal",
-											"physicalType": "decimal",
-											"scale": 7,
-											"precision": 22
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CC_TableDynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"Schema": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"Table": "CC_BILLING_CAT_SUBCAT"
-								}
-							}
-						]
 					},
 					{
 						"name": "Copy data to CC_TEMP_FILE_DETAIL",
@@ -5250,14 +4947,13 @@
 						]
 					},
 					{
-						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy1",
-						"description": "",
+						"name": "Merge ca To CC_BILLING_CAT_SUBCAT",
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Copy data to CC_BILLING_CAT_SUBCAT",
+								"activity": "Update 09",
 								"dependencyConditions": [
-									"Failed"
+									"Succeeded"
 								]
 							}
 						],
@@ -5278,7 +4974,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Copy data to CC_BILLING_CAT_SUBCAT').Error),'''','\"')),0,499),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('INSERT INTO CREDIT_DATA_FAC.CC_BILLING_CAT_SUBCAT(ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_NO,ACCNT_CATEGORY,ACCNT_SUB_CATEGORY,BILL_CYCLE,PAYMENT_METHOD,\nMASTER_ACCNT_ID,STATUS_CD,BILLING_STATUS_CD,REGISTER_DT,FBB_FLAG,SUPPEND_FLAG,COUNT_MOBILE,SUM_MAIN_PRO)\nSELECT ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_NO,ACCNT_CATEGORY,ACCNT_SUB_CATEGORY,BILL_CYCLE,PAYMENT_METHOD,\nMASTER_ACCNT_ID,STATUS_CD,BILLING_STATUS_CD,REGISTER_DT,FBB_FLAG,SUPPEND_FLAG,COUNT_MOBILE,SUM_MAIN_PRO\nFROM CREDIT_DATA_FAC.CC_DATA_FACTORY_BILLING_CAT_SUBCAT WHERE DATA_ID = dataId AND PROCESS_TYPE =''02'' ORDER BY DATA_BILLING_ID ASC OFFSET 0 ROWS;')",
 										"type": "Expression"
 									}
 								}
@@ -5329,9 +5025,8 @@
 				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]"
 			]
 		},
 		{
