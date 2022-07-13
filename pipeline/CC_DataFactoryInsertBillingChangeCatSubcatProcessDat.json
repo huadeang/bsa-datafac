@@ -532,7 +532,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 12
+									"ordinal": 11
 								},
 								"sink": {
 									"name": "PAYMENT_METHOD",
@@ -542,7 +542,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 13
+									"ordinal": 12
 								},
 								"sink": {
 									"name": "MASTER_ACCNT_ID",
@@ -552,7 +552,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 14
+									"ordinal": 13
 								},
 								"sink": {
 									"name": "STATUS_CD",
@@ -562,7 +562,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 15
+									"ordinal": 14
 								},
 								"sink": {
 									"name": "BILLING_STATUS_CD",
@@ -572,7 +572,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 16
+									"ordinal": 15
 								},
 								"sink": {
 									"name": "REGISTER_DT",
@@ -582,7 +582,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 17
+									"ordinal": 16
 								},
 								"sink": {
 									"name": "FBB_FLAG",
@@ -592,7 +592,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 18
+									"ordinal": 17
 								},
 								"sink": {
 									"name": "SUPPEND_FLAG",
@@ -602,7 +602,7 @@
 							{
 								"source": {
 									"physicalType": "String",
-									"ordinal": 19
+									"ordinal": 18
 								},
 								"sink": {
 									"name": "COUNT_MOBILE",
@@ -611,7 +611,8 @@
 							},
 							{
 								"source": {
-									"ordinal": 20
+									"physicalType": "String",
+									"ordinal": 19
 								},
 								"sink": {
 									"name": "SUM_MAIN_PRO"
