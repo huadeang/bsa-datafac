@@ -6,11 +6,11 @@
 		"type": "FileServer",
 		"typeProperties": {
 			"host": "C:\\credit-control",
-			"userId": "sangad",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJkMDJkZWQ5ZS0xNjc4LTQ1ODYtOTViMi0wM2NiNmRjZDhjZmQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"userId": "bank",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiMDc0NWI5Zi03ZDY4LTQyNWQtYTJmYi04OWVhYThkM2Q3N2YiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "SelfHostIntegration",
+			"referenceName": "SHIR-Hub-dev",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
