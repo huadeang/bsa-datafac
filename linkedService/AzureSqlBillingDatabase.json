@@ -1,21 +1,15 @@
 {
 	"name": "AzureSqlBillingDatabase",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=gable-esaving-devdb.database.windows.net;Initial Catalog=esavingdb;User ID=esavingadm",
-			"password": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "AzureKeyVault1",
-					"type": "LinkedServiceReference"
-				},
-				"secretName": "azuresqlpassword"
-			}
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=gable-esaving-devdb.database.windows.net;initial catalog=esavingdb;user id=esavingadm",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlY2RiMmNlNy0yOTUwLTQwZGUtYmZmYy0zNmYyMDJkYjkwZTYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "SelfHostIntegration",
+			"referenceName": "SHIR-Hub-dev",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
