@@ -1,0 +1,2003 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "bankdf001"
+		},
+		"AzureBlobStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
+		},
+		"AzureSqlBillingDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlBillingDatabase'"
+		},
+		"DemoBillingFileServer_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'DemoBillingFileServer'"
+		},
+		"LocalFileServer_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LocalFileServer'"
+		},
+		"DemoBillingFileServer_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\credit-control\\review"
+		},
+		"DemoBillingFileServer_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "bank"
+		},
+		"LocalFileServer_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\credit-control"
+		},
+		"LocalFileServer_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "bank"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "test.csv",
+						"folderPath": "demo-out",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DemoValidationFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RES_Review_Credit_Limit_20220225_141502.dat",
+						"folderPath": "demo",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DemoValidator2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage3",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RES_Review_Credit_Limit_20220225_141502.dat",
+						"folderPath": "demo",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimitData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimitDataMatadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filleName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filleName",
+							"type": "Expression"
+						},
+						"container": "credit-control"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewSyncFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RES_Review_Credit_Limit_20220225_141502.sync",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TargetBinary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage3",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "test.csv"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "demo-out",
+						"container": "credit-control"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TestCCBilling')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ROW_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_SUB_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_CYCLE",
+						"type": "varchar"
+					},
+					{
+						"name": "INVOICING_COMPANY",
+						"type": "varchar"
+					},
+					{
+						"name": "PAYMENT_METHOD",
+						"type": "varchar"
+					},
+					{
+						"name": "MASTER_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "ARPU",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "CREDIT_GRADE",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 0
+					},
+					{
+						"name": "DEBT_NEGO_FLG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT",
+					"table": "TEST_CC_BILLING"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage2_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "SHIR-Hub-dev",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlBillingDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlBillingDatabase_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "SHIR-Hub-dev",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DemoBillingFileServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('DemoBillingFileServer_properties_typeProperties_host')]",
+					"userId": "[parameters('DemoBillingFileServer_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('DemoBillingFileServer_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SHIR-Hub-dev",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LocalFileServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('LocalFileServer_properties_typeProperties_host')]",
+					"userId": "[parameters('LocalFileServer_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LocalFileServer_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SHIR-Hub-dev",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_InsertOrUpdateScoreValueByClLevelCase')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Insert or Update ScoreValue",
+						"type": "Switch",
+						"dependsOn": [
+							{
+								"activity": "Set insertOrUpdateCase",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"on": {
+								"value": "@variables('insertOrUpdateCase')",
+								"type": "Expression"
+							},
+							"cases": [
+								{
+									"value": "CA",
+									"activities": [
+										{
+											"name": "Script Insert Table CC_DATA_FACTORY_HIST_copy1",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "Script Insert or Update Table CC_SCORE_VALUE",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',pipeline().parameters.line,''',\n\t''',substring(replace(activity('Script Insert or Update Table CC_SCORE_VALUE').Error.Message,'''','\"'),0,499),''',\n\t''E''\n\t)')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Get Exiting Value by accntId",
+											"type": "Lookup",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "AzureSqlSource",
+													"sqlReaderQuery": {
+														"value": "@concat('SELECT ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE WHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],'''')",
+														"type": "Expression"
+													},
+													"queryTimeout": "02:00:00",
+													"partitionOption": "None"
+												},
+												"dataset": {
+													"referenceName": "AzureSqlTableCurrent",
+													"type": "DatasetReference",
+													"parameters": {}
+												}
+											}
+										},
+										{
+											"name": "Script Insert or Update Table CC_SCORE_VALUE",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "Set Insert Ca Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												},
+												{
+													"activity": "Set Update Ca Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												},
+												{
+													"activity": "Set Existing Ca Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@if(variables('existing'),variables('scriptInsert'),variables('scriptUpdate'))",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Set Existing Ca Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value by accntId",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "existing",
+												"value": {
+													"value": "@not(contains(string(activity('Get Exiting Value by accntId').output),'firstRow'))",
+													"type": "Expression"
+												}
+											}
+										},
+										{
+											"name": "Set Update Ca Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value by accntId",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "scriptUpdate",
+												"value": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE\n    SET\n\tCREATED =',if(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',\n\tACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',\n\tBILLING_ACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',\n\tACCNT_NO =',if(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',\n\tCL_LEVEL =',if(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',\n\tSCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',\n\tCL_TYPE =',if(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',\n\tCL_CHANGE_REASON =',if(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_CD =',if(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_REASON =',if(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',\n\tCREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',\n\tPERM_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',\n\tTEMP_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',\n\tPREV_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',\n\tPREV_SCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',\n\tACTUAL =',if(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',\n\tACTUAL_PERM =',if(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',\n\tBILLING_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',\n\tBILLING_THRESHOLD_SET_ID =',if(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',\n\tFBB_FLAG =',if(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',\n\tLAST_REVIEW_DAT =',if(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',\n\tMIN_REVIEW =',if(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',\n\tAVAILABLE_CREDIT =',if(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',\n\tPAYMENT_FLG =',if(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',\n\tBA_REGISTER_DT =',if(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),'\n\tWHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''';')",
+													"type": "Expression"
+												}
+											}
+										},
+										{
+											"name": "Set Insert Ca Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value by accntId",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "scriptInsert",
+												"value": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_ID,\n\tBILLING_ACCNT_ID,\n\tACCNT_NO,\n\tCL_LEVEL,\n\tSCORE_RANGE,\n\tCL_TYPE,\n\tCL_CHANGE_REASON,\n\tOUTCOME_CD,\n\tOUTCOME_REASON,\n\tCREDIT_LIMIT,\n\tPERM_CREDIT_LIMIT,\n\tTEMP_CREDIT_LIMIT,\n\tPREV_CREDIT_LIMIT,\n\tPREV_SCORE_RANGE,\n\tACTUAL,\n\tACTUAL_PERM,\n\tBILLING_CREDIT_LIMIT,\n\tBILLING_THRESHOLD_SET_ID,\n\tFBB_FLAG,\n\tLAST_REVIEW_DAT,\n\tMIN_REVIEW,\n\tAVAILABLE_CREDIT,\n\tPAYMENT_FLG,\n\tBA_REGISTER_DT) VALUES ('\n    ,if(empty(split(pipeline().parameters.line,'|')[1]),'NULL',concat('''',split(pipeline().parameters.line,'|')[1],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[13],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),');')\n",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "BA",
+									"activities": [
+										{
+											"name": "Script Insert Table CC_DATA_FACTORY_HIST",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "Script Insert or Update Table CC_SCORE_VALUE_copy1",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',pipeline().parameters.line,''',\n\t''',substring(replace(activity('Script Insert or Update Table CC_SCORE_VALUE_copy1').Error.Message,'''','\"'),0,499),''',\n\t''E''\n\t)')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Get Exiting Value",
+											"type": "Lookup",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"source": {
+													"type": "AzureSqlSource",
+													"sqlReaderQuery": {
+														"value": "@concat('SELECT ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE WHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''' AND BILLING_ACCNT_ID = ''',split(pipeline().parameters.line,'|')[7],'''')",
+														"type": "Expression"
+													},
+													"queryTimeout": "02:00:00",
+													"partitionOption": "None"
+												},
+												"dataset": {
+													"referenceName": "AzureSqlTableCurrent",
+													"type": "DatasetReference",
+													"parameters": {}
+												}
+											}
+										},
+										{
+											"name": "Script Insert or Update Table CC_SCORE_VALUE_copy1",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "Set Existing Ba Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												},
+												{
+													"activity": "Set Update Ba Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												},
+												{
+													"activity": "Set Insert Ba Case",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@if(variables('existing'),variables('scriptInsert'),variables('scriptUpdate'))",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Set Existing Ba Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "existing",
+												"value": {
+													"value": "@not(contains(string(activity('Get Exiting Value').output),'firstRow'))",
+													"type": "Expression"
+												}
+											}
+										},
+										{
+											"name": "Set Update Ba Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "scriptUpdate",
+												"value": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE\n    SET\n\tCREATED =',if(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',\n\tACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',\n\tBILLING_ACCNT_ID =',if(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',\n\tACCNT_NO =',if(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',\n\tCL_LEVEL =',if(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',\n\tSCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',\n\tCL_TYPE =',if(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',\n\tCL_CHANGE_REASON =',if(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_CD =',if(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',\n\tOUTCOME_REASON =',if(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',\n\tCREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',\n\tPERM_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',\n\tTEMP_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',\n\tPREV_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',\n\tPREV_SCORE_RANGE =',if(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',\n\tACTUAL =',if(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',\n\tACTUAL_PERM =',if(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',\n\tBILLING_CREDIT_LIMIT =',if(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',\n\tBILLING_THRESHOLD_SET_ID =',if(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',\n\tFBB_FLAG =',if(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',\n\tLAST_REVIEW_DAT =',if(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',\n\tMIN_REVIEW =',if(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',\n\tAVAILABLE_CREDIT =',if(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',\n\tPAYMENT_FLG =',if(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',\n\tBA_REGISTER_DT =',if(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),'\n\tWHERE ACCNT_ID = ''',split(pipeline().parameters.line,'|')[6],''' AND BILLING_ACCNT_ID = ''',split(pipeline().parameters.line,'|')[7],''';')",
+													"type": "Expression"
+												}
+											}
+										},
+										{
+											"name": "Set Insert Ba Case",
+											"type": "SetVariable",
+											"dependsOn": [
+												{
+													"activity": "Get Exiting Value",
+													"dependencyConditions": [
+														"Succeeded"
+													]
+												}
+											],
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "scriptInsert",
+												"value": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tACCNT_ID,\n\tBILLING_ACCNT_ID,\n\tACCNT_NO,\n\tCL_LEVEL,\n\tSCORE_RANGE,\n\tCL_TYPE,\n\tCL_CHANGE_REASON,\n\tOUTCOME_CD,\n\tOUTCOME_REASON,\n\tCREDIT_LIMIT,\n\tPERM_CREDIT_LIMIT,\n\tTEMP_CREDIT_LIMIT,\n\tPREV_CREDIT_LIMIT,\n\tPREV_SCORE_RANGE,\n\tACTUAL,\n\tACTUAL_PERM,\n\tBILLING_CREDIT_LIMIT,\n\tBILLING_THRESHOLD_SET_ID,\n\tFBB_FLAG,\n\tLAST_REVIEW_DAT,\n\tMIN_REVIEW,\n\tAVAILABLE_CREDIT,\n\tPAYMENT_FLG,\n\tBA_REGISTER_DT) VALUES ('\n    ,if(empty(split(pipeline().parameters.line,'|')[1]),'NULL',concat('''',split(pipeline().parameters.line,'|')[1],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(pipeline().parameters.line,'|')[2],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(pipeline().parameters.line,'|')[3],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[4]),'NULL',concat('''',split(pipeline().parameters.line,'|')[4],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[5]),'NULL',concat('''',split(pipeline().parameters.line,'|')[5],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[6]),'NULL',concat('''',split(pipeline().parameters.line,'|')[6],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[7]),'NULL',concat('''',split(pipeline().parameters.line,'|')[7],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[8]),'NULL',concat('''',split(pipeline().parameters.line,'|')[8],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[9]),'NULL',concat('''',split(pipeline().parameters.line,'|')[9],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[10]),'NULL',concat('''',split(pipeline().parameters.line,'|')[10],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[11]),'NULL',concat('''',split(pipeline().parameters.line,'|')[11],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[12]),'NULL',concat('''',split(pipeline().parameters.line,'|')[12],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[13]),'NULL',concat('''',split(pipeline().parameters.line,'|')[13],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[14]),'NULL',concat('''',split(pipeline().parameters.line,'|')[14],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[15]),'NULL',concat('''',split(pipeline().parameters.line,'|')[15],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[16]),'NULL',concat('''',split(pipeline().parameters.line,'|')[16],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[17]),'NULL',concat('''',split(pipeline().parameters.line,'|')[17],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[18]),'NULL',concat('''',split(pipeline().parameters.line,'|')[18],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[19]),'NULL',concat('''',split(pipeline().parameters.line,'|')[19],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[20]),'NULL',concat('''',split(pipeline().parameters.line,'|')[20],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[21]),'NULL',concat('''',split(pipeline().parameters.line,'|')[21],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[22]),'NULL',concat('''',split(pipeline().parameters.line,'|')[22],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[23]),'NULL',concat('''',split(pipeline().parameters.line,'|')[23],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[24]),'NULL',concat('''',split(pipeline().parameters.line,'|')[24],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[25]),'NULL',concat('''',split(pipeline().parameters.line,'|')[25],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[26]),'NULL',concat('''',split(pipeline().parameters.line,'|')[26],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[27]),'NULL',concat('''',split(pipeline().parameters.line,'|')[27],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[28]),'NULL',concat('''',split(pipeline().parameters.line,'|')[28],'''')),',',\nif(empty(split(pipeline().parameters.line,'|')[29]),'NULL',concat('''',split(pipeline().parameters.line,'|')[29],'''')),');')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"value": "NotInCaAndBa",
+									"activities": [
+										{
+											"name": "Script Insert Table CC_DATA_FACTORY_HIST_copy2",
+											"type": "Script",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',pipeline().parameters.line,''',\n\t''',if(and(not(equals(trim(coalesce(split(pipeline().parameters.line,'|')[9],'')),'CA')),not(equals(trim(coalesce(split(pipeline().parameters.line,'|')[9],'')),'BA'))),'clLevel not match Ca or Ba',\n\t\tif(and(equals(trim(coalesce(split(pipeline().parameters.line,'|')[9],'')),'CA'),equals(trim(coalesce(split(pipeline().parameters.line,'|')[6],'')),'')),'accntId data not found',\n\t\tif(and(equals(trim(coalesce(split(pipeline().parameters.line,'|')[9],'')),'BA'),equals(trim(coalesce(split(pipeline().parameters.line,'|')[6],'')),'')),'accntId data not found',\n\t\t'billingAccntId data not found'))),''',\n\t''E''\n\t)')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Set insertOrUpdateCase",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "insertOrUpdateCase",
+							"value": {
+								"value": "@if(and(not(equals(trim(coalesce(split(pipeline().parameters.line,'|')[6],'')),'')),equals(string(split(pipeline().parameters.line,'|')[9]),'CA')),'CA',\nif(and(and(not(equals(trim(coalesce(split(pipeline().parameters.line,'|')[6],'')),'')),not(equals(trim(coalesce(split(pipeline().parameters.line,'|')[7],'')),'')) ),equals(string(split(pipeline().parameters.line,'|')[9]),'BA')),'BA',\n'NotInCaAndBa'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"line": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"dataId": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"existing": {
+						"type": "Boolean"
+					},
+					"scriptInsert": {
+						"type": "String"
+					},
+					"scriptUpdate": {
+						"type": "String"
+					},
+					"insertOrUpdateCase": {
+						"type": "String"
+					},
+					"lineError": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimit')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupSyncFile",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.sync",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "ResReviewSyncFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "CopyDataToTable",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "LookupSyncFile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFileName": {
+										"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "BA_NO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 2
+										},
+										"sink": {
+											"name": "FLAG",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 3
+										},
+										"sink": {
+											"name": "DATE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ResReviewCreditLimitData",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CCResReviewTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "DeleteDataFile",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "CopyDataToTable",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ResReviewCreditLimitData",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "DeleteSyncFile",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "DeleteDataFile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ResReviewSyncFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-04-19T03:16:10Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ResReviewSyncFile')]",
+				"[concat(variables('factoryId'), '/datasets/ResReviewCreditLimitData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimitCheckSize')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupSyncFile",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.sync",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "ResReviewSyncFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "GetFileMetadata",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "LookupSyncFile",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ResReviewCreditLimitDataMatadata",
+								"type": "DatasetReference",
+								"parameters": {
+									"filleName": {
+										"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"size"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "GetFileMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('GetFileMetadata').output.size,0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "CopyDataToTable",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFileName": {
+													"value": "@{activity('LookupSyncFile').output.firstRow.Prop_0}",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false,
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"validateDataConsistency": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 1
+													},
+													"sink": {
+														"name": "BA_NO",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 2
+													},
+													"sink": {
+														"name": "FLAG",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 3
+													},
+													"sink": {
+														"name": "DATE",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ResReviewCreditLimitData",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CCResReviewTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "DeleteDataFile",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "CopyDataToTable",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ResReviewCreditLimitData",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobStorageReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "DeleteSyncFile",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "DeleteDataFile",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ResReviewSyncFile",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobStorageReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-04-19T03:16:10Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ResReviewSyncFile')]",
+				"[concat(variables('factoryId'), '/datasets/ResReviewCreditLimitDataMatadata')]",
+				"[concat(variables('factoryId'), '/datasets/ResReviewCreditLimitData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ValidateDemo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DemoValidator2",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"structure",
+								"columnCount",
+								"itemName"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Metadata1').output.structure,json('[\n        {\n            \"name\": \"Prop_0\",\n            \"type\": \"String\"\n        },\n        {\n            \"name\": \"Prop_1\",\n            \"type\": \"String\"\n        },\n        {\n            \"name\": \"Prop_2\",\n            \"type\": \"String\"\n        }\n    ]'))",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "MoveErrorFile",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "demo",
+												"wildcardFileName": {
+													"value": "@activity('Get Metadata1').output.itemName",
+													"type": "Expression"
+												},
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "TargetBinary",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@activity('Get Metadata1').output.itemName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "CopyDataToTable",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"additionalColumns": [
+												{
+													"name": "CURRENT_DATE",
+													"value": {
+														"value": "@utcnow()",
+														"type": "Expression"
+													}
+												}
+											],
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "demo",
+												"wildcardFileName": {
+													"value": "@activity('Get Metadata1').output.itemName",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBatchSize": 10,
+											"writeBehavior": "upsert",
+											"upsertSettings": {
+												"useTempDB": false,
+												"keys": [
+													"ACCNT_NO"
+												],
+												"interimSchemaName": "CREDIT"
+											},
+											"sqlWriterUseTableLock": false,
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"validateDataConsistency": false,
+										"logSettings": {
+											"enableCopyActivityLog": true,
+											"copyActivityLogSettings": {
+												"logLevel": "Info",
+												"enableReliableLogging": false
+											},
+											"logLocationSettings": {
+												"linkedServiceName": {
+													"referenceName": "AzureBlobStorage3",
+													"type": "LinkedServiceReference"
+												},
+												"path": "credit-control/logs"
+											}
+										},
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 1
+													},
+													"sink": {
+														"name": "ACCNT_NO",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 2
+													},
+													"sink": {
+														"name": "PAYMENT_FLAG",
+														"type": "String",
+														"physicalType": "varchar"
+													}
+												},
+												{
+													"source": {
+														"name": "CURRENT_DATE",
+														"type": "String"
+													},
+													"sink": {
+														"name": "CREATED",
+														"type": "DateTime",
+														"physicalType": "datetime2"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DemoValidator2",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BillingTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DemoValidator2')]",
+				"[concat(variables('factoryId'), '/datasets/TargetBinary')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTestBillingTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlBillingDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ROW_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_SUB_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_CYCLE",
+						"type": "varchar"
+					},
+					{
+						"name": "INVOICING_COMPANY",
+						"type": "varchar"
+					},
+					{
+						"name": "PAYMENT_METHOD",
+						"type": "varchar"
+					},
+					{
+						"name": "MASTER_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "ARPU",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "CREDIT_GRADE",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 0
+					},
+					{
+						"name": "DEBT_NEGO_FLG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT",
+					"table": "TEST_CC_BILLING"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlBillingDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCBillingFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "Large_CC_BILLING_202204221005.csv",
+						"folderPath": "review"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ROW_ID",
+						"type": "String"
+					},
+					{
+						"name": "CREATED",
+						"type": "String"
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "String"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "String"
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "String"
+					},
+					{
+						"name": "ACCNT_NO",
+						"type": "String"
+					},
+					{
+						"name": "ACCNT_CATEGORY",
+						"type": "String"
+					},
+					{
+						"name": "ACCNT_SUB_CATEGORY",
+						"type": "String"
+					},
+					{
+						"name": "BILL_NAME",
+						"type": "String"
+					},
+					{
+						"name": "BILL_CYCLE",
+						"type": "String"
+					},
+					{
+						"name": "INVOICING_COMPANY",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENT_METHOD",
+						"type": "String"
+					},
+					{
+						"name": "MASTER_ACCNT_ID",
+						"type": "String"
+					},
+					{
+						"name": "STATUS_CD",
+						"type": "String"
+					},
+					{
+						"name": "BILLING_STATUS_CD",
+						"type": "String"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "String"
+					},
+					{
+						"name": "ARPU",
+						"type": "String"
+					},
+					{
+						"name": "CREDIT_GRADE",
+						"type": "String"
+					},
+					{
+						"name": "DEBT_NEGO_FLG",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterNotSplit')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "''",
+					"encodingName": "TIS-620",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterPath')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string",
+						"defaultValue": "*"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
+		}
+	]
+}
