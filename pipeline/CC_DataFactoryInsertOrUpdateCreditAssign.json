@@ -1,5 +1,5 @@
 {
-	"name": "InsertOrUpdateScoreValue",
+	"name": "CC_DataFactoryInsertOrUpdateCreditAssign",
 	"properties": {
 		"activities": [
 			{
@@ -216,7 +216,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_score_value"
+				"defaultValue": "cc_data_fac_credit_assign"
 			},
 			"LOV_TYPE": {
 				"type": "String",
@@ -224,11 +224,11 @@
 			},
 			"DATA_TYPE": {
 				"type": "String",
-				"defaultValue": "INSERT_UPDATE_SCORE_VALUE"
+				"defaultValue": "INSERT_UPDATE_CREDIT_ASSIGN"
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_INSERT_UPDATE_SCORE_VALUE"
+				"defaultValue": "DATA_FAC_INSERT_UPDATE_CREDIT_ASSIGN"
 			},
 			"inputPath": {
 				"type": "String"
@@ -244,7 +244,7 @@
 			},
 			"executeDatPipeLineName": {
 				"type": "String",
-				"defaultValue": "InsertOrUpdateScoreValueProcessDat"
+				"defaultValue": "CC_DataFactoryInsertOrUpdateCreditAssignProcessDat"
 			}
 		},
 		"annotations": []

@@ -1,11 +1,18 @@
 {
-	"name": "ImportReviewBilling",
+	"name": "CC_PLAY_GROUND",
 	"properties": {
 		"activities": [
 			{
-				"name": "ImportFileToCCBilling",
+				"name": "Copy data1",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set prefix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -16,32 +23,30 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"sink": {
-						"type": "AzureSqlSink",
-						"writeBatchSize": 1000,
-						"writeBatchTimeout": "00:30:00",
-						"writeBehavior": "upsert",
-						"upsertSettings": {
-							"useTempDB": true,
-							"keys": [
-								"ROW_ID"
-							]
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "FileServerWriteSettings"
 						},
-						"sqlWriterUseTableLock": false,
-						"disableMetricsCollection": false
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"maxRowsPerFile": {
+								"value": "@variables('limit')",
+								"type": "Expression"
+							},
+							"fileNamePrefix": {
+								"value": "@variables('prefixName')",
+								"type": "Expression"
+							},
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -49,232 +54,244 @@
 								"source": {
 									"name": "ROW_ID",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ROW_ID",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "CREATED",
-									"type": "String",
-									"physicalType": "String"
+									"type": "DateTime",
+									"physicalType": "datetime2"
 								},
 								"sink": {
 									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "CREATED_BY",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CREATED_BY",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "LAST_UPD",
-									"type": "String",
-									"physicalType": "String"
+									"type": "DateTime",
+									"physicalType": "datetime2"
 								},
 								"sink": {
 									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime2"
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "LAST_UPD_BY",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "LAST_UPD_BY",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "ACCNT_NO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ACCNT_NO",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "ACCNT_CATEGORY",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ACCNT_CATEGORY",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "ACCNT_SUB_CATEGORY",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ACCNT_SUB_CATEGORY",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "BILL_NAME",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "BILL_NAME",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "BILL_CYCLE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "BILL_CYCLE",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "INVOICING_COMPANY",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "INVOICING_COMPANY",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "PAYMENT_METHOD",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "PAYMENT_METHOD",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "MASTER_ACCNT_ID",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "MASTER_ACCNT_ID",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "STATUS_CD",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "STATUS_CD",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "BILLING_STATUS_CD",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "BILLING_STATUS_CD",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "REGISTER_DT",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
 									"name": "REGISTER_DT",
 									"type": "DateTime",
 									"physicalType": "datetime2"
+								},
+								"sink": {
+									"name": "REGISTER_DT",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "ARPU",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
 									"name": "ARPU",
 									"type": "Decimal",
 									"physicalType": "decimal",
 									"scale": 7,
 									"precision": 22
+								},
+								"sink": {
+									"name": "ARPU",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "CREDIT_GRADE",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
 									"name": "CREDIT_GRADE",
 									"type": "Decimal",
 									"physicalType": "decimal",
 									"scale": 0,
 									"precision": 5
+								},
+								"sink": {
+									"name": "CREDIT_GRADE",
+									"type": "String",
+									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
 									"name": "DEBT_NEGO_FLG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "DEBT_NEGO_FLG",
 									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PAYMENT_FLAG",
+									"type": "String",
 									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PAYMENT_FLAG",
+									"type": "String",
+									"physicalType": "String"
 								}
 							}
 						],
@@ -287,18 +304,66 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CCBillingFile",
+						"referenceName": "TestCCBilling",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "TestCCBilling",
-						"type": "DatasetReference"
+						"referenceName": "CCLocalFileMasterPath",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review"
+						}
 					}
 				]
+			},
+			{
+				"name": "Set processTime",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "processTime",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set prefix",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "prefixName",
+					"value": {
+						"value": "@concat('REQ_REVIEW_BILLING_',variables('processTime'))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"processTime": {
+				"type": "String"
+			},
+			"prefixName": {
+				"type": "String"
+			},
+			"limit": {
+				"type": "String",
+				"defaultValue": "50000"
+			}
+		},
 		"annotations": []
 	}
 }

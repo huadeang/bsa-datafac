@@ -1,18 +1,11 @@
 {
-	"name": "CC_DataFactoryInsertBillingChangeCatSubCat",
+	"name": "CC_DataFactoryInsertOrUpdateScoreValue",
 	"properties": {
 		"activities": [
 			{
 				"name": "Get Config Value",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Clear Data CC_BILLING_CAT_SUBCAT",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -181,41 +174,6 @@
 									}
 								}
 							}
-						},
-						{
-							"name": "insert data factory  process file sync",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Execute Pipeline FindFile indir",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tFILE_PATH,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''',variables('inputPath'),''',\n\t''E'',''',substring(concat('Exception Pipeline FindFile indir :  ',replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),0,499),''');')",
-											"type": "Expression"
-										}
-									}
-								]
-							}
 						}
 					],
 					"ifTrueActivities": [
@@ -249,34 +207,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Clear Data CC_BILLING_CAT_SUBCAT",
-				"type": "Script",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_BILLING_CAT_SUBCAT')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
 			}
 		],
 		"variables": {
@@ -286,7 +216,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_cat_subcat_insert_billing_profile"
+				"defaultValue": "cc_data_fac_insert_score_value"
 			},
 			"LOV_TYPE": {
 				"type": "String",
@@ -294,11 +224,11 @@
 			},
 			"DATA_TYPE": {
 				"type": "String",
-				"defaultValue": "CAT_SUBCAT_INSERT_BA"
+				"defaultValue": "INSERT_SCORE"
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_INSERT_BA"
+				"defaultValue": "DATA_FAC_INSERT_SCORE"
 			},
 			"inputPath": {
 				"type": "String"
@@ -314,7 +244,7 @@
 			},
 			"executeDatPipeLineName": {
 				"type": "String",
-				"defaultValue": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat"
+				"defaultValue": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat"
 			}
 		},
 		"annotations": []

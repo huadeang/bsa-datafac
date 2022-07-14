@@ -1,34 +1,41 @@
 {
-	"name": "CC_DataFactoryProcessFileSync",
+	"name": "CC_SendTestCcBillingProcessLoop",
 	"properties": {
 		"activities": [
 			{
-				"name": "For Each file Sync",
+				"name": "ForEach1",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@pipeline().parameters.fileNameList",
+						"value": "@pipeline().parameters.listRound",
 						"type": "Expression"
 					},
-					"isSequential": false,
-					"batchCount": 10,
+					"batchCount": 5,
 					"activities": [
 						{
-							"name": "Execute CC_ReviewProcessFileSyncChildren",
+							"name": "CC_ReviewDataFactorySendBilingNoProcessAccountNoList",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_DataFactoryProcessFileSyncChildren",
+									"referenceName": "CC_SendTestCcBillingProcessFile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"inputPath": {
-										"value": "@pipeline().parameters.inputPath",
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"prefixOutputFile": {
+										"value": "@pipeline().parameters.prefixOutputFile",
+										"type": "Expression"
+									},
+									"fileTypeOutputFile": {
+										"value": "@pipeline().parameters.fileTypeOutputFile",
 										"type": "Expression"
 									},
 									"SCHEMA": {
@@ -43,16 +50,16 @@
 										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
-									"moveInputPath": {
-										"value": "@pipeline().parameters.moveInputPath",
+									"count": {
+										"value": "@pipeline().parameters.count",
 										"type": "Expression"
 									},
-									"fileInputName": {
-										"value": "@item().name",
+									"round": {
+										"value": "@item()",
 										"type": "Expression"
 									},
-									"executePipeLineName": {
-										"value": "@pipeline().parameters.executePipeLineName",
+									"limitPerRound": {
+										"value": "@pipeline().parameters.limitPerRound",
 										"type": "Expression"
 									}
 								}
@@ -63,7 +70,13 @@
 			}
 		],
 		"parameters": {
-			"inputPath": {
+			"outputPath": {
+				"type": "string"
+			},
+			"prefixOutputFile": {
+				"type": "string"
+			},
+			"fileTypeOutputFile": {
 				"type": "string"
 			},
 			"SCHEMA": {
@@ -75,33 +88,33 @@
 			"DATA_TYPE": {
 				"type": "string"
 			},
-			"moveInputPath": {
+			"count": {
+				"type": "float"
+			},
+			"limitPerRound": {
 				"type": "string"
 			},
-			"fileNameList": {
+			"listRound": {
 				"type": "array"
-			},
-			"executePipeLineName": {
-				"type": "string"
-			},
-			"oldDataIdList": {
-				"type": "string"
 			}
 		},
 		"variables": {
-			"fileDatName": {
+			"offset": {
 				"type": "String"
 			},
-			"fileDatSize": {
+			"scriptQuery": {
 				"type": "String"
 			},
-			"reviewId": {
+			"baScriptQuery": {
 				"type": "String"
 			},
-			"fileinputName": {
+			"processTime": {
 				"type": "String"
 			},
-			"exceptionError": {
+			"fileName": {
+				"type": "String"
+			},
+			"fileNameArchive": {
 				"type": "String"
 			}
 		},

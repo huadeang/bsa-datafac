@@ -144,7 +144,7 @@
 				"typeProperties": {
 					"variableName": "fileDatName",
 					"value": {
-						"value": "@split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]",
+						"value": "@trim(string(split(activity('Read File Sync').output.firstRow.Prop_0,'|')[0]))",
 						"type": "Expression"
 					}
 				}
@@ -164,7 +164,7 @@
 				"typeProperties": {
 					"variableName": "fileDatSize",
 					"value": {
-						"value": "@split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1]",
+						"value": "@trim(split(activity('Read FIle Sync').output.firstRow.Prop_0,'|')[1])",
 						"type": "Expression"
 					}
 				}
@@ -296,16 +296,16 @@
 							]
 						},
 						{
-							"value": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+							"value": "CC_ReviewDataFacInsertBillingProfileProcessDat",
 							"activities": [
 								{
-									"name": "Execute CC_ReviewInsertBillingAccountNoProcessDat",
+									"name": "Execute CC_ReviewDataFacInsertBillingProfileProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "CC_ReviewDataFactoryInsertBillingAccountNoProcessDat",
+											"referenceName": "CC_ReviewDataFacInsertBillingProfileProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -348,62 +348,10 @@
 							]
 						},
 						{
-							"value": "CC_ChangeCatSubcatInsertProfileChangeProcessDat",
-							"activities": [
-								{
-									"name": "Execute CC_ChangeCatSubCatInsertProfileChangeProcessDat",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_DataFactoryInsertProfileChangeProcessDat",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@pipeline().parameters.DATA_TYPE",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"inputPath": {
-												"value": "@pipeline().parameters.inputPath",
-												"type": "Expression"
-											},
-											"moveInputPath": {
-												"value": "@pipeline().parameters.moveInputPath",
-												"type": "Expression"
-											},
-											"fileDatName": {
-												"value": "@variables('fileDatName')",
-												"type": "Expression"
-											},
-											"dataId": {
-												"value": "@variables('dataId')",
-												"type": "Expression"
-											},
-											"fileSyncName": {
-												"value": "@pipeline().parameters.fileInputName",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						},
-						{
 							"value": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat",
 							"activities": [
 								{
-									"name": "Execute ChangeCatSubCatInsertBillingAccountNoProcessDat",
+									"name": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
@@ -443,7 +391,7 @@
 												"type": "Expression"
 											},
 											"fileSyncName": {
-												"value": "@pipeline().parameters.fileInputName",
+												"value": "@variables('fileinputName')",
 												"type": "Expression"
 											}
 										}
@@ -452,16 +400,16 @@
 							]
 						},
 						{
-							"value": "InsertOrUpdateCreditAssignProcessDat",
+							"value": "CC_ChangeCatSubcatDataFactoryInsertProfileChangeProcessDat",
 							"activities": [
 								{
-									"name": "Execute InsertOrUpdateCreditAssignProcessDat",
+									"name": "CC_DataFactoryInsertProfileChangeProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "InsertOrUpdateCreditAssignProcessDat",
+											"referenceName": "CC_ChangeCatSubcatDataFactoryInsertProfileChangeProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -495,7 +443,7 @@
 												"type": "Expression"
 											},
 											"fileSyncName": {
-												"value": "@pipeline().parameters.fileInputName",
+												"value": "@variables('fileinputName')",
 												"type": "Expression"
 											}
 										}
@@ -504,16 +452,16 @@
 							]
 						},
 						{
-							"value": "InsertOrUpdateScoreValueProcessDat",
+							"value": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat",
 							"activities": [
 								{
-									"name": "Execute InsertOrUpdateScoreValueProcessDat",
+									"name": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "InsertOrUpdateScoreValueProcessDat",
+											"referenceName": "CC_DataFactoryInsertOrUpdateNegotiationValueProcessDat",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -547,7 +495,59 @@
 												"type": "Expression"
 											},
 											"fileSyncName": {
-												"value": "@pipeline().parameters.fileInputName",
+												"value": "@variables('fileinputName')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+							"activities": [
+								{
+									"name": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_DataFactoryInsertOrUpdateScoreValueProcessDat",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"inputPath": {
+												"value": "@pipeline().parameters.inputPath",
+												"type": "Expression"
+											},
+											"moveInputPath": {
+												"value": "@pipeline().parameters.moveInputPath",
+												"type": "Expression"
+											},
+											"fileDatName": {
+												"value": "@variables('fileDatName')",
+												"type": "Expression"
+											},
+											"dataId": {
+												"value": "@variables('dataId')",
+												"type": "Expression"
+											},
+											"fileSyncName": {
+												"value": "@variables('fileinputName')",
 												"type": "Expression"
 											}
 										}

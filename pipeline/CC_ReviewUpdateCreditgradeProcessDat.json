@@ -1,5 +1,5 @@
 {
-	"name": "CC_ReviewTempfileProcessFileDat",
+	"name": "CC_ReviewUpdateCreditgradeProcessDat",
 	"properties": {
 		"activities": [
 			{
@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set temp file dat Id",
+						"activity": "insert 01",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -26,41 +26,9 @@
 						"type": "DelimitedTextSource",
 						"additionalColumns": [
 							{
-								"name": "STATUS",
-								"value": "S"
-							},
-							{
 								"name": "FILE_ID",
 								"value": {
 									"value": "@variables('tempFileDatId')",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED",
-								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "LAST_UPD",
-								"value": {
-									"value": "@convertTimeZone(utcNow(),'UTC','SE Asia Standard Time')",
 									"type": "Expression"
 								}
 							}
@@ -71,11 +39,14 @@
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 1
 						}
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"writeBatchSize": 2000,
+						"writeBatchTimeout": "00:30:00",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
@@ -85,62 +56,6 @@
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
-							{
-								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								},
-								"sink": {
-									"name": "FILE_LINE",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
 							{
 								"source": {
 									"name": "FILE_ID",
@@ -154,26 +69,64 @@
 							},
 							{
 								"source": {
-									"name": "STATUS",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 1
 								},
 								"sink": {
-									"name": "STATUS",
+									"name": "PROCESS_TYPE",
 									"type": "String",
-									"physicalType": "char"
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 2
+								},
+								"sink": {
+									"name": "ACCNT_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 3
+								},
+								"sink": {
+									"name": "BILLING_ACCNT_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 4
+								},
+								"sink": {
+									"name": "CREDIT_GRADE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							}
 						],
 						"typeConversion": true,
 						"typeConversionSettings": {
-							"allowDataTruncation": false,
-							"treatBooleanAsNumber": false
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false,
+							"dateTimeFormat": "yyyyMMdd"
 						}
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -189,8 +142,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCTableFileTempDetailSchemaUAT",
-						"type": "DatasetReference"
+						"referenceName": "CC_TableDynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "CREDIT_DEV",
+							"Table": "CC_TEMP_FILE_CREDIT_GRADE"
+						}
 					}
 				]
 			},
@@ -254,7 +211,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Clean Up File line Null",
+						"activity": "Update 09",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -513,41 +470,6 @@
 				}
 			},
 			{
-				"name": "Clean Up File line Null",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL '\n    ,'WHERE FILE_ID = ',variables('tempFileDatId'),' AND FILE_LINE IS NULL;')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "Set fileDatNameNotExtension",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -788,6 +710,158 @@
 										}
 									}
 								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "insert 01",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Read 01",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_CREDIT_GRADE (FILE_ID,PROCESS_TYPE) VALUES (',variables('tempFileDatId'),',''',activity('Read 01').output.firstRow.Prop_0,''')')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Read 01",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set temp file dat Id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "CCLocalFileMasterNotSplit",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileDatName",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "SELECT old 09",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT ACCNT_NO AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_CREDIT_GRADE WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Update 09",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "SELECT old 09",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_CREDIT_GRADE\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ACCNT_NO = NULL \n    WHERE FILE_ID = ',variables('tempFileDatId'),' AND PROCESS_TYPE = ''09''')",
+								"type": "Expression"
 							}
 						}
 					]

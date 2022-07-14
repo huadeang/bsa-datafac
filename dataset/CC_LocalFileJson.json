@@ -1,5 +1,5 @@
 {
-	"name": "CCLocalFileMasterNotSplit",
+	"name": "CC_LocalFileJson",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
@@ -14,7 +14,7 @@
 			}
 		},
 		"annotations": [],
-		"type": "DelimitedText",
+		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "FileServerLocation",
@@ -26,12 +26,8 @@
 					"value": "@dataset().filePath",
 					"type": "Expression"
 				}
-			},
-			"columnDelimiter": "''",
-			"encodingName": "TIS-620",
-			"escapeChar": "\\",
-			"quoteChar": "\""
+			}
 		},
-		"schema": []
+		"schema": {}
 	}
 }

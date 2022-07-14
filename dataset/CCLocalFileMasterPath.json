@@ -23,7 +23,8 @@
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
-			"quoteChar": "\""
+			"firstRowAsHeader": false,
+			"quoteChar": ""
 		},
 		"schema": []
 	}

@@ -96,6 +96,10 @@
 									"executePipeLineName": {
 										"value": "@pipeline().parameters.executePipeLineName",
 										"type": "Expression"
+									},
+									"oldDataIdList": {
+										"value": "@pipeline().parameters.oldDataIdList",
+										"type": "Expression"
 									}
 								}
 							}
@@ -180,6 +184,9 @@
 				"type": "string"
 			},
 			"DATA_TYPE": {
+				"type": "string"
+			},
+			"oldDataIdList": {
 				"type": "string"
 			}
 		},

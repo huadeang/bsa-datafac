@@ -1,5 +1,5 @@
 {
-	"name": "CC_DataFactoryInsertProfileChange",
+	"name": "CC_ReviewDataFacInsertBillingProfile",
 	"properties": {
 		"activities": [
 			{
@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Clear CC_PROFILE_CHANGE",
+						"activity": "Clear CC_BILLING_REVIEW",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -32,7 +32,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "AzureSqlTableCurrent",
+						"referenceName": "AzureSqlMaster",
 						"type": "DatasetReference"
 					}
 				}
@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(not(contains(string(activity('Get Config Value').output),'firstRow')),or(or(or(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null)))\n",
+						"value": "@or(not(contains(string(activity('Get Config value').output),'firstRow')),\n\tor(\n\t\tor(\n\t\t\tor(\n\t\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL1,'')),''),null,activity('Get Config value').output.firstRow.VAL1),null),\n\t\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL3,'')),''),null,activity('Get Config value').output.firstRow.VAL3),null)\n\t\t\t),\n\t\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL4,'')),''),null,activity('Get Config value').output.firstRow.VAL4),null)\n\t\t),\n\t\tequals(if(equals(trim(coalesce(activity('Get Config value').output.firstRow.VAL7,'')),''),null,activity('Get Config value').output.firstRow.VAL7),null)\n\t)\n)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -73,7 +73,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set prefixInputFile",
+									"activity": "Set inputPath",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -93,7 +93,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set inputPath",
+									"activity": "Set fileTypeInputFile",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -113,7 +113,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set fileTypeInputFile",
+									"activity": "Set prefixInputFile",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -178,6 +178,10 @@
 									"DATA_TYPE": {
 										"value": "@variables('DATA_TYPE')",
 										"type": "Expression"
+									},
+									"oldDataIdList": {
+										"value": "@variables('oldDataIdList')",
+										"type": "Expression"
 									}
 								}
 							}
@@ -205,7 +209,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY\n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value').output),'firstRow')),concat('Config LOV_TYPE : ',variables('LOV_TYPE'),' ,LOV_NAME : ',variables('LOV_NAME'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t)\n\t,' Data not found.')),''');')\n",
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value').output),'firstRow')),concat('Config LOV_TYPE : ',variables('LOV_TYPE'),' ,LOV_NAME : ',variables('LOV_NAME'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL1,'')),''),null,activity('Get Config Value').output.firstRow.VAL1),null),',Input path(VAL1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL3,'')),''),null,activity('Get Config Value').output.firstRow.VAL3),null),',Prefix Input path(VAL3) ',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL4,'')),''),null,activity('Get Config Value').output.firstRow.VAL4),null),',file type Input path(VAL4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL7,'')),''),null,activity('Get Config Value').output.firstRow.VAL7),null),',Move Input path(VAL7)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL1,'')),''),null,activity('Get Config Value').output.firstRow.VAL1),null),',Input path(VAL1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL3,'')),''),null,activity('Get Config Value').output.firstRow.VAL3),null),',Prefix Input path(VAL3) ',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL4,'')),''),null,activity('Get Config Value').output.firstRow.VAL4),null),',file type Input path(VAL4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL7,'')),''),null,activity('Get Config Value').output.firstRow.VAL7),null),',Move Input path(VAL7)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL1,'')),''),null,activity('Get Config Value').output.firstRow.VAL1),null),',Input path(VAL1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL3,'')),''),null,activity('Get Config Value').output.firstRow.VAL3),null),',Prefix Input path(VAL3) ',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL4,'')),''),null,activity('Get Config Value').output.firstRow.VAL4),null),',file type Input path(VAL4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL7,'')),''),null,activity('Get Config Value').output.firstRow.VAL7),null),',Move Input path(VAL7)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL1,'')),''),null,activity('Get Config Value').output.firstRow.VAL1),null),',Input path(VAL1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL3,'')),''),null,activity('Get Config Value').output.firstRow.VAL3),null),',Prefix Input path(VAL3) ',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL4,'')),''),null,activity('Get Config Value').output.firstRow.VAL4),null),',file type Input path(VAL4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.VAL7,'')),''),null,activity('Get Config Value').output.firstRow.VAL7),null),',Move Input path(VAL7)',''))\n\t)\n\t,' Data not found.')),''');')",
 											"type": "Expression"
 										}
 									}
@@ -216,7 +220,7 @@
 				}
 			},
 			{
-				"name": "Clear CC_PROFILE_CHANGE",
+				"name": "Clear CC_BILLING_REVIEW",
 				"type": "Script",
 				"dependsOn": [],
 				"policy": {
@@ -236,7 +240,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_PROFILE_CHANGE')",
+								"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_BILLING_REVIEW')",
 								"type": "Expression"
 							}
 						}
@@ -249,37 +253,40 @@
 				"type": "String",
 				"defaultValue": "CREDIT_DATA_FAC"
 			},
-			"LOV_NAME": {
-				"type": "String",
-				"defaultValue": "cc_data_fac_cat_subcat_Insert_profile_change"
-			},
 			"LOV_TYPE": {
 				"type": "String",
 				"defaultValue": "CC_MONITOR_MASTER"
 			},
-			"DATA_TYPE": {
+			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "CAT_SUBCAT_INSERT_PROFILE"
+				"defaultValue": "cc_data_fac_review_Insert_billing_no"
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_INSERT_PROFILE"
+				"defaultValue": "DATA_FAC_INSERT_BA"
+			},
+			"DATA_TYPE": {
+				"type": "String",
+				"defaultValue": "REVIEW_INSERT_BA"
+			},
+			"executeDatPipeLineName": {
+				"type": "String",
+				"defaultValue": "CC_ReviewDataFacInsertBillingProfileProcessDat"
 			},
 			"inputPath": {
-				"type": "String"
-			},
-			"prefixInputFile": {
 				"type": "String"
 			},
 			"fileTypeInputFile": {
 				"type": "String"
 			},
+			"prefixInputFile": {
+				"type": "String"
+			},
 			"moveInputPath": {
 				"type": "String"
 			},
-			"executeDatPipeLineName": {
-				"type": "String",
-				"defaultValue": "CC_ChangeCatSubcatInsertProfileChangeProcessDat"
+			"oldDataIdList": {
+				"type": "Array"
 			}
 		},
 		"annotations": []
