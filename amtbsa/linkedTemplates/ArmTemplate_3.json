@@ -6024,6 +6024,41 @@
 													}
 												}
 											}
+										},
+										{
+											"name": "Exception CC_InsertBillingChangeCatSubcatProcessDat",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_DataFactoryInsertBillingChangeCatSubcatProcessDat",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',variables('fileDatName'),''',',\n\t' DESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('CC_DataFactoryInsertBillingChangeCatSubcatProcessDat').Error),'''','\"')),0,if(greater(length(string(activity('CC_DataFactoryInsertBillingChangeCatSubcatProcessDat').Error)),499 ),499,length(string(activity('CC_DataFactoryInsertBillingChangeCatSubcatProcessDat').Error)))),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
 										}
 									]
 								},
@@ -6076,6 +6111,41 @@
 													}
 												}
 											}
+										},
+										{
+											"name": "Exception CC_DataFactoryInsertProfileChangeProcessDat",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_DataFactoryInsertProfileChangeProcessDat",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',variables('fileDatName'),''',',\n\t' DESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error),'''','\"')),0,if(greater(length(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error)),499 ),499,length(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error)))),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
 										}
 									]
 								},
@@ -6127,6 +6197,34 @@
 														"type": "Expression"
 													}
 												}
+											}
+										},
+										{
+											"name": "Exception CC_DataFactoryInsertProfileChangeProcessDat_copy1",
+											"type": "Script",
+											"dependsOn": [],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY  \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'FILE_NAME = ''',variables('fileDatName'),''',',\n\t' DESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error),'''','\"')),0,if(greater(length(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error)),499 ),499,length(string(activity('CC_DataFactoryInsertProfileChangeProcessDat').Error)))),'''',\n\t' WHERE DATA_ID =',variables('dataId'),';')",
+															"type": "Expression"
+														}
+													}
+												]
 											}
 										}
 									]
