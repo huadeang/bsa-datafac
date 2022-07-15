@@ -5,9 +5,9 @@
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "C:\\credit-control",
-			"userId": "iradmin",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyYTIyNjA4YS1iZmI3LTQ0NzYtOGE1NS05NGE2MzAwZThhZDQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"host": "\\\\stccmaksazjaeasta001.file.core.windows.net\\nas",
+			"userId": "localhost\\stccmaksazjaeasta001",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiM2UzOGI4Ni03MjkzLTQ2M2ItYWQ1My1kODQxMjA4NDU0YTYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "SHIR-Hub-dev",
