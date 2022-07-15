@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"variableName": "countRound",
 					"value": {
-						"value": "@string(if(equals(length(split(string(div(length(pipeline().parameters.baList),float(variables('limitPerRound')))),'.')),2),add(div(length(pipeline().parameters.baList),int(variables('limitPerRound'))),1),div(length(pipeline().parameters.baList),int(variables('limitPerRound')))))",
+						"value": "@string(if(equals(length(split(string(div(length(pipeline().parameters.accountList),float(variables('limitPerRound')))),'.')),2),add(div(length(pipeline().parameters.accountList),int(variables('limitPerRound'))),1),div(length(pipeline().parameters.accountList),int(variables('limitPerRound')))))",
 						"type": "Expression"
 					}
 				}
@@ -37,7 +37,7 @@
 				"typeProperties": {
 					"variableName": "tempCountList",
 					"value": {
-						"value": "@take(pipeline().parameters.baList,int(variables('countRound')))",
+						"value": "@take(pipeline().parameters.accountList,int(variables('countRound')))",
 						"type": "Expression"
 					}
 				}
@@ -69,13 +69,13 @@
 							"typeProperties": {
 								"variableName": "scriptQuery",
 								"value": {
-									"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO \nGROUP BY BILLING_ACCNT_NO ORDER BY BILLING_ACCNT_NO OFFSET ',variables('offset'),' ROWS FETCH NEXT ',variables('limitPerRound'),' ROWS ONLY;')",
+									"value": "@concat('SELECT ROW_ID AS PHX_ROW_ID,REF_ROW_ID AS EXISTING_ROW_ID,BILLING_ACCOUNT_NUM,\nLIMIT_MNY ,THRESHOLD_ID ,REQUEST_ID ,ACTION_TYPE ,ACTION_DTM ,REASON_CODE ,REASON_SUBCODE ,\nASSIGN_NO ,TEMP_EXPIRE_DAT ,CREATED ,CREATED_BY ,LAST_UPD ,LAST_UPD_BY ,SEQ_NO ,\nCREDIT_GRADE ,ARPU ,MIN_REVIEW ,SUM_MAIN ,NEXT_BILL_DATE ,''Insert'' AS PHX_OPERATION\nFROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN \nWHERE CONVERT(Date, CREATED) = CONVERT(Date, GETDATE())\nUNION ALL\nSELECT ASSIGN_ROW_ID AS PHX_ROW_ID,ASSIGN_REF_ROW_ID AS EXISTING_ROW_ID,BILLING_ACCOUNT_NUM,\nLIMIT_MNY ,THRESHOLD_ID ,REQUEST_ID ,ACTION_TYPE ,ACTION_DTM ,REASON_CODE ,REASON_SUBCODE ,\nASSIGN_NO ,TEMP_EXPIRE_DAT ,CREATED ,CREATED_BY ,LAST_UPD ,LAST_UPD_BY ,SEQ_NO ,\nCREDIT_GRADE ,ARPU ,MIN_REVIEW ,SUM_MAIN ,NEXT_BILL_DATE ,''Delete'' AS PHX_OPERATION\nFROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN_AT \nWHERE CONVERT(Date, BATCH_CREATED) = CONVERT(Date, GETDATE()) OFFSET ',variables('offset'),' ROWS FETCH NEXT ',variables('limitPerRound'),' ROWS ONLY;')",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Insert to change cat subcat Hist",
+							"name": "Insert to CC_DATA_FACTORY_HIST",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -130,9 +130,9 @@
 											"value": ""
 										},
 										{
-											"name": "CHANGE_ID",
+											"name": "DATA_ID",
 											"value": {
-												"value": "@pipeline().parameters.changeId",
+												"value": "@pipeline().parameters.dataId",
 												"type": "Expression"
 											}
 										}
@@ -241,8 +241,15 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CC_DatasetChangeCatSubcatHistUAT",
-									"type": "DatasetReference"
+									"referenceName": "CC_TableDynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"Schema": {
+											"value": "@pipeline().parameters.SCHEMA",
+											"type": "Expression"
+										},
+										"Table": "CC_DATA_FACTORY_HIST"
+									}
 								}
 							]
 						},
@@ -271,7 +278,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Insert to change cat subcat Hist",
+									"activity": "Insert to CC_DATA_FACTORY_HIST",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -441,7 +448,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION =''Create FileError''\n\tWHERE CHANGE_ID = ',pipeline().parameters.changeId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.DATA_TYPE,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION =''Create FileError''\n\tWHERE CHANGE_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
