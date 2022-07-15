@@ -5692,7 +5692,7 @@
 						}
 					},
 					{
-						"name": "If file size equal and Not exist",
+						"name": "If file size equal and exist",
 						"type": "IfCondition",
 						"dependsOn": [
 							{
@@ -5727,7 +5727,7 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "Set For Each File Dat Sizer",
+								"activity": "Set For each file dat size",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5743,7 +5743,7 @@
 						}
 					},
 					{
-						"name": "Set For Each File Dat Sizer",
+						"name": "Set For each file dat size",
 						"type": "SetVariable",
 						"dependsOn": [
 							{
@@ -5842,7 +5842,7 @@
 						"type": "Switch",
 						"dependsOn": [
 							{
-								"activity": "If file size equal and Not exist",
+								"activity": "If file size equal and exist",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -7470,7 +7470,7 @@
 							"batchCount": 10,
 							"activities": [
 								{
-									"name": "Execute CC_ReviewProcessFileSyncChildren",
+									"name": "Execute CC_ProcessFileSyncChildren",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
