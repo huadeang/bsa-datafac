@@ -285,6 +285,97 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "CC_DatafactorySendCreditAssignProcesFile",
+							"activities": [
+								{
+									"name": "CC_DatafactorySendCreditAssignProcesFile",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_DatafactorySendCreditAssignProcesLoop",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"outputPath": {
+												"value": "@pipeline().parameters.outputPath",
+												"type": "Expression"
+											},
+											"prefixOutputFile": {
+												"value": "@pipeline().parameters.prefixOutputFile",
+												"type": "Expression"
+											},
+											"fileTypeOutputFile": {
+												"value": "@pipeline().parameters.fileTypeOutputFile",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
+												"type": "Expression"
+											},
+											"count": {
+												"value": "@pipeline().parameters.count",
+												"type": "Expression"
+											},
+											"listRound": {
+												"value": "@pipeline().parameters.listRound",
+												"type": "Expression"
+											},
+											"limitPerRound": {
+												"value": "@pipeline().parameters.limitPerRound",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "insert CC_DATA_FACTORY exception_copy1_copy2",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "CC_DatafactorySendCreditAssignProcesFile",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''E'',''',substring(concat('CC_CaCreditLimitDataFatorySendAccntIdProcesFile Exception :',replace(activity('CC_DatafactorySendCreditAssignProcesFile').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_DatafactorySendCreditAssignProcesFile').Error.Message,'''','\"')),499),length(replace(activity('CC_DatafactorySendCreditAssignProcesFile').Error.Message,'''','\"')),499)),''');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
 						}
 					]
 				}
