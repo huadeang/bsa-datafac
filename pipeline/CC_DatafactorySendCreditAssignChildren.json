@@ -92,7 +92,7 @@
 										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
-									"baList": {
+									"accountList": {
 										"value": "@activity('Get Account List').output",
 										"type": "Expression"
 									},

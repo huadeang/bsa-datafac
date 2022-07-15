@@ -468,7 +468,7 @@
 			"DATA_TYPE": {
 				"type": "string"
 			},
-			"baList": {
+			"accountList": {
 				"type": "array"
 			},
 			"dataId": {
