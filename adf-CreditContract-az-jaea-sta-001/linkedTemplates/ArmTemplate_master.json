@@ -33,11 +33,11 @@
 		},
 		"LocalFileServer_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "C:\\credit-control"
+			"defaultValue": "\\\\stccmaksazjaeasta001.file.core.windows.net\\nas"
 		},
 		"LocalFileServer_properties_typeProperties_userId": {
 			"type": "string",
-			"defaultValue": "iradmin"
+			"defaultValue": "localhost\\stccmaksazjaeasta001"
 		},
 		"containerUri": {
 			"type": "string",
