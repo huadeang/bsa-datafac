@@ -205,7 +205,7 @@
 							"typeProperties": {
 								"variableName": "exceptionMessage",
 								"value": {
-									"value": "@substring(concat('Datafac Exception ',replace(string(activity('Execute createFileAndFileArchive')),'''','''''')),0,499)",
+									"value": "@substring(concat('Datafactory Exception :',replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),499))",
 									"type": "Expression"
 								}
 							}
