@@ -54,7 +54,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Set changeId",
+									"activity": "Set dataId",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -104,7 +104,7 @@
 							}
 						},
 						{
-							"name": "Insert CC_CHANGE_CAT_SUBCAT process",
+							"name": "Insert CC_DATA_FACTORY process",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
@@ -124,7 +124,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''P'',''Process send billing account number count ',string(activity('Get Account List').output.count),' record'');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''P'',''Process send credit_assign count ',string(activity('Get Account List').output.count),' record'');')",
 											"type": "Expression"
 										}
 									}
@@ -132,11 +132,11 @@
 							}
 						},
 						{
-							"name": "Set changeId",
+							"name": "Set dataId",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
+									"activity": "Insert CC_DATA_FACTORY process",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -144,9 +144,9 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "changeId",
+								"variableName": "dataId",
 								"value": {
-									"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
+									"value": "@string(first(first(activity('Insert CC_DATA_FACTORY process').output.resultSets).rows).DATA_ID)",
 									"type": "Expression"
 								}
 							}
@@ -154,7 +154,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Insert CC_CHANGE_CAT_SUBCAT if Empty",
+							"name": "Insert CC_DATA_FACTORY if Empty",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
@@ -174,7 +174,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''S'',''Query return credit assign data not found'');')",
 											"type": "Expression"
 										}
 									}
@@ -212,7 +212,7 @@
 			}
 		},
 		"variables": {
-			"changeId": {
+			"dataId": {
 				"type": "String"
 			}
 		},
