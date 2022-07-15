@@ -16,7 +16,7 @@
 					"batchCount": 10,
 					"activities": [
 						{
-							"name": "Execute CC_ReviewProcessFileSyncChildren",
+							"name": "Execute CC_ProcessFileSyncChildren",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
