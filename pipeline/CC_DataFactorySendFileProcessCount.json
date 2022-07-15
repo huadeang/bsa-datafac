@@ -232,7 +232,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "insert when Billing Account List is empty",
+							"name": "insert when Account List is empty",
 							"type": "Script",
 							"dependsOn": [],
 							"policy": {
