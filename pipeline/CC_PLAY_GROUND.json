@@ -17,6 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT CONCAT('01|','20220706_151721') AS LINE\nUNION ALL \nSELECT T.LINE FROM (SELECT CONCAT('02|',ROW_ID) AS LINE FROM CREDIT.TEST_CC_BILLING tcb  \nORDER BY ACCNT_NO OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\nUNION ALL \nSELECT CONCAT('09|',COUNT(T2.LINE)) FROM (SELECT CONCAT('02|',ROW_ID) AS LINE FROM CREDIT.TEST_CC_BILLING tcb  \nORDER BY ACCNT_NO OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -27,14 +28,6 @@
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
-							"maxRowsPerFile": {
-								"value": "@variables('limit')",
-								"type": "Expression"
-							},
-							"fileNamePrefix": {
-								"value": "@variables('prefixName')",
-								"type": "Expression"
-							},
 							"quoteAllText": true,
 							"fileExtension": ".csv"
 						}
@@ -45,7 +38,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ROW_ID",
+									"name": "LINE",
 									"type": "String",
 									"physicalType": "varchar"
 								},
@@ -53,238 +46,6 @@
 									"type": "String",
 									"physicalType": "String",
 									"ordinal": 1
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime2"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 2
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 3
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime2"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 4
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 5
-								}
-							},
-							{
-								"source": {
-									"name": "ACCNT_NO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 6
-								}
-							},
-							{
-								"source": {
-									"name": "ACCNT_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 7
-								}
-							},
-							{
-								"source": {
-									"name": "ACCNT_SUB_CATEGORY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 8
-								}
-							},
-							{
-								"source": {
-									"name": "BILL_NAME",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 9
-								}
-							},
-							{
-								"source": {
-									"name": "BILL_CYCLE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 10
-								}
-							},
-							{
-								"source": {
-									"name": "INVOICING_COMPANY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 11
-								}
-							},
-							{
-								"source": {
-									"name": "PAYMENT_METHOD",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 12
-								}
-							},
-							{
-								"source": {
-									"name": "MASTER_ACCNT_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 13
-								}
-							},
-							{
-								"source": {
-									"name": "STATUS_CD",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 14
-								}
-							},
-							{
-								"source": {
-									"name": "BILLING_STATUS_CD",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 15
-								}
-							},
-							{
-								"source": {
-									"name": "REGISTER_DT",
-									"type": "DateTime",
-									"physicalType": "datetime2"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 16
-								}
-							},
-							{
-								"source": {
-									"name": "ARPU",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 7,
-									"precision": 22
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 17
-								}
-							},
-							{
-								"source": {
-									"name": "CREDIT_GRADE",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 0,
-									"precision": 5
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 18
-								}
-							},
-							{
-								"source": {
-									"name": "DEBT_NEGO_FLG",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 19
-								}
-							},
-							{
-								"source": {
-									"name": "PAYMENT_FLAG",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 20
 								}
 							}
 						],
@@ -297,16 +58,17 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "TestCCBilling",
+						"referenceName": "AzureSqlMaster",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterPath",
+						"referenceName": "CCLocalFileToWrite",
 						"type": "DatasetReference",
 						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffdata\\sff_billing_review"
+							"filePath": "C:\\export\\home\\oper\\sffdata",
+							"fileName": "Test_ACCOUNT_ID.dat"
 						}
 					}
 				]
