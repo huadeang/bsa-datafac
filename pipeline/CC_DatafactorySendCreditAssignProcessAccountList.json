@@ -1,0 +1,512 @@
+{
+	"name": "CC_DatafactorySendCreditAssignProcessAccountList",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set countRound",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set offset first round",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "countRound",
+					"value": {
+						"value": "@string(if(equals(length(split(string(div(length(pipeline().parameters.baList),float(variables('limitPerRound')))),'.')),2),add(div(length(pipeline().parameters.baList),int(variables('limitPerRound'))),1),div(length(pipeline().parameters.baList),int(variables('limitPerRound')))))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set tempCountList",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set countRound",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tempCountList",
+					"value": {
+						"value": "@take(pipeline().parameters.baList,int(variables('countRound')))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set tempCountList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('tempCountList')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set script Query",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "scriptQuery",
+								"value": {
+									"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO \nGROUP BY BILLING_ACCNT_NO ORDER BY BILLING_ACCNT_NO OFFSET ',variables('offset'),' ROWS FETCH NEXT ',variables('limitPerRound'),' ROWS ONLY;')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Insert to change cat subcat Hist",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set new offset",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"additionalColumns": [
+										{
+											"name": "CREATED",
+											"value": {
+												"value": "@convertTimeZone(utcnow(),'UTC','North Asia Standard Time')",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "CREATED_BY",
+											"value": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD",
+											"value": {
+												"value": "@convertTimeZone(utcnow(),'UTC','North Asia Standard Time')",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "LAST_UPD_BY",
+											"value": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "STATUS",
+											"value": ""
+										},
+										{
+											"name": "CHANGE_ID",
+											"value": {
+												"value": "@pipeline().parameters.changeId",
+												"type": "Expression"
+											}
+										}
+									],
+									"sqlReaderQuery": {
+										"value": "@variables('scriptQuery')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CREATED"
+											},
+											"sink": {
+												"name": "CREATED",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "CREATED_BY"
+											},
+											"sink": {
+												"name": "CREATED_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD"
+											},
+											"sink": {
+												"name": "LAST_UPD",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "LAST_UPD_BY"
+											},
+											"sink": {
+												"name": "LAST_UPD_BY",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "CHANGE_ID"
+											},
+											"sink": {
+												"name": "CHANGE_ID",
+												"type": "Int64",
+												"physicalType": "bigint"
+											}
+										},
+										{
+											"source": {
+												"name": "BILLING_ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "BILLING_ACCNT_NO",
+												"type": "String",
+												"physicalType": "varchar"
+											}
+										},
+										{
+											"source": {
+												"name": "STATUS"
+											},
+											"sink": {
+												"name": "STATUS",
+												"type": "String",
+												"physicalType": "char"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlMaster",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CC_DatasetChangeCatSubcatHistUAT",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set new offset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set script Query",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@string(mul(int(variables('round')),int(variables('limitPerRound'))))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set processTime",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Insert to change cat subcat Hist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "processTime",
+								"value": {
+									"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute CC_CreateFileAndArchive",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Set fileNameArchive",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set fileName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "CC_CreateFileAndArchive",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"outputPath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"scriptQuery": {
+										"value": "@variables('scriptQuery')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set fileNameArchive",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameArchive",
+								"value": {
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.sync')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set processTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.',pipeline().parameters.fileTypeOutputFile)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set Have Error Record",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute CC_CreateFileAndArchive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "haveError",
+								"value": {
+									"value": "@bool(true)",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set offset first round",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set round",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "offset",
+					"value": "0"
+				}
+			},
+			{
+				"name": "Set round",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "round",
+					"value": "1"
+				}
+			},
+			{
+				"name": "Update End Process",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tCHANGE_TYPE = ''',pipeline().parameters.CHANGE_TYPE,''',\n\tSTATUS = ''',if(variables('haveError'),'E','S'),''',\n\tDESCRIPTION =''Create FileError''\n\tWHERE CHANGE_ID = ',pipeline().parameters.changeId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"outputPath": {
+				"type": "string"
+			},
+			"prefixOutputFile": {
+				"type": "string"
+			},
+			"fileTypeOutputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"DATA_TYPE": {
+				"type": "string"
+			},
+			"baList": {
+				"type": "array"
+			},
+			"dataId": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"tempCountList": {
+				"type": "Array"
+			},
+			"countRound": {
+				"type": "String"
+			},
+			"limitPerRound": {
+				"type": "String"
+			},
+			"offset": {
+				"type": "String"
+			},
+			"scriptQuery": {
+				"type": "String"
+			},
+			"round": {
+				"type": "String"
+			},
+			"processTime": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"fileNameArchive": {
+				"type": "String"
+			},
+			"haveError": {
+				"type": "Boolean"
+			}
+		},
+		"annotations": []
+	}
+}

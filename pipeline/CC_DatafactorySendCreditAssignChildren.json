@@ -50,7 +50,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Execute ChangeCatSubcatSendBillingProcessAccountNoList",
+							"name": "CC_DatafactorySendCreditAssignProcessAccountList",
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
+									"referenceName": "CC_DatafactorySendCreditAssignProcessAccountList",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -88,16 +88,16 @@
 										"value": "@pipeline().parameters.CREDIT_USER",
 										"type": "Expression"
 									},
-									"CHANGE_TYPE": {
-										"value": "@pipeline().parameters.CHANGE_TYPE",
+									"DATA_TYPE": {
+										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
 									},
 									"baList": {
 										"value": "@activity('Get Account List').output",
 										"type": "Expression"
 									},
-									"changeId": {
-										"value": "@variables('changeId')",
+									"dataId": {
+										"value": "@variables('dataId')",
 										"type": "Expression"
 									}
 								}
