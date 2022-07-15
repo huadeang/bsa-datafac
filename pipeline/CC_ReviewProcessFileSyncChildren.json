@@ -403,7 +403,7 @@
 									}
 								},
 								{
-									"name": "update review End Process Error_copy1",
+									"name": "update review End Process Error_copy2",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -430,7 +430,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',substring(concat('Datafac Exception ',replace(string(activity('Execute CC_ReviewUpdateCreditgradeProcessDat').Error),'''','''''')),0,499),'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t'    DESCRIPTION ''',substring(concat('Datafactory Exception :',replace(activity('Execute CC_ReviewUpdateCreditgradeProcessDat').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute CC_ReviewUpdateCreditgradeProcessDat').Error.Message,'''','\"')),499),length(replace(activity('Execute CC_ReviewUpdateCreditgradeProcessDat').Error.Message,'''','\"')),499)),'''',\n\t' WHERE REVIEW_ID =''',variables('reviewId'),''';')",
 													"type": "Expression"
 												}
 											}
