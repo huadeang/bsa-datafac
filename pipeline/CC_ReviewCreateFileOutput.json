@@ -105,7 +105,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Execute createFileAndFileArchive",
+							"name": "Execute createFileAndNotFileArchive",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
@@ -195,7 +195,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Execute createFileAndFileArchive",
+									"activity": "Execute createFileAndNotFileArchive",
 									"dependencyConditions": [
 										"Failed"
 									]
@@ -205,7 +205,7 @@
 							"typeProperties": {
 								"variableName": "exceptionMessage",
 								"value": {
-									"value": "@substring(concat('Datafactory Exception :',replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute createFileAndFileArchive').Error.Message,'''','\"')),499))",
+									"value": "@substring(concat('Datafactory Exception :',replace(activity('Execute createFileAndNotFileArchive').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute createFileAndNotFileArchive').Error.Message,'''','\"')),499),length(replace(activity('Execute createFileAndNotFileArchive').Error.Message,'''','\"')),499))",
 									"type": "Expression"
 								}
 							}
