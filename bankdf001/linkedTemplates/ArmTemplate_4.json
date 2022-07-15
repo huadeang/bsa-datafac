@@ -13,6 +13,116 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewFileOutputValidate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach file error",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.fileErrorList",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Execute CC_ReviewFileOutputValidateChildren",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ReviewFileOutputValidateChildren",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"fileName": {
+												"value": "@item().FILE_NAME",
+												"type": "Expression"
+											},
+											"fileId": {
+												"value": "@item().FILE_ID",
+												"type": "Expression"
+											},
+											"outputPath": {
+												"value": "@item().OUTPUT_PATH",
+												"type": "Expression"
+											},
+											"fileType": {
+												"value": "@item().FILE_TYPE",
+												"type": "Expression"
+											},
+											"fileNameArchive": {
+												"value": "@item().FILE_NAME_ARCHIVE",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"fileErrorList": {
+						"type": "array"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"resId": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "String"
+					},
+					"fileId": {
+						"type": "String"
+					},
+					"outputPath": {
+						"type": "String"
+					},
+					"errorMessage": {
+						"type": "String"
+					},
+					"fileType": {
+						"type": "String"
+					},
+					"fileNameArchive": {
+						"type": "String"
+					},
+					"switchCaseValue": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewProcessFileSync')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1014,7 +1124,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewFileOutputValidate')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_CaCreditLimitDataFatorySendAccntId')]",
@@ -4993,52 +5105,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewTempFileResponseFile')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "CC_ReviewUpdatePayment",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					},
-					{
-						"pipelineReference": {
-							"referenceName": "CC_ReviewUpdateArpu",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2022-05-20T08:39:00",
-						"timeZone": "SE Asia Standard Time",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								11
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdatePayment')]",
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdateArpu')]"
 			]
 		}
 	]

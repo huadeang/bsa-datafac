@@ -43,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LocalFileServer'"
 		},
+		"NAS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NAS'"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://aksvault01.vault.azure.net/"
@@ -62,6 +66,14 @@
 		"LocalFileServer_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "bank"
+		},
+		"NAS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\demoadb2c.file.core.windows.net\\test"
+		},
+		"NAS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "localhost\\demoadb2c"
 		},
 		"containerUri": {
 			"type": "string",
@@ -105,8 +117,17 @@
 					"GableEsavingDevAutoIR_connectionString": {
 						"value": "[parameters('GableEsavingDevAutoIR_connectionString')]"
 					},
+					"NAS_password": {
+						"value": "[parameters('NAS_password')]"
+					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"NAS_properties_typeProperties_host": {
+						"value": "[parameters('NAS_properties_typeProperties_host')]"
+					},
+					"NAS_properties_typeProperties_userId": {
+						"value": "[parameters('NAS_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -214,6 +235,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'bankdf001_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "bankdf001_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'bankdf001_ArmTemplate_4')]"
 			]
 		}
 	]

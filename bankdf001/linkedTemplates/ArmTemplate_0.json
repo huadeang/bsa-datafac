@@ -27,9 +27,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'GableEsavingDevAutoIR'"
 		},
+		"NAS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NAS'"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://aksvault01.vault.azure.net/"
+		},
+		"NAS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\demoadb2c.file.core.windows.net\\test"
+		},
+		"NAS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "localhost\\demoadb2c"
 		}
 	},
 	"variables": {
@@ -110,6 +122,24 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('GableEsavingDevAutoIR_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NAS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('NAS_properties_typeProperties_host')]",
+					"userId": "[parameters('NAS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NAS_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -1165,191 +1195,6 @@
 				"typeProperties": {
 					"schema": "CREDIT_DATA_FAC",
 					"table": "CC_BILLING_REVIEW"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_TableDynamic')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Schema": {
-						"type": "string"
-					},
-					"Table": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ROW_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "REF_ROW_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "ACCNT_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_LEVEL",
-						"type": "varchar"
-					},
-					{
-						"name": "SCORE_RANGE",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_TYPE",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_CHANGE_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "OUTCOME_CD",
-						"type": "varchar"
-					},
-					{
-						"name": "OUTCOME_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PERM_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "TEMP_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PREV_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PREV_SCORE_RANGE",
-						"type": "varchar"
-					},
-					{
-						"name": "ACTUAL",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "ACTUAL_PERM",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "BILLING_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "BILLING_THRESHOLD_SET_ID",
-						"type": "decimal",
-						"precision": 10,
-						"scale": 0
-					},
-					{
-						"name": "FBB_FLAG",
-						"type": "char"
-					},
-					{
-						"name": "LAST_REVIEW_DAT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "MIN_REVIEW",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "AVAILABLE_CREDIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PAYMENT_FLG",
-						"type": "char"
-					},
-					{
-						"name": "BA_REGISTER_DT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().Schema",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().Table",
-						"type": "Expression"
-					}
 				}
 			},
 			"dependsOn": [

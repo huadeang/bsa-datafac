@@ -32,6 +32,9 @@
 		"LocalFileServer_password": {
 			"value": ""
 		},
+		"NAS_password": {
+			"value": ""
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://aksvault01.vault.azure.net/"
 		},
@@ -46,6 +49,12 @@
 		},
 		"LocalFileServer_properties_typeProperties_userId": {
 			"value": "bank"
+		},
+		"NAS_properties_typeProperties_host": {
+			"value": "\\\\demoadb2c.file.core.windows.net\\test"
+		},
+		"NAS_properties_typeProperties_userId": {
+			"value": "localhost\\demoadb2c"
 		},
 		"containerUri": {
 			"value": ""

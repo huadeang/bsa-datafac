@@ -43,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LocalFileServer'"
 		},
+		"NAS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'NAS'"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://aksvault01.vault.azure.net/"
@@ -62,6 +66,14 @@
 		"LocalFileServer_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "bank"
+		},
+		"NAS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\demoadb2c.file.core.windows.net\\test"
+		},
+		"NAS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "localhost\\demoadb2c"
 		}
 	},
 	"variables": {
@@ -24302,6 +24314,24 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/SHIR-Hub-dev')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NAS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('NAS_properties_typeProperties_host')]",
+					"userId": "[parameters('NAS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NAS_password')]"
+					}
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_trigger')]",
