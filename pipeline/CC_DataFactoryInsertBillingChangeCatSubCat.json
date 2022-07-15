@@ -210,7 +210,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tFILE_PATH,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''',variables('inputPath'),''',\n\t''E'',''',substring(concat('Exception Pipeline FindFile indir :  ',replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),0,499),''');')",
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tFILE_PATH,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''',variables('inputPath'),''',\n\t''E'',''',substring(concat('Datafactory Exception :',replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),499),length(replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),499)),''');')",
 											"type": "Expression"
 										}
 									}
