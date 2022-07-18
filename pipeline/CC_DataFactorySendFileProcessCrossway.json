@@ -381,7 +381,7 @@
 							"value": "CC_DatafactorySendCreditLimitProcesFile",
 							"activities": [
 								{
-									"name": "CC_DatafactorySendCreditLimitProcesFile_copy1",
+									"name": "CC_DatafactorySendCreditLimitProcesFile",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"userProperties": [],
@@ -432,11 +432,11 @@
 									}
 								},
 								{
-									"name": "insert CC_DATA_FACTORY exception_copy1_copy2_copy1",
+									"name": "insert CC_DATA_FACTORY exception_copy3",
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "CC_DatafactorySendCreditLimitProcesFile_copy1",
+											"activity": "CC_DatafactorySendCreditLimitProcesFile",
 											"dependencyConditions": [
 												"Failed"
 											]
