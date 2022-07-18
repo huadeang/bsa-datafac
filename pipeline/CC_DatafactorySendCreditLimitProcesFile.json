@@ -1,0 +1,327 @@
+{
+	"name": "CC_DatafactorySendCreditLimitProcesFile",
+	"properties": {
+		"activities": [
+			{
+				"name": "insert CC_DATA_FACTORY onprocess",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Set script Query Select",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.DATA_TYPE,''',\n\t''P'',''Process review send credit limit id count ',if(greaterOrEquals(sub(pipeline().parameters.count,int(variables('offset'))),float(pipeline().parameters.limitPerRound)),pipeline().parameters.limitPerRound,sub(pipeline().parameters.count,int(variables('offset')))),''');')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update End Process",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "CC_CreateFileAndArchiveHaveDatName",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('Datafactory Exception :',replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),0,if(less(length(replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),499),length(replace(activity('CC_CreateFileAndArchiveHaveDatName').Error.Message,'''','\"')),499)),''' WHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update End Process Success",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "CC_CreateFileAndArchiveHaveDatName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameArchive'),''''),',\n\tFILE_PATH = ''',pipeline().parameters.outputPath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''',concat('Create File : ',variables('fileName'),' success'),''' WHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set offset",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "offset",
+					"value": {
+						"value": "@string(mul(sub(pipeline().parameters.round,1),int(pipeline().parameters.limitPerRound)))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set processTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "insert CC_DATA_FACTORY onprocess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "processTime",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(addminutes(utcnow(),pipeline().parameters.round),'UTC','North Asia Standard Time'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileNameArchive",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileNameArchive",
+					"value": {
+						"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.sync')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set fileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileName",
+					"value": {
+						"value": "@concat(pipeline().parameters.prefixOutputFile,variables('processTime'),'.',pipeline().parameters.fileTypeOutputFile)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set script Query",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set processTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "scriptQuery",
+					"value": {
+						"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('scriptQuerySelect'),') T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (',variables('scriptQuerySelect'),') T2; ')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set script Query Select",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set offset",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "scriptQuerySelect",
+					"value": {
+						"value": "@concat('SELECT CONCAT(\n''02|'',TEMP.PHX_ROW_ID\n,''|'',TEMP.EXISTING_ROW_ID\n,''|'',TEMP.BILLING_ACCOUNT_NUM\n,''|'',TEMP.LIMIT_MNY\n,''|'',TEMP.THRESHOLD_ID\n,''|'',TEMP.REQUEST_ID\n,''|'',TEMP.ACTION_TYPE\n,''|'',TEMP.ACTION_DTM\n,''|'',TEMP.REASON_CODE\n,''|'',TEMP.REASON_SUBCODE\n,''|'',TEMP.ASSIGN_NO\n,''|'',TEMP.TEMP_EXPIRE_DAT\n,''|'',TEMP.CREATED\n,''|'',TEMP.CREATED_BY\n,''|'',TEMP.LAST_UPD\n,''|'',TEMP.LAST_UPD_BY\n,''|'',TEMP.SEQ_NO\n,''|'',TEMP.CREDIT_GRADE\n,''|'',TEMP.ARPU\n,''|'',TEMP.MIN_REVIEW\n,''|'',TEMP.SUM_MAIN\n,''|'',TEMP.NEXT_BILL_DATE\n,''|'',TEMP.PHX_OPERATION\n) AS LINE FROM (\nSELECT ROW_ID AS PHX_ROW_ID,REF_ROW_ID AS EXISTING_ROW_ID,BILLING_ACCOUNT_NUM,\nLIMIT_MNY ,THRESHOLD_ID ,REQUEST_ID ,ACTION_TYPE ,ACTION_DTM ,REASON_CODE ,REASON_SUBCODE ,\nASSIGN_NO ,TEMP_EXPIRE_DAT ,CREATED ,CREATED_BY ,LAST_UPD ,LAST_UPD_BY ,SEQ_NO ,\nCREDIT_GRADE ,ARPU ,MIN_REVIEW ,SUM_MAIN ,NEXT_BILL_DATE ,''Insert'' AS PHX_OPERATION\nFROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN \nWHERE CONVERT(Date, CREATED) = CONVERT(Date, GETDATE())\nUNION ALL\nSELECT ASSIGN_ROW_ID AS PHX_ROW_ID,ASSIGN_REF_ROW_ID AS EXISTING_ROW_ID,BILLING_ACCOUNT_NUM,\nLIMIT_MNY ,THRESHOLD_ID ,REQUEST_ID ,ACTION_TYPE ,ACTION_DTM ,REASON_CODE ,REASON_SUBCODE ,\nASSIGN_NO ,TEMP_EXPIRE_DAT ,CREATED ,CREATED_BY ,LAST_UPD ,LAST_UPD_BY ,SEQ_NO ,\nCREDIT_GRADE ,ARPU ,MIN_REVIEW ,SUM_MAIN ,NEXT_BILL_DATE ,''Delete'' AS PHX_OPERATION\nFROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN_AT \nWHERE CONVERT(Date, BATCH_CREATED) = CONVERT(Date, GETDATE())\n)TEMP ORDER BY TEMP.PHX_ROW_ID\nOFFSET ',variables('offset'),' ROWS FETCH NEXT ',string(int(pipeline().parameters.limitPerRound)),' ROWS ONLY')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CC_CreateFileAndArchiveHaveDatName",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set fileNameArchive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set fileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set script Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CC_CreateFileAndArchiveHaveDatName",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"fileName": {
+							"value": "@variables('fileName')",
+							"type": "Expression"
+						},
+						"fileNameArchive": {
+							"value": "@variables('fileNameArchive')",
+							"type": "Expression"
+						},
+						"scriptQuery": {
+							"value": "@variables('scriptQuery')",
+							"type": "Expression"
+						},
+						"outputPath": {
+							"value": "@pipeline().parameters.outputPath",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"outputPath": {
+				"type": "string"
+			},
+			"prefixOutputFile": {
+				"type": "string"
+			},
+			"fileTypeOutputFile": {
+				"type": "string"
+			},
+			"SCHEMA": {
+				"type": "string"
+			},
+			"CREDIT_USER": {
+				"type": "string"
+			},
+			"DATA_TYPE": {
+				"type": "string"
+			},
+			"count": {
+				"type": "float"
+			},
+			"round": {
+				"type": "int"
+			},
+			"limitPerRound": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"offset": {
+				"type": "String"
+			},
+			"scriptQuery": {
+				"type": "String"
+			},
+			"processTime": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"fileNameArchive": {
+				"type": "String"
+			},
+			"scriptQuerySelect": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

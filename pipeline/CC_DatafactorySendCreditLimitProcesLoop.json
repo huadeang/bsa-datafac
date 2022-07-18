@@ -16,13 +16,13 @@
 					"batchCount": 5,
 					"activities": [
 						{
-							"name": "CC_DatafactorySendCreditAssignProcesFile",
+							"name": "CC_DatafactorySendCreditLimitProcesFile",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_DatafactorySendCreditAssignProcesFile",
+									"referenceName": "CC_DatafactorySendCreditLimitProcesFile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
