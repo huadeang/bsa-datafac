@@ -28,6 +28,7 @@
 				}
 			},
 			"columnDelimiter": ",",
+			"rowDelimiter": "",
 			"escapeChar": "",
 			"firstRowAsHeader": false,
 			"quoteChar": ""
