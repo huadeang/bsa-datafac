@@ -751,14 +751,7 @@
 					{
 						"name": "Get Metadata file created",
 						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "create file output",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -883,92 +876,6 @@
 									},
 									"fileName": {
 										"value": "@pipeline().parameters.fileNameArchive",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "create file output",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@pipeline().parameters.scriptQuery",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"maxRowsPerFile": 5,
-									"fileNamePrefix": {
-										"value": "@pipeline().parameters.fileName",
-										"type": "Expression"
-									},
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "LINE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite_copy1",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
 									}
 								}
@@ -1213,7 +1120,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT CONCAT('01|','20220706_151721') AS LINE\nUNION ALL \nSELECT T.LINE FROM (SELECT CONCAT('02|',ROW_ID,'|',REF_ROW_ID ,'|',BILLING_ACCOUNT_NUM,'|',\nLIMIT_MNY ,'|',THRESHOLD_ID ,'|',REQUEST_ID ,'|',ACTION_TYPE ,'|',ACTION_DTM ,'|',REASON_CODE ,'|',REASON_SUBCODE ,'|',\nASSIGN_NO ,'|',TEMP_EXPIRE_DAT ,'|',CREATED ,'|',CREATED_BY ,'|',LAST_UPD ,'|',LAST_UPD_BY ,'|',SEQ_NO ,'|',\nCREDIT_GRADE ,'|',ARPU ,'|',MIN_REVIEW ,'|',SUM_MAIN ,'|',NEXT_BILL_DATE ,'|','Insert') \n AS LINE FROM CREDIT_UAT.CC_CREDIT_ASSIGN \nWHERE CONVERT(Date, CREATED) = CONVERT(Date, GETDATE())\nORDER BY LAST_UPD OFFSET 0 ROWS FETCH NEXT  50000 ROW ONLY  \nUNION ALL\nSELECT CONCAT('02|',ASSIGN_ROW_ID,'|',ASSIGN_REF_ROW_ID ,'|',BILLING_ACCOUNT_NUM,'|',\nLIMIT_MNY ,'|',THRESHOLD_ID ,'|',REQUEST_ID ,'|',ACTION_TYPE ,'|',ACTION_DTM ,'|',REASON_CODE ,'|',REASON_SUBCODE ,'|',\nASSIGN_NO ,'|',TEMP_EXPIRE_DAT ,'|',CREATED ,'|',CREATED_BY ,'|',LAST_UPD ,'|',LAST_UPD_BY ,'|',SEQ_NO ,'|',\nCREDIT_GRADE ,'|',ARPU ,'|',MIN_REVIEW ,'|',SUM_MAIN ,'|',NEXT_BILL_DATE ,'|','Delete') AS LINE\nFROM CREDIT_UAT.CC_CREDIT_ASSIGN_AT \nWHERE CONVERT(Date, BATCH_CREATED) = CONVERT(Date, GETDATE())\nORDER BY LAST_UPD OFFSET 0 ROWS FETCH NEXT  50000 ROW ONLY  ) T\nUNION ALL \nSELECT CONCAT('09|',COUNT(T2.LINE)) FROM (SELECT CONCAT('02|',ROW_ID,'|',REF_ROW_ID ,'|',BILLING_ACCOUNT_NUM,'|',\nLIMIT_MNY ,'|',THRESHOLD_ID ,'|',REQUEST_ID ,'|',ACTION_TYPE ,'|',ACTION_DTM ,'|',REASON_CODE ,'|',REASON_SUBCODE ,'|',\nASSIGN_NO ,'|',TEMP_EXPIRE_DAT ,'|',CREATED ,'|',CREATED_BY ,'|',LAST_UPD ,'|',LAST_UPD_BY ,'|',SEQ_NO ,'|',\nCREDIT_GRADE ,'|',ARPU ,'|',MIN_REVIEW ,'|',SUM_MAIN ,'|',NEXT_BILL_DATE ,'|','Insert') \n AS LINE FROM CREDIT_UAT.CC_CREDIT_ASSIGN \nWHERE CONVERT(Date, CREATED) = CONVERT(Date, GETDATE())\nORDER BY LAST_UPD OFFSET 0 ROWS FETCH NEXT  50000 ROW ONLY  \nUNION ALL\nSELECT CONCAT('02|',ASSIGN_ROW_ID,'|',ASSIGN_REF_ROW_ID ,'|',BILLING_ACCOUNT_NUM,'|',\nLIMIT_MNY ,'|',THRESHOLD_ID ,'|',REQUEST_ID ,'|',ACTION_TYPE ,'|',ACTION_DTM ,'|',REASON_CODE ,'|',REASON_SUBCODE ,'|',\nASSIGN_NO ,'|',TEMP_EXPIRE_DAT ,'|',CREATED ,'|',CREATED_BY ,'|',LAST_UPD ,'|',LAST_UPD_BY ,'|',SEQ_NO ,'|',\nCREDIT_GRADE ,'|',ARPU ,'|',MIN_REVIEW ,'|',SUM_MAIN ,'|',NEXT_BILL_DATE ,'|','Delete') AS LINE\nFROM CREDIT_UAT.CC_CREDIT_ASSIGN_AT \nWHERE CONVERT(Date, BATCH_CREATED) = CONVERT(Date, GETDATE())\nORDER BY LAST_UPD OFFSET 0 ROWS FETCH NEXT  50000 ROW ONLY  ) T2;",
+								"sqlReaderQuery": "DECLARE @LINES VARCHAR(MAX)\nSELECT\n\t@LINES = CONCAT(@LINES, CHAR(10), '') + [LINE]\nFROM\n\t(\n\tSELECT\n\t\tCONCAT('02|', ACCNT_ID) AS LINE\n\tFROM\n\t\tCREDIT_UAT.CC_UPDATE_CA_INFO\n\tWHERE\n\t\tSTATUS = 'P'\n\tORDER BY\n\t\tCA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\nSELECT\n\tCONCAT((SELECT CONCAT('01|', '20220720_163205') AS LINE),(SELECT @LINES), CHAR(10),(SELECT\n\t'09|' + CONVERT(varchar(255),\n\tCOUNT(T2.LINE)) AS LINE\nFROM\n\t(\n\tSELECT\n\t\tCONCAT('02|', ACCNT_ID) AS LINE\n\tFROM\n\t\tCREDIT_UAT.CC_UPDATE_CA_INFO\n\tWHERE\n\t\tSTATUS = 'P'\n\tORDER BY\n\t\tCA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2)) AS LINE;",
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -1225,7 +1132,7 @@
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",
 									"quoteAllText": true,
-									"fileExtension": ".csv"
+									"fileExtension": ".txt"
 								}
 							},
 							"enableStaging": false,
@@ -1264,8 +1171,14 @@
 								"referenceName": "CCLocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
-									"filePath": "C:\\export\\home\\oper\\sffdata",
-									"fileName": "RETURN_CREDIT_ASSIGN__20220715_150227.dat"
+									"filePath": {
+										"value": "@variables('limit')",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@variables('prefixName')",
+										"type": "Expression"
+									}
 								}
 							}
 						]
@@ -4660,7 +4573,7 @@
 						"typeProperties": {
 							"variableName": "scriptQuery",
 							"value": {
-								"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('scriptQuerySelect'),') T\n    UNION ALL \n    SELECT ''09|'' + CONVERT(varchar(255),COUNT(T2.LINE)) AS LINE FROM (',variables('scriptQuerySelect'),') T2; ')",
+								"value": "@concat('DECLARE @LINES VARCHAR(MAX)\nSELECT @LINES = CONCAT(@LINES,CHAR(10),'''') + [LINE]\nFROM (',variables('scriptQuerySelect'),') \nSELECT CONCAT((SELECT\n\tCONCAT(''01|'',',variables('processTime'),') AS LINE),(SELECT @LINES),CHAR(10),(SELECT\n\tCONCAT(''09|'' , CONVERT(varchar(255),\n\tCOUNT(T2.LINE))) AS LINE\nFROM\n\t(',variables('scriptQuerySelect'),') T2)) AS LINE;')",
 								"type": "Expression"
 							}
 						}
