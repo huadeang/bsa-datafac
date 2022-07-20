@@ -7,7 +7,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "create file output_copy1",
+						"activity": "create file output",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -143,7 +143,7 @@
 				]
 			},
 			{
-				"name": "create file output_copy1",
+				"name": "create file output",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
