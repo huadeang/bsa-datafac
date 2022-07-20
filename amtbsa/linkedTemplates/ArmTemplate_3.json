@@ -9500,7 +9500,7 @@
 												"type": "Expression"
 											},
 											"round": {
-												"value": "@pipeline().parameters.listRound",
+												"value": "@item()",
 												"type": "Expression"
 											},
 											"limitPerRound": {
