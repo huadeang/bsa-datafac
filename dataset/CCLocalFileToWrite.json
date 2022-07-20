@@ -29,7 +29,7 @@
 			},
 			"columnDelimiter": "|",
 			"rowDelimiter": {
-				"value": "@concat('\\2408')",
+				"value": "@concat('␈')",
 				"type": "Expression"
 			},
 			"escapeChar": "",
