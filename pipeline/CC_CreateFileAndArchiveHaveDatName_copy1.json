@@ -167,7 +167,8 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "FileServerWriteSettings"
+							"type": "FileServerWriteSettings",
+							"maxConcurrentConnections": 5
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
