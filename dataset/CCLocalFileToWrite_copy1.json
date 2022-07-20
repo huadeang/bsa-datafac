@@ -28,7 +28,7 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": "",
+			"rowDelimiter": "\t",
 			"escapeChar": "",
 			"firstRowAsHeader": false,
 			"quoteChar": ""
