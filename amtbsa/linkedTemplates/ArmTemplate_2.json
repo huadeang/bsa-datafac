@@ -914,11 +914,11 @@
 							"sink": {
 								"type": "DelimitedTextSink",
 								"storeSettings": {
-									"type": "FileServerWriteSettings",
-									"maxConcurrentConnections": 5
+									"type": "FileServerWriteSettings"
 								},
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",
+									"maxRowsPerFile": 5,
 									"quoteAllText": true,
 									"fileExtension": ".txt"
 								}
