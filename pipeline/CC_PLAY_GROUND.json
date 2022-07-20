@@ -65,7 +65,17 @@
 				"outputs": [
 					{
 						"referenceName": "CCLocalFileToWrite",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@variables('limit')",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@variables('prefixName')",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
