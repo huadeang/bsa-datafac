@@ -155,36 +155,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "create file dat output",
-						"type": "DataFlowReference",
-						"parameters": {
-							"scriptQuery": {
-								"value": "'@{pipeline().parameters.scriptQuery}'",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "'@{pipeline().parameters.fileName}'",
-								"type": "Expression"
-							},
-							"filePath": {
-								"value": "'@{pipeline().parameters.outputPath}'",
-								"type": "Expression"
-							}
-						},
-						"datasetParameters": {
-							"sink1": {
-								"filePath": {
-									"value": "@pipeline().parameters.outputPath",
-									"type": "Expression"
-								},
-								"fileName": {
-									"value": "@pipeline().parameters.fileName",
-									"type": "Expression"
-								}
-							}
-						}
-					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
