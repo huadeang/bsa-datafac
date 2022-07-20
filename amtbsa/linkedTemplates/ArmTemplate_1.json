@@ -1031,6 +1031,46 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CCLocalFileToWrite_copy1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "",
+					"firstRowAsHeader": false,
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CCResReviewTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1767,108 +1807,6 @@
 						"type": "String"
 					},
 					{
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DemoBillingCSV')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DemoBillingFileServer",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"fileName": "CC_BILLING_202204221005.csv"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "ROW_ID",
-						"type": "String"
-					},
-					{
-						"name": "CREATED",
-						"type": "String"
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "String"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "String"
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "String"
-					},
-					{
-						"name": "ACCNT_NO",
-						"type": "String"
-					},
-					{
-						"name": "ACCNT_CATEGORY",
-						"type": "String"
-					},
-					{
-						"name": "ACCNT_SUB_CATEGORY",
-						"type": "String"
-					},
-					{
-						"name": "BILL_NAME",
-						"type": "String"
-					},
-					{
-						"name": "BILL_CYCLE",
-						"type": "String"
-					},
-					{
-						"name": "INVOICING_COMPANY",
-						"type": "String"
-					},
-					{
-						"name": "PAYMENT_METHOD",
-						"type": "String"
-					},
-					{
-						"name": "MASTER_ACCNT_ID",
-						"type": "String"
-					},
-					{
-						"name": "STATUS_CD",
-						"type": "String"
-					},
-					{
-						"name": "BILLING_STATUS_CD",
-						"type": "String"
-					},
-					{
-						"name": "REGISTER_DT",
-						"type": "String"
-					},
-					{
-						"name": "ARPU",
-						"type": "String"
-					},
-					{
-						"name": "CREDIT_GRADE",
-						"type": "String"
-					},
-					{
-						"name": "DEBT_NEGO_FLG",
 						"type": "String"
 					}
 				]
