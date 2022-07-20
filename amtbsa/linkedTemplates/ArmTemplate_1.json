@@ -1061,7 +1061,7 @@
 							"type": "Expression"
 						}
 					},
-					"columnDelimiter": ",",
+					"columnDelimiter": "|",
 					"escapeChar": "",
 					"firstRowAsHeader": false,
 					"quoteChar": ""
