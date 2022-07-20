@@ -918,10 +918,7 @@
 								},
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",
-									"maxRowsPerFile": {
-										"value": "@add(2,int(pipeline().parameters.numRow))",
-										"type": "Expression"
-									},
+									"maxRowsPerFile": 5,
 									"fileNamePrefix": {
 										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
