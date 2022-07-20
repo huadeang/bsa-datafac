@@ -49,6 +49,18 @@
 									"DATA_TYPE": {
 										"value": "@pipeline().parameters.DATA_TYPE",
 										"type": "Expression"
+									},
+									"count": {
+										"value": "@pipeline().parameters.count",
+										"type": "Expression"
+									},
+									"round": {
+										"value": "@pipeline().parameters.listRound",
+										"type": "Expression"
+									},
+									"limitPerRound": {
+										"value": "@pipeline().parameters.limitPerRound",
+										"type": "Expression"
 									}
 								}
 							}
