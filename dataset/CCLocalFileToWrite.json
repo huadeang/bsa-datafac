@@ -28,8 +28,11 @@
 				}
 			},
 			"columnDelimiter": "|",
+			"rowDelimiter": {
+				"value": "@concat('')",
+				"type": "Expression"
+			},
 			"escapeChar": "",
-			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},
 		"schema": []
