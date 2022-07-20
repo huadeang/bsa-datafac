@@ -21,45 +21,13 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile_copy1",
+									"referenceName": "CC_CreateFileAndArchiveHaveDatName",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
 								"parameters": {
 									"outputPath": {
 										"value": "@pipeline().parameters.outputPath",
-										"type": "Expression"
-									},
-									"prefixOutputFile": {
-										"value": "@pipeline().parameters.prefixOutputFile",
-										"type": "Expression"
-									},
-									"fileTypeOutputFile": {
-										"value": "@pipeline().parameters.fileTypeOutputFile",
-										"type": "Expression"
-									},
-									"SCHEMA": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"CREDIT_USER": {
-										"value": "@pipeline().parameters.CREDIT_USER",
-										"type": "Expression"
-									},
-									"DATA_TYPE": {
-										"value": "@pipeline().parameters.DATA_TYPE",
-										"type": "Expression"
-									},
-									"count": {
-										"value": "@pipeline().parameters.count",
-										"type": "Expression"
-									},
-									"round": {
-										"value": "@item()",
-										"type": "Expression"
-									},
-									"limitPerRound": {
-										"value": "@pipeline().parameters.limitPerRound",
 										"type": "Expression"
 									}
 								}
