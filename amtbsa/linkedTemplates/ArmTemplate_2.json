@@ -919,7 +919,11 @@
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",
 									"maxRowsPerFile": {
-										"value": "@add(2,int(concat('SELECT CONVERT(varchar(255),COUNT(T2.LINE)) FROM (',pipeline().parameters.baScriptQuery,') T2; ')))",
+										"value": "@pipeline().parameters.numRow",
+										"type": "Expression"
+									},
+									"fileNamePrefix": {
+										"value": "@pipeline().parameters.fileName",
 										"type": "Expression"
 									},
 									"quoteAllText": true,
@@ -992,8 +996,8 @@
 					"outputPath": {
 						"type": "string"
 					},
-					"baScriptQuery": {
-						"type": "string"
+					"numRow": {
+						"type": "int"
 					}
 				},
 				"annotations": []
