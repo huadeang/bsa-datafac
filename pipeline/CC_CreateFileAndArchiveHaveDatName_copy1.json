@@ -75,7 +75,11 @@
 				"outputs": [
 					{
 						"referenceName": "CCLocalFileToWrite_copy1",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": "@pipeline().parameters.outputPath",
+							"fileName": "@pipeline().parameters.fileName"
+						}
 					}
 				]
 			},
