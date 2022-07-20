@@ -1023,7 +1023,7 @@
 					},
 					"columnDelimiter": "|",
 					"rowDelimiter": {
-						"value": "@concat('')",
+						"value": "@concat('\\')",
 						"type": "Expression"
 					},
 					"escapeChar": "",
