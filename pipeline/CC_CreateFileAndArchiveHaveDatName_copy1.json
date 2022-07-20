@@ -172,7 +172,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"maxRowsPerFile": {
-								"value": "@pipeline().parameters.numRow",
+								"value": "@add(2,int(pipeline().parameters.numRow))",
 								"type": "Expression"
 							},
 							"fileNamePrefix": {
