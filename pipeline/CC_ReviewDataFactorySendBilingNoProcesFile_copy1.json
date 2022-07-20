@@ -189,8 +189,8 @@
 							"value": "@pipeline().parameters.outputPath",
 							"type": "Expression"
 						},
-						"baScriptQuery": {
-							"value": "@variables('baScriptQuery')",
+						"numRow": {
+							"value": "@concat('SELECT CONVERT(varchar(255),COUNT(LINE)) FROM (',variables('scriptQuery'),') ; ')",
 							"type": "Expression"
 						}
 					}
