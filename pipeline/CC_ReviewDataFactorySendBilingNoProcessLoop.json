@@ -21,7 +21,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile_copy1",
+									"referenceName": "CC_ReviewDataFactorySendBilingNoProcesFile",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
