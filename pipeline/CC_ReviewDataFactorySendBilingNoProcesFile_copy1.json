@@ -271,7 +271,7 @@
 				"typeProperties": {
 					"variableName": "scriptQuery",
 					"value": {
-						"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('baScriptQuery'),') T; ')",
+						"value": "@concat('SELECT\n\t''01|'' + ''',variables('processTime'),''' AS LINE  \n    UNION ALL \n    SELECT T.LINE FROM (',variables('baScriptQuery'),') T;')",
 						"type": "Expression"
 					}
 				}
