@@ -7,7 +7,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "create file output",
+						"activity": "create file dat output",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -143,11 +143,11 @@
 				]
 			},
 			{
-				"name": "create file output",
-				"type": "Copy",
+				"name": "create file dat output",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "7.00:00:00",
+					"timeout": "1.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -155,77 +155,30 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@pipeline().parameters.scriptQuery",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"maxRowsPerFile": 5,
-							"fileNamePrefix": {
-								"value": "@pipeline().parameters.fileName",
-								"type": "Expression"
-							},
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "LINE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileToWrite_copy1",
-						"type": "DatasetReference",
+					"dataflow": {
+						"referenceName": "create file dat output",
+						"type": "DataFlowReference",
 						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.outputPath",
+							"scriptQuery": {
+								"value": "'@{pipeline().parameters.scriptQuery}'",
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@pipeline().parameters.fileName",
+								"value": "'@{pipeline().parameters.fileName}'",
+								"type": "Expression"
+							},
+							"filePath": {
+								"value": "'@{pipeline().parameters.outputPath}'",
 								"type": "Expression"
 							}
 						}
-					}
-				]
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"parameters": {
