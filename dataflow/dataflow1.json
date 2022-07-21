@@ -45,12 +45,13 @@
 				"     folderPath: 'review/input',",
 				"     rowDelimiter: (concat('1')),",
 				"     columnDelimiter: '',",
-				"     escapeChar: '\\\\',",
+				"     escapeChar: '',",
 				"     quoteChar: '',",
 				"     columnNamesAsHeader: false,",
 				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     quoteAll: true,",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
