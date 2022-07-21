@@ -13,7 +13,8 @@
 				"folderPath": "review/input",
 				"container": "credit-control"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "",
+			"rowDelimiter": "",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
