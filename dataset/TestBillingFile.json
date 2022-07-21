@@ -13,6 +13,7 @@
 				"fileName": "test.csv"
 			},
 			"columnDelimiter": ",",
+			"rowDelimiter": "",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
