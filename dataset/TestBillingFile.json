@@ -5,6 +5,11 @@
 			"referenceName": "AzureFileStorageTest",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"rowCount": {
+				"type": "int"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -13,7 +18,7 @@
 				"fileName": "test.csv"
 			},
 			"columnDelimiter": ",",
-			"rowDelimiter": "X",
+			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
