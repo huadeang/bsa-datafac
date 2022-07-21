@@ -41,6 +41,8 @@
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delimited',",
+				"     container: 'credit-control',",
+				"     folderPath: 'review/input',",
 				"     rowDelimiter: '',",
 				"     columnDelimiter: '',",
 				"     escapeChar: '',",
