@@ -28,10 +28,7 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": {
-				"value": "@concat('\\')",
-				"type": "Expression"
-			},
+			"rowDelimiter": "\n",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
