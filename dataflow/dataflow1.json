@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlMaster",
+						"referenceName": "CCReadFileBlob",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -35,14 +35,12 @@
 				"     fileName as string",
 				"}",
 				"source(output(",
-				"          LINE as string",
+				"          {_col0_} as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     isolationLevel: 'NONE',",
-				"     query: (concat('SELECT CONCAT(\\'01|\\', \\'20220720_163205\\') AS LINE UNION ALL SELECT T.LINE FROM (SELECT CONCAT(\\'02|\\', ACCNT_ID) AS LINE FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = \\'P\\' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T UNION ALL SELECT CONCAT(\\'09|\\' , CONVERT(varchar(255), COUNT(T2.LINE))) AS LINE FROM ( SELECT CONCAT(\\'02|\\', ACCNT_ID) AS LINE FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = \\'P\\' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2')),",
-				"     format: 'query') ~> source1",
-				"source1 derive(LINE = replace(LINE, '\\n', '')) ~> derivedColumn1",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive({_col0_} = replace({_col0_}, '\\n', '')) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delimited',",
@@ -53,10 +51,9 @@
 				"     escapeChar: '',",
 				"     quoteChar: '',",
 				"     columnNamesAsHeader: false,",
-				"     partitionFileNames:[($fileName)],",
+				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
