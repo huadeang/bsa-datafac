@@ -1,0 +1,63 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CCTestWriteFile",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          ROW_ID as string,",
+				"          PAR_ROW_ID as string,",
+				"          LOV_TYPE as string,",
+				"          LOV_NAME as string,",
+				"          DISPLAY_VAL as string,",
+				"          LOV_VAL1 as string,",
+				"          LOV_VAL2 as string,",
+				"          LOV_VAL3 as string,",
+				"          LOV_VAL4 as string,",
+				"          LOV_VAL5 as string,",
+				"          LOV_VAL6 as string,",
+				"          LOV_VAL7 as string,",
+				"          LOV_VAL8 as string,",
+				"          LOV_VAL9 as string,",
+				"          LOV_VAL10 as string,",
+				"          TEXT_DESC as string,",
+				"          ORDER_BY as decimal(10,0),",
+				"          GROUP_TYPE as string,",
+				"          ACTIVE_FLG as string,",
+				"          CREATED as timestamp,",
+				"          CREATED_BY as string,",
+				"          LAST_UPD as timestamp,",
+				"          LAST_UPD_BY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\'Y\\'\\nUNION ALL\\nSElECT \\'Z\\'',",
+				"     format: 'query') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
