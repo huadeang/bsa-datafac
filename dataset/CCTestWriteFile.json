@@ -2,7 +2,7 @@
 	"name": "CCTestWriteFile",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage1",
+			"referenceName": "AzureBlobStorage3",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -13,10 +13,9 @@
 				"folderPath": "review/input",
 				"container": "credit-control"
 			},
-			"columnDelimiter": "",
-			"rowDelimiter": "",
-			"escapeChar": "",
-			"quoteChar": ""
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
