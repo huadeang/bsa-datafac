@@ -27,9 +27,6 @@
 			],
 			"transformations": [],
 			"scriptLines": [
-				"parameters{",
-				"     fileName as string",
-				"}",
 				"source(output(",
 				"          LINE as string",
 				"     ),",
