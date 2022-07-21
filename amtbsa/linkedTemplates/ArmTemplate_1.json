@@ -7,9 +7,25 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "amtbsa"
 		},
+		"AzureSqlBillingDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlBillingDatabase'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
 		"LocalFileServer_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LocalFileServer'"
+		},
+		"DemoBillingFileServer_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\credit-control\\review"
+		},
+		"DemoBillingFileServer_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "sangad"
 		},
 		"LocalFileServer_properties_typeProperties_host": {
 			"type": "string",
@@ -24,6 +40,78 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlBillingDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlBillingDatabase_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "azuresqlpassword"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SelfHostIntegration",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "azuresqlpassword"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DemoBillingFileServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('DemoBillingFileServer_properties_typeProperties_host')]",
+					"userId": "[parameters('DemoBillingFileServer_properties_typeProperties_userId')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "fileserverpassword"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SelfHostIntegration",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/LocalFileServer')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -416,7 +504,9 @@
 					"table": "CC_CFG_LOV"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableCurrent')]",
@@ -636,7 +726,9 @@
 					"table": "CC_CURRENT"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableFileTempDetail1')]",
@@ -702,7 +794,9 @@
 					"table": "CC_TEMP_FILE_DETAIL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTestBillingTable')]",
@@ -805,7 +899,9 @@
 					"table": "TEST_CC_BILLING"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlBillingDatabase')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCBillingFile')]",
@@ -1146,7 +1242,9 @@
 					"table": "cc_res_review"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetail')]",
@@ -1212,7 +1310,9 @@
 					"table": "CC_TEMP_FILE_DETAIL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
@@ -1278,7 +1378,9 @@
 					"table": "CC_TEMP_FILE_DETAIL"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHist')]",
@@ -1409,7 +1511,9 @@
 					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHistUAT')]",
@@ -1540,290 +1644,9 @@
 					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DatasetTableBillingReviewSchemaDataFac')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "DATA_HIST_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "DATA_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "DESCRIPTION",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_DATA_FAC",
-					"table": "CC_BILLING_REVIEW"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_LocalFileJson')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LocalFileServer",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filePath": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().filePath",
-							"type": "Expression"
-						}
-					}
-				},
-				"schema": {}
-			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_TableDynamic')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Schema": {
-						"type": "string"
-					},
-					"Table": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ROW_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "REF_ROW_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "ACCNT_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_LEVEL",
-						"type": "varchar"
-					},
-					{
-						"name": "SCORE_RANGE",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_TYPE",
-						"type": "varchar"
-					},
-					{
-						"name": "CL_CHANGE_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "OUTCOME_CD",
-						"type": "varchar"
-					},
-					{
-						"name": "OUTCOME_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PERM_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "TEMP_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PREV_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PREV_SCORE_RANGE",
-						"type": "varchar"
-					},
-					{
-						"name": "ACTUAL",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "ACTUAL_PERM",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "BILLING_CREDIT_LIMIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "BILLING_THRESHOLD_SET_ID",
-						"type": "decimal",
-						"precision": 10,
-						"scale": 0
-					},
-					{
-						"name": "FBB_FLAG",
-						"type": "char"
-					},
-					{
-						"name": "LAST_REVIEW_DAT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "MIN_REVIEW",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "AVAILABLE_CREDIT",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 7
-					},
-					{
-						"name": "PAYMENT_FLG",
-						"type": "char"
-					},
-					{
-						"name": "BA_REGISTER_DT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().Schema",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().Table",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }

@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage4'"
 		},
+		"AzureFileStorageTest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureFileStorageTest'"
+		},
 		"AzureSqlBillingDatabase_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlBillingDatabase'"
@@ -95,26 +99,17 @@
 					"AzureBlobStorage4_connectionString": {
 						"value": "[parameters('AzureBlobStorage4_connectionString')]"
 					},
+					"AzureFileStorageTest_connectionString": {
+						"value": "[parameters('AzureFileStorageTest_connectionString')]"
+					},
 					"GableEsavingDevAutoIR_connectionString": {
 						"value": "[parameters('GableEsavingDevAutoIR_connectionString')]"
 					},
 					"AzureBlobStorage2_connectionString": {
 						"value": "[parameters('AzureBlobStorage2_connectionString')]"
 					},
-					"AzureSqlBillingDatabase_connectionString": {
-						"value": "[parameters('AzureSqlBillingDatabase_connectionString')]"
-					},
-					"AzureSqlDatabase1_connectionString": {
-						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
-					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-					},
-					"DemoBillingFileServer_properties_typeProperties_host": {
-						"value": "[parameters('DemoBillingFileServer_properties_typeProperties_host')]"
-					},
-					"DemoBillingFileServer_properties_typeProperties_userId": {
-						"value": "[parameters('DemoBillingFileServer_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -134,8 +129,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureSqlBillingDatabase_connectionString": {
+						"value": "[parameters('AzureSqlBillingDatabase_connectionString')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
 					"LocalFileServer_password": {
 						"value": "[parameters('LocalFileServer_password')]"
+					},
+					"DemoBillingFileServer_properties_typeProperties_host": {
+						"value": "[parameters('DemoBillingFileServer_properties_typeProperties_host')]"
+					},
+					"DemoBillingFileServer_properties_typeProperties_userId": {
+						"value": "[parameters('DemoBillingFileServer_properties_typeProperties_userId')]"
 					},
 					"LocalFileServer_properties_typeProperties_host": {
 						"value": "[parameters('LocalFileServer_properties_typeProperties_host')]"

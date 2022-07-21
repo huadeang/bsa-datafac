@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage4'"
 		},
+		"AzureFileStorageTest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureFileStorageTest'"
+		},
 		"AzureSqlBillingDatabase_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlBillingDatabase'"
@@ -12667,91 +12671,6 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Data flow1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "DECLARE @LINES VARCHAR(MAX)\nSELECT\n\t@LINES = CONCAT(@LINES, CHAR(10), '') + [LINE]\nFROM\n\t(\n\tSELECT\n\t\tCONCAT('02|', ACCNT_ID) AS LINE\n\tFROM\n\t\tCREDIT_UAT.CC_UPDATE_CA_INFO\n\tWHERE\n\t\tSTATUS = 'P'\n\tORDER BY\n\t\tCA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\nSELECT\n\tCONCAT((SELECT CONCAT('01|', '20220720_163205') AS LINE),(SELECT @LINES), CHAR(10),(SELECT\n\t'09|' + CONVERT(varchar(255),\n\tCOUNT(T2.LINE)) AS LINE\nFROM\n\t(\n\tSELECT\n\t\tCONCAT('02|', ACCNT_ID) AS LINE\n\tFROM\n\t\tCREDIT_UAT.CC_UPDATE_CA_INFO\n\tWHERE\n\t\tSTATUS = 'P'\n\tORDER BY\n\t\tCA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2)) AS LINE;",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "LINE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@variables('limit')",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@variables('prefixName')",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
 						"name": "Data flow1",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
@@ -12806,8 +12725,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
 			]
 		},
@@ -24500,6 +24417,78 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TEST_EXPORT_CSV')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureFileStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TestCCBillingTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TestBillingFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/TestCCBillingTable')]",
+				"[concat(variables('factoryId'), '/datasets/TestBillingFile')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ValidateDemo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -25713,6 +25702,42 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CCReadFileBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage3",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": "review/input",
+						"container": "credit-control"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage3')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CCResReviewTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -25896,7 +25921,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "review/input/test",
+						"folderPath": "review/input",
 						"container": "credit-control"
 					},
 					"columnDelimiter": "",
@@ -26884,6 +26909,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TestBillingFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureFileStorageTest",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureFileStorageLocation",
+						"fileName": "test.csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureFileStorageTest')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TestCCBilling')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -26989,6 +27040,115 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TestCCBillingTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ROW_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_SUB_CATEGORY",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_NAME",
+						"type": "varchar"
+					},
+					{
+						"name": "BILL_CYCLE",
+						"type": "varchar"
+					},
+					{
+						"name": "INVOICING_COMPANY",
+						"type": "varchar"
+					},
+					{
+						"name": "PAYMENT_METHOD",
+						"type": "varchar"
+					},
+					{
+						"name": "MASTER_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_STATUS_CD",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime2",
+						"scale": 0
+					},
+					{
+						"name": "ARPU",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 7
+					},
+					{
+						"name": "CREDIT_GRADE",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 0
+					},
+					{
+						"name": "DEBT_NEGO_FLG",
+						"type": "varchar"
+					},
+					{
+						"name": "PAYMENT_FLAG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT",
+					"table": "TEST_CC_BILLING"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -27042,6 +27202,20 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage4_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureFileStorageTest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureFileStorageTest_connectionString')]",
+					"fileShare": "test"
 				}
 			},
 			"dependsOn": []
@@ -27299,11 +27473,7 @@
 							}
 						}
 					],
-					"transformations": [
-						{
-							"name": "derivedColumn1"
-						}
-					],
+					"transformations": [],
 					"scriptLines": [
 						"parameters{",
 						"     fileName as string",
@@ -27313,11 +27483,10 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     isolationLevel: 'NONE',",
 						"     query: (concat('SELECT CONCAT(\\'01|\\', \\'20220720_163205\\') AS LINE UNION ALL SELECT T.LINE FROM (SELECT CONCAT(\\'02|\\', ACCNT_ID) AS LINE FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = \\'P\\' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T UNION ALL SELECT CONCAT(\\'09|\\' , CONVERT(varchar(255), COUNT(T2.LINE))) AS LINE FROM ( SELECT CONCAT(\\'02|\\', ACCNT_ID) AS LINE FROM CREDIT_UAT.CC_UPDATE_CA_INFO WHERE STATUS = \\'P\\' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2')),",
 						"     format: 'query') ~> source1",
-						"source1 derive(LINE = replace(LINE, '\\n', '')) ~> derivedColumn1",
-						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'delimited',",
 						"     container: 'credit-control',",
@@ -27326,8 +27495,8 @@
 						"     columnDelimiter: '',",
 						"     escapeChar: '',",
 						"     quoteChar: '',",
-						"     columnNamesAsHeader: true,",
-						"     partitionFileNames:[($fileName)],",
+						"     columnNamesAsHeader: false,",
+						"     partitionFileNames:['TEST1.dat'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('hash', 1)) ~> sink1"

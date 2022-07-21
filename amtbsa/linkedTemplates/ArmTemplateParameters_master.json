@@ -17,6 +17,9 @@
 		"AzureBlobStorage4_connectionString": {
 			"value": ""
 		},
+		"AzureFileStorageTest_connectionString": {
+			"value": ""
+		},
 		"AzureSqlBillingDatabase_connectionString": {
 			"value": ""
 		},
