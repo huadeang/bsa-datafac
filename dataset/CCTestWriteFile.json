@@ -22,8 +22,8 @@
 				"folderPath": "review/input",
 				"container": "credit-control"
 			},
-			"columnDelimiter": "",
-			"rowDelimiter": "",
+			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
