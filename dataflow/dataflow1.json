@@ -47,7 +47,7 @@
 				"     columnDelimiter: '',",
 				"     escapeChar: '',",
 				"     quoteChar: '',",
-				"     encodingName: 'UTF-32LE',",
+				"     encodingName: 'UTF-8',",
 				"     columnNamesAsHeader: false,",
 				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
