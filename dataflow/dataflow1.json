@@ -33,7 +33,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT \\'Y\\' AS LINE\\nUNION ALL\\nSElECT \\'Z\\' AS LINE',",
+				"     query: 'DECLARE @LINES VARCHAR(MAX)\\nSELECT\\n     @LINES = CONCAT(@LINES, CHAR(10), \\'\\') + [LINE]\\nFROM\\n     (\\n     SELECT\\n          CONCAT(\\'02|\\', ACCNT_ID) AS LINE\\n     FROM\\n          CREDIT_UAT.CC_UPDATE_CA_INFO\\n     WHERE\\n          STATUS = \\'P\\'\\n     ORDER BY\\n          CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\\nSELECT\\n     CONCAT((SELECT CONCAT(\\'01|\\', \\'20220720_163205\\') AS LINE),(SELECT @LINES), CHAR(10),(SELECT\\n     \\'09|\\' + CONVERT(varchar(255),\\n     COUNT(T2.LINE)) AS LINE\\nFROM\\n     (\\n     SELECT\\n          CONCAT(\\'02|\\', ACCNT_ID) AS LINE\\n     FROM\\n          CREDIT_UAT.CC_UPDATE_CA_INFO\\n     WHERE\\n          STATUS = \\'P\\'\\n     ORDER BY\\n          CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T2)) AS LINE;',",
 				"     format: 'query') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
