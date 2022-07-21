@@ -31,7 +31,7 @@
 				"     fileName as string",
 				"}",
 				"source(output(",
-				"          {_col0_} as string",
+				"          LINE as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
