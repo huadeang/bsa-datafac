@@ -51,8 +51,10 @@
 				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     quoteAll: true,",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     mapColumn(",
+				"          LINE",
+				"     ),",
+				"     partitionBy('roundRobin', 2)) ~> sink1"
 			]
 		}
 	}
