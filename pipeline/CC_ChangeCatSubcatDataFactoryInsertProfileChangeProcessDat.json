@@ -679,7 +679,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead),' record -> count process ',string(sub(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead,2)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
