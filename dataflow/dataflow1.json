@@ -20,7 +20,7 @@
 					},
 					"name": "sink1",
 					"rejectedDataLinkedService": {
-						"referenceName": "AzureBlobStorage1",
+						"referenceName": "AzureBlobStorage2",
 						"type": "LinkedServiceReference"
 					}
 				}
