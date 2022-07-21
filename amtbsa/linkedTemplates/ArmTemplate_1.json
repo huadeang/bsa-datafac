@@ -6,12 +6,46 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "amtbsa"
+		},
+		"LocalFileServer_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LocalFileServer'"
+		},
+		"LocalFileServer_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\credit-control"
+		},
+		"LocalFileServer_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "sangad"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LocalFileServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('LocalFileServer_properties_typeProperties_host')]",
+					"userId": "[parameters('LocalFileServer_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LocalFileServer_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "SelfHostIntegration",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ValidateDemo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -874,7 +908,9 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterNotSplit')]",
@@ -914,7 +950,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterPath')]",
@@ -948,7 +986,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterSplitPipe')]",
@@ -988,7 +1028,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileToWrite')]",
@@ -1022,16 +1064,15 @@
 						}
 					},
 					"columnDelimiter": "|",
-					"rowDelimiter": {
-						"value": "@concat('\\')",
-						"type": "Expression"
-					},
+					"rowDelimiter": "\n",
 					"escapeChar": "",
 					"quoteChar": ""
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileToWrite_copy1')]",
@@ -1071,7 +1112,9 @@
 				},
 				"schema": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CCResReviewTable')]",
@@ -1595,7 +1638,9 @@
 				},
 				"schema": {}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_TableDynamic')]",
@@ -1777,42 +1822,6 @@
 						"type": "Expression"
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText3')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "RES_Review_Credit_Limit_20220225_141502.dat",
-						"folderPath": "demo",
-						"container": "credit-control"
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
 			},
 			"dependsOn": []
 		}

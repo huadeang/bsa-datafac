@@ -35,10 +35,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
-		"LocalFileServer_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'LocalFileServer'"
-		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://aksvault01.vault.azure.net/"
@@ -48,14 +44,6 @@
 			"defaultValue": "C:\\credit-control\\review"
 		},
 		"DemoBillingFileServer_properties_typeProperties_userId": {
-			"type": "string",
-			"defaultValue": "sangad"
-		},
-		"LocalFileServer_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "C:\\credit-control"
-		},
-		"LocalFileServer_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "sangad"
 		}
@@ -263,6 +251,34 @@
 						"container": "credit-control"
 					}
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCTestWriteFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage3",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "review/input/test",
+						"container": "credit-control"
+					},
+					"columnDelimiter": "",
+					"rowDelimiter": "",
+					"escapeChar": "",
+					"quoteChar": ""
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage3')]"
@@ -643,30 +659,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/SelfHostIntegration')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LocalFileServer')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('LocalFileServer_properties_typeProperties_host')]",
-					"userId": "[parameters('LocalFileServer_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('LocalFileServer_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "SelfHostIntegration",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/SelfHostIntegration')]"
 			]
 		}
 	]

@@ -107,9 +107,6 @@
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
-					"LocalFileServer_password": {
-						"value": "[parameters('LocalFileServer_password')]"
-					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
 					},
@@ -118,12 +115,6 @@
 					},
 					"DemoBillingFileServer_properties_typeProperties_userId": {
 						"value": "[parameters('DemoBillingFileServer_properties_typeProperties_userId')]"
-					},
-					"LocalFileServer_properties_typeProperties_host": {
-						"value": "[parameters('LocalFileServer_properties_typeProperties_host')]"
-					},
-					"LocalFileServer_properties_typeProperties_userId": {
-						"value": "[parameters('LocalFileServer_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -142,6 +133,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"LocalFileServer_password": {
+						"value": "[parameters('LocalFileServer_password')]"
+					},
+					"LocalFileServer_properties_typeProperties_host": {
+						"value": "[parameters('LocalFileServer_properties_typeProperties_host')]"
+					},
+					"LocalFileServer_properties_typeProperties_userId": {
+						"value": "[parameters('LocalFileServer_properties_typeProperties_userId')]"
 					}
 				}
 			},
