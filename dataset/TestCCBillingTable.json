@@ -98,7 +98,7 @@
 		],
 		"typeProperties": {
 			"schema": "CREDIT",
-			"table": "TEST_CC_BILLING"
+			"table": "TEST_CC_BILLING2"
 		}
 	}
 }
