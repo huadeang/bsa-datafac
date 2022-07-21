@@ -1,0 +1,21 @@
+{
+	"name": "TestBillingFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureFileStorageTest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureFileStorageLocation",
+				"fileName": "test.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
