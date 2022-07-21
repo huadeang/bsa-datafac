@@ -51,7 +51,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT \\'Y\\'\\nUNION ALL\\nSElECT \\'Z\\'',",
+				"     query: 'SELECT \\'Y\\' AS LINE\\nUNION ALL\\nSElECT \\'Z\\' AS LINE',",
 				"     format: 'query') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
