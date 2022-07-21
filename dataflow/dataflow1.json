@@ -47,6 +47,7 @@
 				"     columnDelimiter: '',",
 				"     escapeChar: '',",
 				"     quoteChar: '',",
+				"     encodingName: 'BIG5',",
 				"     columnNamesAsHeader: false,",
 				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
