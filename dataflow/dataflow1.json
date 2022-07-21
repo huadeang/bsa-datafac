@@ -43,7 +43,7 @@
 				"     format: 'delimited',",
 				"     container: 'credit-control',",
 				"     folderPath: 'review/input',",
-				"     rowDelimiter: '',",
+				"     rowDelimiter: (concat('1')),",
 				"     columnDelimiter: '',",
 				"     escapeChar: '\\\\',",
 				"     quoteChar: '',",
