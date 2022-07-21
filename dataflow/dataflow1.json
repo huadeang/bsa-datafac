@@ -51,7 +51,6 @@
 				"     partitionFileNames:['TEST1.dat'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     header: (concat('LINE')),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
