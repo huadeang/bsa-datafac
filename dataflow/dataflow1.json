@@ -38,7 +38,10 @@
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_container: 'credit-control',",
+				"     assertFailure_folderPath: 'review') ~> sink1"
 			]
 		}
 	}
