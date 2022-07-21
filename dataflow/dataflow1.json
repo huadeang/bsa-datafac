@@ -14,9 +14,9 @@
 			],
 			"sinks": [
 				{
-					"linkedService": {
-						"referenceName": "AzureBlobStorage3",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "CCTestWriteFile",
+						"type": "DatasetReference"
 					},
 					"name": "sink1",
 					"rejectedDataLinkedService": {
@@ -40,21 +40,9 @@
 				"     format: 'query') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'delimited',",
-				"     container: 'credit-control',",
-				"     folderPath: 'review/input',",
-				"     rowDelimiter: (concat('1')),",
-				"     columnDelimiter: '',",
-				"     escapeChar: '',",
-				"     quoteChar: '',",
-				"     columnNamesAsHeader: false,",
 				"     partitionFileNames:['TEST2.dat'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     mapColumn(",
-				"          LINE",
-				"     ),",
-				"     partitionBy('roundRobin', 2)) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
