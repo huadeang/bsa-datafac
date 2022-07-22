@@ -11,6 +11,9 @@
 			},
 			"fileName": {
 				"type": "string"
+			},
+			"lastCharOf09": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -28,7 +31,10 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": " ",
+			"rowDelimiter": {
+				"value": "@dataset().lastCharOf09",
+				"type": "Expression"
+			},
 			"escapeChar": "",
 			"quoteChar": ""
 		},
