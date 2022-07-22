@@ -27,8 +27,8 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "|",
-			"rowDelimiter": "e",
+			"columnDelimiter": "",
+			"rowDelimiter": "",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
