@@ -12,7 +12,7 @@
 			"fileName": {
 				"type": "string"
 			},
-			"lastCharOf09": {
+			"last": {
 				"type": "string"
 			}
 		},
@@ -31,10 +31,6 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": {
-				"value": "@dataset().lastCharOf09",
-				"type": "Expression"
-			},
 			"escapeChar": "",
 			"quoteChar": ""
 		},
