@@ -193,7 +193,7 @@
 		"variables": {
 			"SCHEMA": {
 				"type": "String",
-				"defaultValue": "CREDIT_UAT"
+				"defaultValue": "CREDIT_DEV"
 			},
 			"LOV_TYPE": {
 				"type": "String",
