@@ -28,7 +28,6 @@
 				}
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": "\r\n",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
