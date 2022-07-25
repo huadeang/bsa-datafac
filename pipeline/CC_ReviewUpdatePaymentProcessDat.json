@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "insert 01",
+						"activity": "Set temp file dat Id",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -42,7 +42,7 @@
 							{
 								"name": "CREATED",
 								"value": {
-									"value": "@convertFromUtc( utcnow(),'SE Asia Standard Time')",
+									"value": "@utcnow()",
 									"type": "Expression"
 								}
 							},
@@ -53,7 +53,7 @@
 							{
 								"name": "LAST_UPD",
 								"value": {
-									"value": "@convertFromUtc( utcnow(),'SE Asia Standard Time')",
+									"value": "@utcNow()",
 									"type": "Expression"
 								}
 							},
@@ -89,50 +89,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CREATED",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CREATED_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CREATED_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "LAST_UPD_BY",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LAST_UPD_BY",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
 									"name": "FILE_ID",
 									"type": "String"
 								},
@@ -149,20 +105,33 @@
 									"ordinal": 1
 								},
 								"sink": {
-									"name": "FILE_LINE",
+									"name": "ACCNT_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "STATUS",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 2
 								},
 								"sink": {
-									"name": "STATUS",
+									"name": "PAYMENT_FLG",
 									"type": "String",
-									"physicalType": "char"
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"physicalType": "String",
+									"ordinal": 3
+								},
+								"sink": {
+									"name": "PAYMENT_DATE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							}
 						],
@@ -175,7 +144,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CCLocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -198,7 +167,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_TEMP_FILE_DETAIL"
+							"Table": "CC_TEMP_FILE_PAYMENT_FLG"
 						}
 					}
 				]
@@ -765,88 +734,6 @@
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "insert 01",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Read 01",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_PAYMENT_FLG (FILE_ID,PROCESS_TYPE) VALUES (',variables('tempFileDatId'),',''',activity('Read 01').output.firstRow.Prop_0,''')')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Read 01",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Set temp file dat Id",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
-					}
 				}
 			}
 		],
