@@ -19808,7 +19808,7 @@
 					},
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_UAT"
+						"defaultValue": "CREDIT_DEV"
 					},
 					"TEMP_FILE_DETAIL_CREATED_BY": {
 						"type": "String",
