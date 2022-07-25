@@ -6,12 +6,6 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "CC_ReviewUpdatePayment",
-					"type": "PipelineReference"
-				}
-			},
-			{
-				"pipelineReference": {
 					"referenceName": "CC_ReviewUpdateArpu",
 					"type": "PipelineReference"
 				}
