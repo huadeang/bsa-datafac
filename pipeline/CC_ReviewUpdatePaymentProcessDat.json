@@ -33,36 +33,12 @@
 								}
 							},
 							{
-								"name": "LAST_UPD_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED",
-								"value": {
-									"value": "@utcnow()",
-									"type": "Expression"
-								}
-							},
-							{
 								"name": "STATUS",
 								"value": "S"
 							},
 							{
-								"name": "LAST_UPD",
-								"value": {
-									"value": "@utcNow()",
-									"type": "Expression"
-								}
-							},
-							{
-								"name": "CREATED_BY",
-								"value": {
-									"value": "@pipeline().parameters.CREDIT_USER",
-									"type": "Expression"
-								}
+								"name": "PROCESS_TYPE",
+								"value": "02"
 							}
 						],
 						"storeSettings": {
@@ -96,6 +72,17 @@
 									"name": "FILE_ID",
 									"type": "Int64",
 									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "PROCESS_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PROCESS_TYPE",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
