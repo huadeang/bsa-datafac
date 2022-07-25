@@ -13,6 +13,363 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_CaCreditLimitDataFatorySendAccntIdProcesLoop')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.listRound",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_CaCreditLimitDataFatorySendAccntIdProcesFile",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"outputPath": {
+												"value": "@pipeline().parameters.outputPath",
+												"type": "Expression"
+											},
+											"prefixOutputFile": {
+												"value": "@pipeline().parameters.prefixOutputFile",
+												"type": "Expression"
+											},
+											"fileTypeOutputFile": {
+												"value": "@pipeline().parameters.fileTypeOutputFile",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"DATA_TYPE": {
+												"value": "@pipeline().parameters.DATA_TYPE",
+												"type": "Expression"
+											},
+											"count": {
+												"value": "@pipeline().parameters.count",
+												"type": "Expression"
+											},
+											"round": {
+												"value": "@item()",
+												"type": "Expression"
+											},
+											"limitPerRound": {
+												"value": "@pipeline().parameters.limitPerRound",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"outputPath": {
+						"type": "string"
+					},
+					"prefixOutputFile": {
+						"type": "string"
+					},
+					"fileTypeOutputFile": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"DATA_TYPE": {
+						"type": "string"
+					},
+					"count": {
+						"type": "float"
+					},
+					"listRound": {
+						"type": "array"
+					},
+					"limitPerRound": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"offset": {
+						"type": "String"
+					},
+					"scriptQuery": {
+						"type": "String"
+					},
+					"processTime": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "String"
+					},
+					"fileNameArchive": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_ChangeCatSubCatSendBillingAccountNoChildren')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Account List",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT BILLING_ACCNT_NO  FROM ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT_INFO\nORDER BY BILLING_ACCNT_NO')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "if Account List Empty",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Account List",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@empty(activity('Get Account List').output.value)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Execute ChangeCatSubcatSendBillingProcessAccountNoList",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Set changeId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_ChangeCatSubcatSendBillingAccoutnNoProcessAccountNoList",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"outputPath": {
+												"value": "@pipeline().parameters.outputPath",
+												"type": "Expression"
+											},
+											"prefixOutputFile": {
+												"value": "@pipeline().parameters.prefixOutputFile",
+												"type": "Expression"
+											},
+											"fileTypeOutputFile": {
+												"value": "@pipeline().parameters.fileTypeOutputFile",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@pipeline().parameters.SCHEMA",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@pipeline().parameters.CREDIT_USER",
+												"type": "Expression"
+											},
+											"CHANGE_TYPE": {
+												"value": "@pipeline().parameters.CHANGE_TYPE",
+												"type": "Expression"
+											},
+											"baList": {
+												"value": "@activity('Get Account List').output",
+												"type": "Expression"
+											},
+											"changeId": {
+												"value": "@variables('changeId')",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Insert CC_CHANGE_CAT_SUBCAT process",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''P'',''Process send billing account number count ',string(activity('Get Account List').output.count),' record'');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set changeId",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Insert CC_CHANGE_CAT_SUBCAT process",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "changeId",
+										"value": {
+											"value": "@string(first(first(activity('Insert CC_CHANGE_CAT_SUBCAT process').output.resultSets).rows).CHANGE_ID)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "Insert CC_CHANGE_CAT_SUBCAT if Empty",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CHANGE_CAT_SUBCAT \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tCHANGE_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.CHANGE_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.CHANGE_TYPE,''',\n\t''S'',''Query Billing account no for change cat/sub cat data not found'');')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"LOV_TYPE": {
+						"type": "string"
+					},
+					"LOV_NAME": {
+						"type": "string"
+					},
+					"SCHEMA": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"CHANGE_TYPE": {
+						"type": "string"
+					},
+					"outputPath": {
+						"type": "string"
+					},
+					"prefixOutputFile": {
+						"type": "string"
+					},
+					"fileTypeOutputFile": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"changeId": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryProcessFileSyncChildren')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2379,7 +2736,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ChangeCatSubCatSendBillingAccountNoChildren')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryProcessFileSync')]",
@@ -3016,6 +3375,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewDataFactorySendBilingNoProcessLoop')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_CaCreditLimitDataFatorySendAccntIdProcesLoop')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_SendTestCcBillingProcessLoop')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DatafactorySendCreditAssignProcesLoop')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DatafactorySendCreditLimitProcesLoop')]"
@@ -4823,600 +5183,6 @@
 					"executeDatPipeLineName": {
 						"type": "String",
 						"defaultValue": "CC_ChangeCatSubcatDataFactoryInsertProfileChangeProcessDat"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryFindFileSyncInDir')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertBillingChangeCatSubCat')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get Config Value",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Clear Data CC_BILLING_CAT_SUBCAT",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT VAL1,VAL3,VAL4,VAL7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('LOV_TYPE'),''' AND c.LOV_NAME = ''',variables('LOV_NAME'),''' AND c.ACTIVE_FLG =''Y''')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlTableCurrent",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "If Configval is nul or Some Config val is Null",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Get Config Value",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@or(not(contains(string(activity('Get Config Value').output),'firstRow')),or(or(or(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null)))",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Set inputPath",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "inputPath",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val1",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set fileTypeInputFile",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set prefixInputFile",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileTypeInputFile",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val4",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set prefixInputFile",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set inputPath",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "prefixInputFile",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val3",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set moveInputPath",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileTypeInputFile",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "moveInputPath",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val7",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Execute Pipeline FindFile indir",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Set moveInputPath",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_DataFactoryFindFileSyncInDir",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"inputPath": {
-												"value": "@variables('inputPath')",
-												"type": "Expression"
-											},
-											"prefixInputFile": {
-												"value": "@variables('prefixInputFile')",
-												"type": "Expression"
-											},
-											"fileTypeInputFile": {
-												"value": "@variables('fileTypeInputFile')",
-												"type": "Expression"
-											},
-											"SCHEMA": {
-												"value": "@variables('SCHEMA')",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@variables('CREDIT_USER')",
-												"type": "Expression"
-											},
-											"moveInputPath": {
-												"value": "@variables('moveInputPath')",
-												"type": "Expression"
-											},
-											"executePipeLineName": {
-												"value": "@variables('executeDatPipeLineName')",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@variables('DATA_TYPE')",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "insert data factory  process file sync",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Execute Pipeline FindFile indir",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tFILE_PATH,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID\t VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''',variables('inputPath'),''',\n\t''E'',''',substring(concat('Datafactory Exception :',replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),0,if(less(length(replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),499),length(replace(activity('Execute Pipeline FindFile indir').Error.Message,'''','\"')),499)),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "insert error when config val error",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY\n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value').output),'firstRow')),concat('Config LOV_TYPE : ',variables('LOV_TYPE'),' ,LOV_NAME : ',variables('LOV_NAME'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t)\n\t,' Data not found.')),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Clear Data CC_BILLING_CAT_SUBCAT",
-						"type": "Script",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('DELETE FROM ',variables('SCHEMA'),'.CC_BILLING_CAT_SUBCAT')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"SCHEMA": {
-						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
-					},
-					"LOV_NAME": {
-						"type": "String",
-						"defaultValue": "cc_data_fac_cat_subcat_insert_billing_profile"
-					},
-					"LOV_TYPE": {
-						"type": "String",
-						"defaultValue": "CC_MONITOR_MASTER"
-					},
-					"DATA_TYPE": {
-						"type": "String",
-						"defaultValue": "CAT_SUBCAT_INSERT_BA"
-					},
-					"CREDIT_USER": {
-						"type": "String",
-						"defaultValue": "DATA_FAC_INSERT_BA"
-					},
-					"inputPath": {
-						"type": "String"
-					},
-					"prefixInputFile": {
-						"type": "String"
-					},
-					"fileTypeInputFile": {
-						"type": "String"
-					},
-					"moveInputPath": {
-						"type": "String"
-					},
-					"executeDatPipeLineName": {
-						"type": "String",
-						"defaultValue": "CC_ChangeCatSubcatInsertBillingAccountNoProcessDat"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryFindFileSyncInDir')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertOrUpdateCreditAssign')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Get Config Value",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT VAL1,VAL3,VAL4,VAL7 from ',variables('SCHEMA'),'.CC_CURRENT c WHERE c.LOV_TYPE= ''',variables('LOV_TYPE'),''' AND c.LOV_NAME = ''',variables('LOV_NAME'),''' AND c.ACTIVE_FLG =''Y''')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlTableCurrent",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "If Configval is nul or Some Config val is Null",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Get Config Value",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@or(not(contains(string(activity('Get Config Value').output),'firstRow')),or(or(or(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null)),equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null)))",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Set inputPath",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "inputPath",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val1",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set fileTypeInputFile",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set prefixInputFile",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "fileTypeInputFile",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val4",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set prefixInputFile",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set inputPath",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "prefixInputFile",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val3",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set moveInputPath",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Set fileTypeInputFile",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "moveInputPath",
-										"value": {
-											"value": "@activity('Get Config Value').output.firstRow.val7",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Execute Pipeline FindFile indir",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Set moveInputPath",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_DataFactoryFindFileSyncInDir",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"inputPath": {
-												"value": "@variables('inputPath')",
-												"type": "Expression"
-											},
-											"prefixInputFile": {
-												"value": "@variables('prefixInputFile')",
-												"type": "Expression"
-											},
-											"fileTypeInputFile": {
-												"value": "@variables('fileTypeInputFile')",
-												"type": "Expression"
-											},
-											"SCHEMA": {
-												"value": "@variables('SCHEMA')",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@variables('CREDIT_USER')",
-												"type": "Expression"
-											},
-											"moveInputPath": {
-												"value": "@variables('moveInputPath')",
-												"type": "Expression"
-											},
-											"executePipeLineName": {
-												"value": "@variables('executeDatPipeLineName')",
-												"type": "Expression"
-											},
-											"DATA_TYPE": {
-												"value": "@variables('DATA_TYPE')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "insert error when config val error",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY\n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',\n\tif(not(contains(string(activity('Get Config Value').output),'firstRow')),concat('Config LOV_TYPE : ',variables('LOV_TYPE'),' ,LOV_NAME : ',variables('LOV_NAME'),' Data not found.'),concat('Config ',\n\tif(startswith(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,','),substring(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t,1,sub(length(\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t),1)),\n\tconcat(if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val1,'')),''),null,activity('Get Config Value').output.firstRow.val1),null),',Input path(val1)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val3,'')),''),null,activity('Get Config Value').output.firstRow.val3),null),',Prefix Input file(val3)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val4,'')),''),null,activity('Get Config Value').output.firstRow.val4),null),',file type Input file(val4)',''),if(equals(if(equals(trim(coalesce(activity('Get Config Value').output.firstRow.val7,'')),''),null,activity('Get Config Value').output.firstRow.val7),null),',Move Input path(val7)',''))\n\t)\n\t,' Data not found.')),''');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"SCHEMA": {
-						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
-					},
-					"LOV_NAME": {
-						"type": "String",
-						"defaultValue": "cc_data_fac_credit_assign"
-					},
-					"LOV_TYPE": {
-						"type": "String",
-						"defaultValue": "CC_MONITOR_MASTER"
-					},
-					"DATA_TYPE": {
-						"type": "String",
-						"defaultValue": "INSERT_UPDATE_CREDIT_ASSIGN"
-					},
-					"CREDIT_USER": {
-						"type": "String",
-						"defaultValue": "DATA_FAC_INSERT_UPDATE_CREDIT_ASSIGN"
-					},
-					"inputPath": {
-						"type": "String"
-					},
-					"prefixInputFile": {
-						"type": "String"
-					},
-					"fileTypeInputFile": {
-						"type": "String"
-					},
-					"moveInputPath": {
-						"type": "String"
-					},
-					"executeDatPipeLineName": {
-						"type": "String",
-						"defaultValue": "CC_DataFactoryInsertOrUpdateCreditAssignProcessDat"
 					}
 				},
 				"annotations": []

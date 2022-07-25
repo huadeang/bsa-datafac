@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage4'"
 		},
+		"AzureFileSahreStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureFileSahreStorage'"
+		},
 		"AzureFileStorageTest_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureFileStorageTest'"
@@ -34,6 +38,10 @@
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"CC_AzureFileStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CC_AzureFileStorage'"
 		},
 		"GableEsavingDevAutoIR_connectionString": {
 			"type": "secureString",
@@ -20596,11 +20604,11 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://prod-02.eastasia.logic.azure.com:443/workflows/9e968264b8fb478496e07b9a7e85db56/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wGerrTmlPl4OUgqDTUMozuMdGflz20vZLimuQ-d4k3w",
+							"url": "https://prod-18.eastasia.logic.azure.com:443/workflows/ba8c379661cc4c598482a9c017838298/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=mS-4hx8Wwkk510tb3IqgMGv3YahyEiiy2W9tw-OXmqo",
 							"method": "POST",
 							"headers": {},
 							"body": {
-								"value": "@json(concat('{\n  \"process\" : \"UPDATE_PAYMENT_FLG\",\n  \"fileId\" : ',variables('tempFileDatId'),'\n }'))",
+								"value": "@json(concat('{\n  \"process\" : \"UPDATE_PAYMENT_FLAG\",\n  \"fileId\" : ',variables('tempFileDatId'),'\n }'))",
 								"type": "Expression"
 							}
 						}
@@ -26585,6 +26593,20 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureFileSahreStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureFileSahreStorage_connectionString')]",
+					"fileShare": "bsaaksfileshare"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureFileStorageTest')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -26661,6 +26683,20 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_AzureFileStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('CC_AzureFileStorage_connectionString')]",
+					"fileShare": "bsaaksfileshare"
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DemoBillingFileServer')]",

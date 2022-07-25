@@ -17,6 +17,9 @@
 		"AzureBlobStorage4_connectionString": {
 			"value": ""
 		},
+		"AzureFileSahreStorage_connectionString": {
+			"value": ""
+		},
 		"AzureFileStorageTest_connectionString": {
 			"value": ""
 		},
@@ -24,6 +27,9 @@
 			"value": ""
 		},
 		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"CC_AzureFileStorage_connectionString": {
 			"value": ""
 		},
 		"GableEsavingDevAutoIR_connectionString": {
