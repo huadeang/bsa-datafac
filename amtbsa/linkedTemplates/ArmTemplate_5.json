@@ -3178,13 +3178,6 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "CC_ReviewUpdatePayment",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					},
-					{
-						"pipelineReference": {
 							"referenceName": "CC_ReviewUpdateArpu",
 							"type": "PipelineReference"
 						},
@@ -3210,7 +3203,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdatePayment')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_ReviewUpdateArpu')]"
 			]
 		}
