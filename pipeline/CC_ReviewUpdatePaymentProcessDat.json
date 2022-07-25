@@ -425,7 +425,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Move Data Dat Succes",
+						"activity": "Send Trigger Update Payment",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -588,7 +588,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Move Data Dat Succes",
+						"activity": "Send Trigger Update Payment",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -734,6 +734,34 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Send Trigger Update Payment",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Move Data Dat Succes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-02.eastasia.logic.azure.com:443/workflows/9e968264b8fb478496e07b9a7e85db56/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wGerrTmlPl4OUgqDTUMozuMdGflz20vZLimuQ-d4k3w",
+					"method": "POST",
+					"body": {
+						"value": "@json(concat('{\n  \"process\" : \"UPDATE_PAYMENT_FLG\",\n  \"fileId\" : ',variables('tempFileDatId'),'\n }'))",
+						"type": "Expression"
+					}
 				}
 			}
 		],
