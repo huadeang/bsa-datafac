@@ -3,87 +3,27 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
-				"type": "Copy",
+				"name": "Set variable1",
+				"type": "SetVariable",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": "DECLARE @Lines VARCHAR(MAX)\nSELECT @Lines = CONCAT(@Lines,'')+[LINE]\nFROM (SELECT CONCAT('02|', ACCNT_ID,CHAR(10)) AS LINE FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = 'P' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\nSELECT CONCAT('01|20220722_101452' ,CHAR(10),@Lines,'09|',COUNT(@Lines));",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "LINE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
+					"variableName": "Variable",
+					"value": {
+						"value": "@{pipeline().parameters.reciverJson}",
+						"type": "Expression"
 					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileToWrite",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": "C:\\export\\home\\oper\\sffdata",
-							"fileName": "TEST.dat"
-						}
-					}
-				]
+				}
 			}
 		],
+		"parameters": {
+			"reciverJson": {
+				"type": "object"
+			}
+		},
 		"variables": {
-			"processTime": {
+			"Variable": {
 				"type": "String"
-			},
-			"prefixName": {
-				"type": "String"
-			},
-			"limit": {
-				"type": "String",
-				"defaultValue": "50000"
 			}
 		},
 		"annotations": []
