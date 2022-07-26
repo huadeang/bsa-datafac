@@ -12339,7 +12339,7 @@
 						"typeProperties": {
 							"variableName": "Variable",
 							"value": {
-								"value": "@{pipeline().parameters.reciverJson}",
+								"value": "@{base64ToString(pipeline().parameters.reciverJson)}",
 								"type": "Expression"
 							}
 						}
