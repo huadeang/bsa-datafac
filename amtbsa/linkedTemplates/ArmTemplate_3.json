@@ -8207,7 +8207,10 @@
 								"referenceName": "CC_TableDynamic",
 								"type": "DatasetReference",
 								"parameters": {
-									"Schema": "CREDIT_DEV",
+									"Schema": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
 									"Table": "CC_TEMP_FILE_ARPU"
 								}
 							}
@@ -9143,7 +9146,10 @@
 								"referenceName": "CC_TableDynamic",
 								"type": "DatasetReference",
 								"parameters": {
-									"Schema": "CREDIT_DEV",
+									"Schema": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
 									"Table": "CC_TEMP_FILE_CREDIT_GRADE"
 								}
 							}
