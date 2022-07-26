@@ -58,7 +58,7 @@
 						"typeProperties": {
 							"variableName": "Variable",
 							"value": {
-								"value": "@{base64ToString(string(pipeline().parameters.reciverJson))}",
+								"value": "@{pipeline().parameters.reciverJson}",
 								"type": "Expression"
 							}
 						}
