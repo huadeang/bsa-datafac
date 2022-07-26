@@ -13,6 +13,72 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FILE_DTL_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "FILE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "FILE_LINE",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_UAT",
+					"table": "CC_TEMP_FILE_DETAIL"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHist')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1613,105 +1679,6 @@
 					},
 					"outName": {
 						"type": "string"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_PLAY_GROUND')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "DECLARE @Lines VARCHAR(MAX)\nSELECT @Lines = CONCAT(@Lines,'')+[LINE]\nFROM (SELECT CONCAT('02|', ACCNT_ID,CHAR(10)) AS LINE FROM CREDIT_DEV.CC_UPDATE_CA_INFO WHERE STATUS = 'P' ORDER BY CA_ID ASC OFFSET 0 ROWS FETCH NEXT 50000 ROWS ONLY) T\nSELECT CONCAT('01|20220722_101452' ,CHAR(10),@Lines,'09|',COUNT(@Lines));",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "LINE",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileToWrite",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": "C:\\export\\home\\oper\\sffdata",
-									"fileName": "TEST.dat"
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"processTime": {
-						"type": "String"
-					},
-					"prefixName": {
-						"type": "String"
-					},
-					"limit": {
-						"type": "String",
-						"defaultValue": "50000"
 					}
 				},
 				"annotations": []
