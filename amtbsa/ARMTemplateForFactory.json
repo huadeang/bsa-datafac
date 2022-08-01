@@ -7016,7 +7016,7 @@
 				"variables": {
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
+						"defaultValue": "CREDIT_UAT"
 					},
 					"LOV_NAME": {
 						"type": "String",
