@@ -203,20 +203,6 @@
 				]
 			}
 		],
-		"parameters": {
-			"inDir": {
-				"type": "string"
-			},
-			"outDir": {
-				"type": "string"
-			},
-			"inName": {
-				"type": "string"
-			},
-			"outName": {
-				"type": "string"
-			}
-		},
 		"annotations": []
 	}
 }
