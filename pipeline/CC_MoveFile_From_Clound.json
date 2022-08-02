@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "var",
 					"value": {
-						"value": "@{pipeline().parameters.reciverJson}",
+						"value": "@{pipeline().parameters.resId}",
 						"type": "Expression"
 					}
 				}
