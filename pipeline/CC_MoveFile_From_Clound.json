@@ -64,7 +64,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fileNameSyncOnly",
+					"variableName": "fileNameSync",
 					"value": {
 						"value": "@replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare','')",
 						"type": "Expression"
