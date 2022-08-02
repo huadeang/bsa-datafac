@@ -13,38 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/CCResReviewTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "BA_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "FLAG",
-						"type": "varchar"
-					},
-					{
-						"name": "DATE",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "cc_res_review"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetail')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1735,6 +1703,282 @@
 					},
 					"outName": {
 						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_MoveFile_From_Clound')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get Move file info",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT SYNC_FLG,MOVE_PATH ,MOVE_BACKUP_PATH ,FILE_NAME ,FILE_NAME_SYNC  FROM ',variables('SCHEMA'),'.CC_RESPONSE_FILE crf WHERE RES_ID = ',pipeline().parameters.resId,' AND STATUS = ''O'';')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "Set syncFlg",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "get Move file info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "syncFlg",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.SYNC_FLG",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileNameSync",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "get Move file info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileNameSync",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.FILE_NAME_SYNC",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set fileName",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "get Move file info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fileName",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.FILE_NAME",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set moveBackUpPath",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "get Move file info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "moveBackUpPath",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set movePath",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "get Move file info",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "movePath",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.MOVE_PATH",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Copy file",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set syncFlg",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set fileName",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set fileNameSync",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set movePath",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set moveBackUpPath",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureFileStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "FileServerWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CloundFile",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": {
+										"value": "@variables('fileName')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CCLocalFileMasterSplitPipe",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@variables('movePath')",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@variables('fileName').split('/')[sub(length(variables('fileName').split('/')),1)]",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"resId": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"syncFlg": {
+						"type": "String"
+					},
+					"fileName": {
+						"type": "String"
+					},
+					"fileNameSync": {
+						"type": "String"
+					},
+					"movePath": {
+						"type": "String"
+					},
+					"moveBackUpPath": {
+						"type": "String"
+					},
+					"SCHEMA": {
+						"type": "String",
+						"defaultValue": "CREDIT_DEV"
 					}
 				},
 				"annotations": []

@@ -45,63 +45,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_MoveFile_From_Clound')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "dataNot Mapping",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "var",
-							"value": {
-								"value": "@{pipeline().parameters.resId}",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "dataNot Mapping",
-						"type": "IfCondition",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@empty(pipeline().parameters.resId)",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"resId": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"var": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CC_PLAY_GROUND')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -459,9 +402,6 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"filePath": {
-						"type": "string"
-					},
 					"fileName": {
 						"type": "string"
 					}
@@ -473,10 +413,6 @@
 						"type": "AzureFileStorageLocation",
 						"fileName": {
 							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().filePath",
 							"type": "Expression"
 						}
 					},
@@ -663,6 +599,41 @@
 						"container": "credit-control"
 					},
 					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimitDataMatadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filleName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filleName",
+							"type": "Expression"
+						},
+						"container": "credit-control"
+					},
+					"columnDelimiter": ",",
 					"escapeChar": "\\",
 					"quoteChar": "\""
 				},
