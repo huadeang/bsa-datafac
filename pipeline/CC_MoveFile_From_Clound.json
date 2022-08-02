@@ -1,6 +1,21 @@
 {
 	"name": "CC_MoveFile_From_Clound",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Variable",
+					"value": {
+						"value": "@{base64ToString(pipeline().parameters.reciverJson)}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
 		"parameters": {
 			"recieveJson": {
 				"type": "string"
