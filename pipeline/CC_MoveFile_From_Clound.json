@@ -66,7 +66,7 @@
 				"typeProperties": {
 					"variableName": "fileNameSyncOnly",
 					"value": {
-						"value": "@activity('get Move file info').output.firstRow.FILE_NAME_SYNC",
+						"value": "@replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare','')",
 						"type": "Expression"
 					}
 				}
@@ -86,7 +86,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@activity('get Move file info').output.firstRow.FILE_NAME",
+						"value": "@replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare','')",
 						"type": "Expression"
 					}
 				}
@@ -387,6 +387,9 @@
 				"type": "String"
 			},
 			"fileNameSyncOnly": {
+				"type": "String"
+			},
+			"rootfolder": {
 				"type": "String"
 			}
 		},
