@@ -6,9 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"filePath": {
-				"type": "string"
-			},
 			"fileName": {
 				"type": "string"
 			}
