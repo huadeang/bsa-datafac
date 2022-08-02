@@ -8,7 +8,7 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "Variable",
+					"variableName": "var",
 					"value": {
 						"value": "@{base64ToString(pipeline().parameters.reciverJson)}",
 						"type": "Expression"
@@ -17,8 +17,13 @@
 			}
 		],
 		"parameters": {
-			"recieveJson": {
+			"reciverJson": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"var": {
+				"type": "String"
 			}
 		},
 		"annotations": []
