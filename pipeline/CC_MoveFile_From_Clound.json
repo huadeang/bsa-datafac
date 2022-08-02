@@ -3,36 +3,98 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
+				"name": "get Move file info",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT SYNC_FLG,MOVE_PATH ,MOVE_BACKUP_PATH ,FILE_NAME ,FILE_NAME_SYNC  FROM ',variables('SCHEMA'),'.CC_RESPONSE_FILE crf WHERE RES_ID = ',pipeline().parameters.resId,' AND STATUS = ''O'';')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlMaster",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set syncFlg",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "dataNot Mapping",
+						"activity": "get Move file info",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "var",
-					"value": {
-						"value": "@{pipeline().parameters.resId}",
-						"type": "Expression"
-					}
-				}
+				"userProperties": []
 			},
 			{
-				"name": "dataNot Mapping",
-				"type": "IfCondition",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@empty(pipeline().parameters.resId)",
-						"type": "Expression"
+				"name": "Set fileNameSync",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
-				}
+				],
+				"userProperties": []
+			},
+			{
+				"name": "Set fileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
+			},
+			{
+				"name": "Set moveBackUpPath",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
+			},
+			{
+				"name": "Set movePath",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
@@ -41,7 +103,22 @@
 			}
 		},
 		"variables": {
-			"var": {
+			"syncFlg": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"fileNameSync": {
+				"type": "String"
+			},
+			"movePath": {
+				"type": "String"
+			},
+			"moveBackUpPath": {
+				"type": "String"
+			},
+			"SCHEMA": {
 				"type": "String"
 			}
 		},
