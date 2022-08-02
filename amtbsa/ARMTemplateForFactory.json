@@ -12292,12 +12292,31 @@
 					{
 						"name": "Set variable1",
 						"type": "SetVariable",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "dataNot Mapping",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "var",
 							"value": {
 								"value": "@{pipeline().parameters.resId}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "dataNot Mapping",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@empty(pipeline().parameters.resId)",
 								"type": "Expression"
 							}
 						}
@@ -17132,7 +17151,7 @@
 					},
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DEV"
+						"defaultValue": "CREDIT_UAT"
 					},
 					"moveInputPath": {
 						"type": "String"
