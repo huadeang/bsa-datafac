@@ -12257,15 +12257,124 @@
 								"enablePartitionDiscovery": false
 							}
 						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"inDir": {
+						"type": "string"
+					},
+					"outDir": {
+						"type": "string"
+					},
+					"inName": {
+						"type": "string"
+					},
+					"outName": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_MoveFile_From_Clound')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy to create file",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureFileStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "FileServerWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CloundFile",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inDir",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.inName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.outDir",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.outName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
 					},
 					{
-						"name": "Delete File Archive",
+						"name": "Delete File",
 						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Delete File",
+								"activity": "Copy to create file",
 								"dependencyConditions": [
-									"Failed"
+									"Succeeded"
 								]
 							}
 						],
@@ -12283,11 +12392,11 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
-										"value": "@pipeline().parameters.outDir",
+										"value": "@pipeline().parameters.inDir",
 										"type": "Expression"
 									},
 									"fileName": {
-										"value": "@pipeline().parameters.outName",
+										"value": "@pipeline().parameters.inName",
 										"type": "Expression"
 									}
 								}
@@ -12322,6 +12431,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CloundFile')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]"
 			]
 		},
@@ -25808,6 +25918,47 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CloundFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CC_AzureFileStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureFileStorageLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CC_AzureFileStorage')]"
 			]
 		},
 		{
