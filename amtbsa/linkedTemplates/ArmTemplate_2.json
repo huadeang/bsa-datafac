@@ -1778,7 +1778,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "fileNameSync",
+							"variableName": "fileNameSyncOnly",
 							"value": {
 								"value": "@activity('get Move file info').output.firstRow.FILE_NAME_SYNC",
 								"type": "Expression"
@@ -1846,109 +1846,17 @@
 						}
 					},
 					{
-						"name": "Copy file",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Set syncFlg",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set fileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set fileNameSync",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set movePath",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set moveBackUpPath",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
+						"name": "Set fileNameSync_copy1",
+						"type": "SetVariable",
+						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureFileStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
+							"variableName": "fileNameSyncOnly",
+							"value": {
+								"value": "@activity('get Move file info').output.firstRow.FILE_NAME_SYNC",
+								"type": "Expression"
 							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CloundFile",
-								"type": "DatasetReference",
-								"parameters": {
-									"fileName": {
-										"value": "@variables('fileName')",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@variables('movePath')",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@variables('fileName').split('/')[sub(length(variables('fileName').split('/')),1)]",
-										"type": "Expression"
-									}
-								}
-							}
-						]
+						}
 					}
 				],
 				"policy": {
@@ -1979,6 +1887,12 @@
 					"SCHEMA": {
 						"type": "String",
 						"defaultValue": "CREDIT_DEV"
+					},
+					"fileNameDatOnly": {
+						"type": "String"
+					},
+					"fileNameSyncOnly": {
+						"type": "String"
 					}
 				},
 				"annotations": []
