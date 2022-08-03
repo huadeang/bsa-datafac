@@ -32,181 +32,6 @@
 				}
 			},
 			{
-				"name": "Set syncFlg",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "syncFlg",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.SYNC_FLG,null),'',activity('get Move file info').output.firstRow.SYNC_FLG)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameSync",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameSync",
-					"value": {
-						"value": "@if(empty(activity('get Move file info').output.firstRow.FILE_NAME_SYNC),'',replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,variables('rootfolder'),''))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileName",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileName",
-					"value": {
-						"value": "@if(empty(activity('get Move file info').output.firstRow.FILE_NAME),'',replace(activity('get Move file info').output.firstRow.FILE_NAME,variables('rootfolder'),''))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set moveBackUpPath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "moveBackUpPath",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set movePath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "movePath",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_PATH)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameSyncOnly",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileNameSync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameSyncOnly",
-					"value": {
-						"value": "@if(empty(variables('fileNameSync')),'',split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)])",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameDatOnly",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameDatOnly",
-					"value": {
-						"value": "@if(empty(variables('fileName')),null,split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)])",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "insert CC_DATA_FACTORY onprocess",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "If get info not found or move path is null",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''O'',''Process move file resId ',pipeline().parameters.resId,''');')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "If get info not found or move path is null",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -223,9 +48,243 @@
 						"value": "@or(not(contains(string(activity('get Move file info').output),'firstRow')),equals(if(equals(trim(coalesce(activity('get Move file info').output.firstRow.MOVE_PATH,'')),''),null,activity('get Move file info').output.firstRow.MOVE_PATH),null))",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "insert CC_DATA_FACTORY onprocess",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''O'',''Process move file resId ',pipeline().parameters.resId,''');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Set dataId",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "insert CC_DATA_FACTORY onprocess",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "dataId",
+								"value": {
+									"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileNameSync",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameSync",
+								"value": {
+									"value": "@if(empty(activity('get Move file info').output.firstRow.FILE_NAME_SYNC),'',replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,variables('rootfolder'),''))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileNameSyncOnly",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileNameSync",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameSyncOnly",
+								"value": {
+									"value": "@if(empty(variables('fileNameSync')),'',split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)])",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@if(empty(activity('get Move file info').output.firstRow.FILE_NAME),'',replace(activity('get Move file info').output.firstRow.FILE_NAME,variables('rootfolder'),''))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set fileNameDatOnly",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set fileName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameDatOnly",
+								"value": {
+									"value": "@if(empty(variables('fileName')),null,split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)])",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set syncFlg",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "syncFlg",
+								"value": {
+									"value": "@if(equals(activity('get Move file info').output.firstRow.SYNC_FLG,null),'',activity('get Move file info').output.firstRow.SYNC_FLG)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set moveBackUpPath",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "moveBackUpPath",
+								"value": {
+									"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set movePath",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set dataId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "movePath",
+								"value": {
+									"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_PATH)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "validate sync flg",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set syncFlg",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set moveBackUpPath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set movePath",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set fileNameDatOnly",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set fileNameSyncOnly",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "errorMessage",
+								"value": {
+									"value": "@if(and(equals(variables('syncFlg'),'Y'),or(empty(variables('fileName')),empty(variables('fileNameSync')))),'Sync flg is active but fileName or fileNameSync is empty',if(and(not(equals(variables('syncFlg'),'Y')),empty(variables('fileName'))),'Sync flg is inactive but fileName is empty',''))",
+									"type": "Expression"
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
-							"name": "Set variable1",
+							"name": "Set errorQueryDataNotFound",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
@@ -238,61 +297,11 @@
 				}
 			},
 			{
-				"name": "validate sync flg",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileNameSyncOnly",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileNameDatOnly",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set syncFlg",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set moveBackUpPath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set movePath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set dataId",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "errorMessage",
-					"value": {
-						"value": "@if(and(equals(variables('syncFlg'),'Y'),or(empty(variables('fileName')),empty(variables('fileNameSync')))),'Sync flg is active but fileName or fileNameSync is empty',if(and(not(equals(variables('syncFlg'),'Y')),empty(variables('fileName'))),'Sync flg is inactive but fileName is empty',''))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Switch case movefile",
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "validate sync flg",
+						"activity": "If get info not found or move path is null",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -465,26 +474,6 @@
 							]
 						}
 					]
-				}
-			},
-			{
-				"name": "Set dataId",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "dataId",
-					"value": {
-						"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
-						"type": "Expression"
-					}
 				}
 			}
 		],
