@@ -575,6 +575,9 @@
 			},
 			"resId": {
 				"type": "string"
+			},
+			"rootPath": {
+				"type": "string"
 			}
 		},
 		"annotations": []
