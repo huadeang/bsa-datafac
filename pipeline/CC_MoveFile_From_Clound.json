@@ -338,7 +338,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "If get info not found",
+						"activity": "If get info not found or move path is null",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -429,7 +429,7 @@
 				}
 			},
 			{
-				"name": "If get info not found",
+				"name": "If get info not found or move path is null",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -442,7 +442,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(contains(string(activity('get Move file info').output),'firstRow'))",
+						"value": "@or(not(contains(string(activity('get Move file info').output),'firstRow')),equals(if(equals(trim(coalesce(activity('get Move file info').output.firstRow.MOVE_PATH,'')),''),null,activity('get Move file info').output.firstRow.MOVE_PATH),null))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
