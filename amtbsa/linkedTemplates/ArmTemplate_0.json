@@ -416,8 +416,8 @@
 							"type": "Expression"
 						}
 					},
-					"columnDelimiter": "''",
-					"rowDelimiter": "\"",
+					"columnDelimiter": "\u0001",
+					"rowDelimiter": "`",
 					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""

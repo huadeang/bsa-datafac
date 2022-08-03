@@ -13229,7 +13229,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"fileName": {
-													"value": "@replace(concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly),pipeline().parameters.rootPath,'')",
+													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
 													"type": "Expression"
 												}
 											}
@@ -13306,7 +13306,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"fileName": {
-													"value": "@replace(concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly),pipeline().parameters.rootPath,'')",
+													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 													"type": "Expression"
 												}
 											}
@@ -27451,8 +27451,8 @@
 							"type": "Expression"
 						}
 					},
-					"columnDelimiter": "''",
-					"rowDelimiter": "\"",
+					"columnDelimiter": "\u0001",
+					"rowDelimiter": "`",
 					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""
@@ -27862,8 +27862,8 @@
 							"type": "Expression"
 						}
 					},
-					"columnDelimiter": "''",
-					"rowDelimiter": "\"",
+					"columnDelimiter": "\u0001",
+					"rowDelimiter": "`",
 					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""
