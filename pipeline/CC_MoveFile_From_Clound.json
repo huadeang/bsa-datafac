@@ -66,7 +66,7 @@
 				"typeProperties": {
 					"variableName": "fileNameSync",
 					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,null),'',replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare',''))",
+						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare',''))",
 						"type": "Expression"
 					}
 				}
@@ -86,7 +86,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME,null),'',replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare',''))",
+						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare',''))",
 						"type": "Expression"
 					}
 				}
