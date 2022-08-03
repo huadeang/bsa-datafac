@@ -166,7 +166,7 @@
 				"typeProperties": {
 					"variableName": "fileNameDatOnly",
 					"value": {
-						"value": "@if(equals(variables('fileName'),null),null,split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)])",
+						"value": "@if(equals(variables('fileName'),string(null)),null,split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)])",
 						"type": "Expression"
 					}
 				}
