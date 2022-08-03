@@ -225,7 +225,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CloundFile",
+						"referenceName": "CC_CloundFile",
 						"type": "DatasetReference",
 						"parameters": {
 							"fileName": {
@@ -306,7 +306,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CloundFile",
+						"referenceName": "CC_CloundFile",
 						"type": "DatasetReference",
 						"parameters": {
 							"fileName": {
@@ -338,7 +338,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "If get info not found",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -423,6 +423,55 @@
 							"text": {
 								"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameSync'),''''),',\n\tFILE_PATH = ''',variables('movePath'),''',\n\tSTATUS = ''P'',\n\tWHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
 								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If get info not found",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(contains(string(activity('get Move file info').output),'firstRow'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "insert CC_DATA_FACTORY Error",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''Query Data not found resId ',pipeline().parameters.resId,''');')",
+											"type": "Expression"
+										}
+									}
+								]
 							}
 						}
 					]
