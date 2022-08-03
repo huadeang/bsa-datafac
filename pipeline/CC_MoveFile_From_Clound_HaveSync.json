@@ -3,8 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "get Move file info",
-				"type": "Lookup",
+				"name": "Update Data fac process",
+				"description": "",
+				"type": "Script",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -14,344 +15,6 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('SELECT SYNC_FLG,MOVE_PATH ,MOVE_BACKUP_PATH ,FILE_NAME ,FILE_NAME_SYNC  FROM ',variables('SCHEMA'),'.CC_RESPONSE_FILE crf WHERE RES_ID = ',pipeline().parameters.resId,' AND STATUS = ''O'';')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "AzureSqlMaster",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": true
-				}
-			},
-			{
-				"name": "Set syncFlg",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "syncFlg",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.SYNC_FLG,null),'',activity('get Move file info').output.firstRow.SYNC_FLG)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameSync",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameSync",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,null),'',replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare',''))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileName",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileName",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME,null),'',replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare',''))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set moveBackUpPath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "moveBackUpPath",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set movePath",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "insert CC_DATA_FACTORY onprocess",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "movePath",
-					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.MOVE_PATH,null),'',activity('get Move file info').output.firstRow.MOVE_PATH)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameSyncOnly",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileNameSync",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameSyncOnly",
-					"value": {
-						"value": "@split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)]",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set fileNameDatOnly",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set fileName",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNameDatOnly",
-					"value": {
-						"value": "@split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)]",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Copy data",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Update Data fac process",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureFileStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CC_CloundFile",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@variables('fileName')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@variables('movePath')",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@variables('fileNameDatOnly')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Copy data_copy1",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureFileStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "FileServerWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CC_CloundFile",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@variables('fileNameSync')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@variables('movePath')",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@variables('fileNameSyncOnly')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "insert CC_DATA_FACTORY onprocess",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "If get info not found or move path is null",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
 				"linkedServiceName": {
 					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
@@ -361,117 +24,8 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''O'',''Process move file resId ',pipeline().parameters.resId,''');')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameSync'),''''),',\n\tFILE_PATH = ''',variables('movePath'),''',\n\tSTATUS = ''P'',\n\tWHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
 								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Update Data fac process",
-				"description": "",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Set fileNameSyncOnly",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileNameDatOnly",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set movePath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set moveBackUpPath",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set syncFlg",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameSync'),''''),',\n\tFILE_PATH = ''',variables('movePath'),''',\n\tSTATUS = ''P'',\n\tWHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "If get info not found or move path is null",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "get Move file info",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@or(not(contains(string(activity('get Move file info').output),'firstRow')),equals(if(equals(trim(coalesce(activity('get Move file info').output.firstRow.MOVE_PATH,'')),''),null,activity('get Move file info').output.firstRow.MOVE_PATH),null))",
-						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "insert CC_DATA_FACTORY Error",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''Query Data not found resId ',pipeline().parameters.resId,''');')",
-											"type": "Expression"
-										}
-									}
-								]
 							}
 						}
 					]
@@ -479,46 +33,32 @@
 			}
 		],
 		"parameters": {
-			"resId": {
-				"type": "string"
-			}
-		},
-		"variables": {
-			"syncFlg": {
-				"type": "String"
-			},
 			"fileName": {
-				"type": "String"
+				"type": "string"
 			},
 			"fileNameSync": {
-				"type": "String"
+				"type": "string"
 			},
-			"movePath": {
-				"type": "String"
+			"MovePath": {
+				"type": "string"
 			},
-			"moveBackUpPath": {
-				"type": "String"
+			"MoveBackupPath": {
+				"type": "string"
 			},
-			"SCHEMA": {
-				"type": "String",
-				"defaultValue": "CREDIT_DEV"
-			},
-			"fileNameDatOnly": {
-				"type": "String"
+			"fileNameOnly": {
+				"type": "string"
 			},
 			"fileNameSyncOnly": {
-				"type": "String"
+				"type": "string"
 			},
-			"rootfolder": {
-				"type": "String"
+			"SCHEMA": {
+				"type": "string"
+			},
+			"dataId": {
+				"type": "string"
 			},
 			"CREDIT_USER": {
-				"type": "String",
-				"defaultValue": "DATAFAC_MOVE_FILE"
-			},
-			"DATA_TYPE": {
-				"type": "String",
-				"defaultValue": "MOVE_FILE"
+				"type": "string"
 			}
 		},
 		"annotations": []
