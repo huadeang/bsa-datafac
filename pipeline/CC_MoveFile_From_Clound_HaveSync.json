@@ -309,7 +309,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
-											"value": "@concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
+											"value": "@replace(concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly),pipeline().parameters.rootPath,'')",
 											"type": "Expression"
 										}
 									}
@@ -386,7 +386,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
-											"value": "@concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
+											"value": "@replace(concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly),pipeline().parameters.rootPath,'')",
 											"type": "Expression"
 										}
 									}
