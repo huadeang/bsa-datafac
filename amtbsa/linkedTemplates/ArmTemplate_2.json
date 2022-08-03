@@ -1710,412 +1710,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_MoveFile_From_Clound')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "get Move file info",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT SYNC_FLG,MOVE_PATH ,MOVE_BACKUP_PATH ,FILE_NAME ,FILE_NAME_SYNC  FROM ',variables('SCHEMA'),'.CC_RESPONSE_FILE crf WHERE RES_ID = ',pipeline().parameters.resId,' AND STATUS = ''O'';')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
-						}
-					},
-					{
-						"name": "Set syncFlg",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "get Move file info",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "syncFlg",
-							"value": {
-								"value": "@activity('get Move file info').output.firstRow.SYNC_FLG",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileNameSync",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "get Move file info",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileNameSync",
-							"value": {
-								"value": "@replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare','')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileName",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "get Move file info",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileName",
-							"value": {
-								"value": "@replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare','')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set moveBackUpPath",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "get Move file info",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "moveBackUpPath",
-							"value": {
-								"value": "@activity('get Move file info').output.firstRow.MOVE_BACKUP_PATH",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set movePath",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "get Move file info",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "movePath",
-							"value": {
-								"value": "@activity('get Move file info').output.firstRow.MOVE_PATH",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileNameSyncOnly",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileNameSync",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileNameSyncOnly",
-							"value": {
-								"value": "@split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)]",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileNameDatOnly",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileNameDatOnly",
-							"value": {
-								"value": "@split(variables('fileName'),'/')[sub(length(split(variables('fileName'),'/')),1)]",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Copy data",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Set syncFlg",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set fileNameSyncOnly",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set fileNameDatOnly",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set moveBackUpPath",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Set movePath",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureFileStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CloundFile",
-								"type": "DatasetReference",
-								"parameters": {
-									"fileName": {
-										"value": "@variables('fileName')",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@variables('movePath')",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@variables('fileNameDatOnly')",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Copy data_copy1",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Copy data",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureFileStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "FileServerWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CloundFile",
-								"type": "DatasetReference",
-								"parameters": {
-									"fileName": {
-										"value": "@variables('fileNameSync')",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@variables('movePath')",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@variables('fileNameSyncOnly')",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"resId": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"syncFlg": {
-						"type": "String"
-					},
-					"fileName": {
-						"type": "String"
-					},
-					"fileNameSync": {
-						"type": "String"
-					},
-					"movePath": {
-						"type": "String"
-					},
-					"moveBackUpPath": {
-						"type": "String"
-					},
-					"SCHEMA": {
-						"type": "String",
-						"defaultValue": "CREDIT_DEV"
-					},
-					"fileNameDatOnly": {
-						"type": "String"
-					},
-					"fileNameSyncOnly": {
-						"type": "String"
-					},
-					"rootfolder": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewCreateFileOutputAndArchive')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4429,6 +4023,321 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DemoBillingCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ImportReviewBilling')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ImportFileToCCBilling",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBatchSize": 1000,
+								"writeBatchTimeout": "00:30:00",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"ROW_ID"
+									]
+								},
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREATED",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED_BY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREATED_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_UPD_BY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LAST_UPD_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_NO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_NO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_CATEGORY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_CATEGORY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCNT_SUB_CATEGORY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ACCNT_SUB_CATEGORY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILL_NAME",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILL_NAME",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILL_CYCLE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILL_CYCLE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "INVOICING_COMPANY",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "INVOICING_COMPANY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PAYMENT_METHOD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PAYMENT_METHOD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MASTER_ACCNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MASTER_ACCNT_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS_CD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATUS_CD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BILLING_STATUS_CD",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BILLING_STATUS_CD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "REGISTER_DT",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "REGISTER_DT",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "ARPU",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ARPU",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 7,
+											"precision": 22
+										}
+									},
+									{
+										"source": {
+											"name": "CREDIT_GRADE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CREDIT_GRADE",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 5
+										}
+									},
+									{
+										"source": {
+											"name": "DEBT_NEGO_FLG",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DEBT_NEGO_FLG",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CCBillingFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TestCCBilling",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/TestCCBilling')]"
 			]
 		}
 	]
