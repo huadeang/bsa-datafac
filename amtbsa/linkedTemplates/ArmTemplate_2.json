@@ -2063,7 +2063,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"fileName": {
-													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
+													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 													"type": "Expression"
 												}
 											}
@@ -2140,7 +2140,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"fileName": {
-													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
+													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
 													"type": "Expression"
 												}
 											}
@@ -2334,7 +2334,7 @@
 					"resId": {
 						"type": "string"
 					},
-					"rootPath": {
+					"rootFolder": {
 						"type": "string"
 					}
 				},
@@ -2540,7 +2540,7 @@
 										"sink": {
 											"type": "DelimitedTextSink",
 											"storeSettings": {
-												"type": "FileServerWriteSettings"
+												"type": "AzureFileStorageWriteSettings"
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
@@ -2572,15 +2572,11 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CCLocalFileMasterSplitPipe",
+											"referenceName": "CC_CloundFile",
 											"type": "DatasetReference",
 											"parameters": {
-												"filePath": {
-													"value": "@pipeline().parameters.MovePath",
-													"type": "Expression"
-												},
 												"fileName": {
-													"value": "@pipeline().parameters.fileNameOnly",
+													"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 													"type": "Expression"
 												}
 											}
@@ -2728,6 +2724,9 @@
 						"type": "string"
 					},
 					"resId": {
+						"type": "string"
+					},
+					"rootFolder": {
 						"type": "string"
 					}
 				},

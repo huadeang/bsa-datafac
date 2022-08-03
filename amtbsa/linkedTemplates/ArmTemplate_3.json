@@ -9083,6 +9083,10 @@
 													"resId": {
 														"value": "@pipeline().parameters.resId",
 														"type": "Expression"
+													},
+													"rootFolder": {
+														"value": "@variables('rootfolder')",
+														"type": "Expression"
 													}
 												}
 											}
