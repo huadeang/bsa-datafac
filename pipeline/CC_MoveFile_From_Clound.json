@@ -146,7 +146,7 @@
 				"typeProperties": {
 					"variableName": "fileNameSyncOnly",
 					"value": {
-						"value": "@if(equals(variables('fileNameSync'),'null'),null,split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)])",
+						"value": "@if(equals(variables('fileNameSync'),string(null)),null,split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)])",
 						"type": "Expression"
 					}
 				}
