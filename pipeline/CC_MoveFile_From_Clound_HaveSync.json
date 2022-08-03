@@ -132,7 +132,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalfileMasterNotSplit1",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -213,7 +213,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalfileMasterNotSplit1",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
