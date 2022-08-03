@@ -24,7 +24,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',pipeline().parameters.fileName,''''),',\n\tFILE_NAME_SYNC = ',concat('''',pipeline().parameters.fileNameSync,''''),',\n\tFILE_PATH = ''',pipeline().parameters.MovePath,''',\n\tSTATUS = ''',if(or(empty(pipeline().parameters.fileNameOnly),empty(pipeline().parameters.fileNameSyncOnly)),'E','P'),''',\n\tDESCRIPTION = ',if(or(empty(pipeline().parameters.fileNameOnly),empty(pipeline().parameters.fileNameSyncOnly)),concat('''','File name or file sync data not found',''''),'NULL'),'\n\tWHERE DATA_ID =',pipeline().parameters.dataId,';')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',pipeline().parameters.fileName,''''),',\n\tFILE_NAME_SYNC = ',concat('''',pipeline().parameters.fileNameSync,''''),',\n\tFILE_PATH = ''',pipeline().parameters.MovePath,''',\n\tSTATUS = ''P''\n\tWHERE DATA_ID =',pipeline().parameters.dataId,';')",
 								"type": "Expression"
 							}
 						}
