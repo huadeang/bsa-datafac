@@ -434,7 +434,7 @@
 							}
 						}
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureFileStorageReadSettings",
 						"recursive": true,
@@ -472,7 +472,7 @@
 							}
 						}
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureFileStorageReadSettings",
 						"recursive": true,
