@@ -20,8 +20,8 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "",
-			"rowDelimiter": "",
+			"columnDelimiter": "''",
+			"rowDelimiter": "'",
 			"encodingName": "TIS-620",
 			"escapeChar": "\\",
 			"quoteChar": "\""
