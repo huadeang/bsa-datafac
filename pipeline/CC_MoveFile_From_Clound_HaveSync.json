@@ -386,7 +386,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
-											"value": "@replace(concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly),pipeline().parameters.rootPath,'')",
+											"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 											"type": "Expression"
 										}
 									}
