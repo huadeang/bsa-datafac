@@ -381,7 +381,60 @@
 							]
 						},
 						{
-							"value": "SyncFlg"
+							"value": "SyncFlg",
+							"activities": [
+								{
+									"name": "CC_MoveFile_From_Clound_HaveSync",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "CC_MoveFile_From_Clound_HaveSync",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"fileName": {
+												"value": "@variables('fileName')",
+												"type": "Expression"
+											},
+											"fileNameSync": {
+												"value": "@variables('fileNameSync')",
+												"type": "Expression"
+											},
+											"MovePath": {
+												"value": "@variables('movePath')",
+												"type": "Expression"
+											},
+											"MoveBackupPath": {
+												"value": "@variables('moveBackUpPath')",
+												"type": "Expression"
+											},
+											"fileNameOnly": {
+												"value": "@variables('fileNameDatOnly')",
+												"type": "Expression"
+											},
+											"fileNameSyncOnly": {
+												"value": "@variables('fileNameSyncOnly')",
+												"type": "Expression"
+											},
+											"SCHEMA": {
+												"value": "@variables('SCHEMA')",
+												"type": "Expression"
+											},
+											"CREDIT_USER": {
+												"value": "@variables('CREDIT_USER')",
+												"type": "Expression"
+											},
+											"resId": {
+												"value": "@pipeline().parameters.resId",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
 						},
 						{
 							"value": "NotSyncFlg"
