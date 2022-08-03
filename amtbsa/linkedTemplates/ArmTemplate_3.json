@@ -1261,7 +1261,7 @@
 										"sink": {
 											"type": "DelimitedTextSink",
 											"storeSettings": {
-												"type": "FileServerWriteSettings"
+												"type": "AzureFileStorageWriteSettings"
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
@@ -1293,15 +1293,11 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CCLocalFileMasterSplitPipe",
+											"referenceName": "CC_CloundFile",
 											"type": "DatasetReference",
 											"parameters": {
-												"filePath": {
-													"value": "@pipeline().parameters.MovePath",
-													"type": "Expression"
-												},
 												"fileName": {
-													"value": "@pipeline().parameters.fileNameOnly",
+													"value": "@concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 													"type": "Expression"
 												}
 											}
@@ -1342,7 +1338,7 @@
 										"sink": {
 											"type": "DelimitedTextSink",
 											"storeSettings": {
-												"type": "FileServerWriteSettings"
+												"type": "AzureFileStorageWriteSettings"
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
@@ -1374,15 +1370,11 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CCLocalFileMasterSplitPipe",
+											"referenceName": "CC_CloundFile",
 											"type": "DatasetReference",
 											"parameters": {
-												"filePath": {
-													"value": "@pipeline().parameters.MovePath",
-													"type": "Expression"
-												},
 												"fileName": {
-													"value": "@pipeline().parameters.fileNameSyncOnly",
+													"value": "@concat(pipeline().parameters.MoveBackupPath,'/',formatDateTime(utcnow(),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
 													"type": "Expression"
 												}
 											}
