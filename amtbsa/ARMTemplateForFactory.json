@@ -19523,7 +19523,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Move Data Dat Succes",
+								"activity": "send web service to credit grade",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -19686,7 +19686,7 @@
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Move Data Dat Succes",
+								"activity": "send web service to credit grade",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -19985,6 +19985,35 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "send web service to credit grade",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Move Data Dat Succes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-06.eastasia.logic.azure.com:443/workflows/5cc4635f51c64074b381e1e2a473e093/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hJpsPG9ZkXe6kKDNc0FBa-R4be0grEHIGVF-DpRgFF4",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@json(concat('{\n  \"process\" : \"UPDATE_CREDIT_GRADE\",\n  \"fileId\" : ',variables('tempFileDatId'),'\n }'))",
+								"type": "Expression"
+							}
 						}
 					}
 				],
