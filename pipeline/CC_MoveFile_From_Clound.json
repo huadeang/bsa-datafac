@@ -36,7 +36,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "insert CC_DATA_FACTORY onprocess",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -56,7 +56,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "insert CC_DATA_FACTORY onprocess",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -76,7 +76,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "insert CC_DATA_FACTORY onprocess",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -96,7 +96,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "insert CC_DATA_FACTORY onprocess",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -116,7 +116,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "get Move file info",
+						"activity": "insert CC_DATA_FACTORY onprocess",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -356,6 +356,41 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "insert CC_DATA_FACTORY onprocess",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "get Move file info",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''O'',''Process move file resId ',pipeline().parameters.resId,''');')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -391,6 +426,14 @@
 			},
 			"rootfolder": {
 				"type": "String"
+			},
+			"CREDIT_USER": {
+				"type": "String",
+				"defaultValue": "DATAFAC_MOVE_FILE"
+			},
+			"DATA_TYPE": {
+				"type": "String",
+				"defaultValue": "MOVE_FILE"
 			}
 		},
 		"annotations": []
