@@ -26480,6 +26480,7 @@
 						}
 					},
 					"columnDelimiter": "''",
+					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""
 				},
