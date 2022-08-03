@@ -66,7 +66,7 @@
 				"typeProperties": {
 					"variableName": "fileNameSync",
 					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,'/bsaaksfileshare',''))",
+						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME_SYNC,variables('rootfolder'),''))",
 						"type": "Expression"
 					}
 				}
@@ -146,7 +146,7 @@
 				"typeProperties": {
 					"variableName": "fileNameSyncOnly",
 					"value": {
-						"value": "@split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)]",
+						"value": "@if(equals(variables('fileNameSync'),null),null,split(variables('fileNameSync'),'/')[sub(length(split(variables('fileNameSync'),'/')),1)])",
 						"type": "Expression"
 					}
 				}
@@ -510,7 +510,8 @@
 				"type": "String"
 			},
 			"rootfolder": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "/bsaaksfileshare"
 			},
 			"CREDIT_USER": {
 				"type": "String",
