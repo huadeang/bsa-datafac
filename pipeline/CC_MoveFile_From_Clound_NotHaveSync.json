@@ -192,7 +192,7 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "FileServerWriteSettings"
+										"type": "AzureFileStorageWriteSettings"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
@@ -224,15 +224,11 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_CloundFile",
 									"type": "DatasetReference",
 									"parameters": {
-										"filePath": {
-											"value": "@pipeline().parameters.MovePath",
-											"type": "Expression"
-										},
 										"fileName": {
-											"value": "@pipeline().parameters.fileNameOnly",
+											"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 											"type": "Expression"
 										}
 									}
@@ -376,6 +372,9 @@
 				"type": "string"
 			},
 			"resId": {
+				"type": "string"
+			},
+			"rootFolder": {
 				"type": "string"
 			}
 		},
