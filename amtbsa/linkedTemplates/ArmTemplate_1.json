@@ -1228,7 +1228,7 @@
 						}
 					},
 					"columnDelimiter": "|",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": false,
 					"quoteChar": ""
 				},
