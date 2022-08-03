@@ -1,5 +1,5 @@
 {
-	"name": "CloundFile",
+	"name": "CC_CloundFile",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "CC_AzureFileStorage",
