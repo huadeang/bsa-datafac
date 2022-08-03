@@ -132,7 +132,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CCLocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
