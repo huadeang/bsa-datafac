@@ -416,7 +416,7 @@
 							"type": "Expression"
 						}
 					},
-					"columnDelimiter": ",",
+					"columnDelimiter": "''",
 					"escapeChar": "\\",
 					"quoteChar": "\""
 				},
