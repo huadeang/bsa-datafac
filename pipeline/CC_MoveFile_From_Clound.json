@@ -456,10 +456,6 @@
 												"value": "@variables('fileName')",
 												"type": "Expression"
 											},
-											"fileNameSync": {
-												"value": "@variables('fileNameSync')",
-												"type": "Expression"
-											},
 											"MovePath": {
 												"value": "@variables('movePath')",
 												"type": "Expression"
@@ -470,10 +466,6 @@
 											},
 											"fileNameOnly": {
 												"value": "@variables('fileNameDatOnly')",
-												"type": "Expression"
-											},
-											"fileNameSyncOnly": {
-												"value": "@variables('fileNameSyncOnly')",
 												"type": "Expression"
 											},
 											"SCHEMA": {
