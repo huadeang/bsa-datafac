@@ -279,6 +279,78 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "Update Data fac success",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Delete file data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tFILE_NAME = ',concat('''',pipeline().parameters.fileName,''''),',\n\tFILE_NAME_SYNC = ',concat('''',pipeline().parameters.fileNameSync,''''),',\n\tFILE_PATH = ''',pipeline().parameters.MovePath,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Move file success''\n\tWHERE DATA_ID =',pipeline().parameters.dataId,';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update response file success",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Delete file data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Move file success''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
