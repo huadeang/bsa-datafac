@@ -20,7 +20,7 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "",
+			"columnDelimiter": "\u0001",
 			"rowDelimiter": "`",
 			"encodingName": "TIS-620",
 			"escapeChar": "\\",
