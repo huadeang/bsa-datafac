@@ -86,7 +86,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME,'/bsaaksfileshare',''))",
+						"value": "@if(equals(activity('get Move file info').output.firstRow.FILE_NAME,null),null,replace(activity('get Move file info').output.firstRow.FILE_NAME,variables('rootfolder'),''))",
 						"type": "Expression"
 					}
 				}
