@@ -342,7 +342,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameSync'),''''),',\n\tFILE_PATH = ''',variables('movePath'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('errorMessage'),'''\n\tWHERE DATA_ID =',pipeline().parameters.dataId,';')",
+													"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tFILE_NAME = ',concat('''',variables('fileName'),''''),',\n\tFILE_NAME_SYNC = ',concat('''',variables('fileNameSync'),''''),',\n\tFILE_PATH = ''',variables('movePath'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',variables('errorMessage'),'''\n\tWHERE DATA_ID =',string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID),';')",
 													"type": "Expression"
 												}
 											}
