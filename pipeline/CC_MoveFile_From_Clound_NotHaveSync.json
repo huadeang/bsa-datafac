@@ -285,9 +285,6 @@
 			"fileName": {
 				"type": "string"
 			},
-			"fileNameSync": {
-				"type": "string"
-			},
 			"MovePath": {
 				"type": "string"
 			},
@@ -295,9 +292,6 @@
 				"type": "string"
 			},
 			"fileNameOnly": {
-				"type": "string"
-			},
-			"fileNameSyncOnly": {
 				"type": "string"
 			},
 			"SCHEMA": {
