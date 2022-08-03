@@ -133,7 +133,17 @@
 				"outputs": [
 					{
 						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.MovePath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileNameOnly",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
@@ -204,7 +214,17 @@
 				"outputs": [
 					{
 						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.MovePath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileNameSyncOnly",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
