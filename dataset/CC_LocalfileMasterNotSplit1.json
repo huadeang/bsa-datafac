@@ -28,7 +28,7 @@
 				}
 			},
 			"columnDelimiter": "''",
-			"rowDelimiter": "'",
+			"rowDelimiter": "\"",
 			"encodingName": "TIS-620",
 			"escapeChar": "\\",
 			"quoteChar": "\""
