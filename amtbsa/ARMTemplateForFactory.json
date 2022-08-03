@@ -26480,6 +26480,7 @@
 						}
 					},
 					"columnDelimiter": "''",
+					"rowDelimiter": "\"",
 					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""
@@ -27673,7 +27674,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileMasterNotSplit",
+								"referenceName": "CC_LocalfileMasterNotSplit1",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -27754,7 +27755,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileMasterNotSplit",
+								"referenceName": "CC_LocalfileMasterNotSplit1",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -28135,7 +28136,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
 				"[concat(variables('factoryId'), '/datasets/CC_CloundFile')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
+				"[concat(variables('factoryId'), '/datasets/CC_LocalfileMasterNotSplit1')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]"
 			]
 		},
@@ -28533,6 +28534,49 @@
 				"[concat(variables('factoryId'), '/datasets/CC_CloundFile')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_LocalfileMasterNotSplit1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "''",
+					"rowDelimiter": "\"",
+					"encodingName": "TIS-620",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
 			]
 		}
 	]
