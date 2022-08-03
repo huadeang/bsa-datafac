@@ -319,7 +319,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(not(empty(variables('errorMessage'))),'error',if(equals(variables('syncFlg'),'Y'),'SyncFlg','NotSyncFlg'))",
+						"value": "@if(not(empty(variables('errorMessage'))),if(equals(variables('errorMessage'),'errorQueryDataNotFound'),variables('errorMessage'),'error'),if(equals(variables('syncFlg'),'Y'),'SyncFlg','NotSyncFlg'))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -448,6 +448,9 @@
 						},
 						{
 							"value": "NotSyncFlg"
+						},
+						{
+							"value": "errorQueryDataNotFound"
 						}
 					]
 				}
