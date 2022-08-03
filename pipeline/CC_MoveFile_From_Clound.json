@@ -288,6 +288,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Set dataId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -441,6 +447,26 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set dataId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "insert CC_DATA_FACTORY onprocess",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dataId",
+					"value": {
+						"value": "@string(first(first(activity('insert CC_DATA_FACTORY onprocess').output.resultSets).rows).DATA_ID)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -487,6 +513,9 @@
 				"defaultValue": "MOVE_FILE"
 			},
 			"errorMessage": {
+				"type": "String"
+			},
+			"dataId": {
 				"type": "String"
 			}
 		},
