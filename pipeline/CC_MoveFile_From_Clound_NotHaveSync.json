@@ -228,7 +228,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
-											"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootPath,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
+											"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
 											"type": "Expression"
 										}
 									}
