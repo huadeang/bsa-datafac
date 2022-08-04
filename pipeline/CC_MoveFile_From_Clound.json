@@ -597,7 +597,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''Data factories exception''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+								"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('Switch case movefile').Error,'''','\"')),0,if(less(length(replace(activity('Switch case movefile').Error,'''','\"')),499),length(replace(activity('Switch case movefile').Error,'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
 								"type": "Expression"
 							}
 						}
