@@ -9028,7 +9028,7 @@
 														"value": "@pipeline().parameters.resId",
 														"type": "Expression"
 													},
-													"rootPath": {
+													"rootFolder": {
 														"value": "@variables('rootfolder')",
 														"type": "Expression"
 													}
