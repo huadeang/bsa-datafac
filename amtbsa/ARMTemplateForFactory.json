@@ -12855,6 +12855,42 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Update response file error",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Switch case movefile",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(activity('Switch case movefile').Error.Message,'''','\"')),0,if(less(length(replace(activity('Switch case movefile').Error.Message,'''','\"')),499),length(replace(activity('Switch case movefile').Error.Message,'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
