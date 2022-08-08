@@ -5141,339 +5141,17 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/old_CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
+			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Lookup File dat",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "CCLocalFileMasterNotSplit",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.inputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileDatName",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "Filter Start With 02",
-						"type": "Filter",
-						"dependsOn": [
-							{
-								"activity": "Lookup File dat",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup File dat').output.value",
-								"type": "Expression"
-							},
-							"condition": {
-								"value": "@startswith(item().Prop_0,'02')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "ForEach row",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Filter Start With 02",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Filter Start With 02').output.Value",
-								"type": "Expression"
-							},
-							"batchCount": 20,
-							"activities": [
-								{
-									"name": "Get Exiting RefRowId",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "@concat('SELECT ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE REF_ROW_ID = ''',split(item().Prop_0,'|')[1],'''')",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"dataset": {
-											"referenceName": "AzureSqlTableCurrent",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									}
-								},
-								{
-									"name": "Script Insert or Update Table CC_CREDIT_ASSIGN",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Get Exiting RefRowId",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@if(not(contains(string(activity('Get Exiting RefRowId').output),'firstRow'))\n,concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tBILLING_ACCOUNT_NUM,\n\tLIMIT_MNY,\n\tGNV_LIMIT_MNY,\n\tTHRESHOLD_ID,\n\tREQUEST_ID,\n\tACTION_TYPE,\n\tACTION_DTM,\n\tREASON_CODE,\n\tREASON_SUBCODE,\n\tLAST_UPDATE_BY,\n\tLAST_UPDATE_DTM,\n\tASSIGN_NO,\n\tTEMP_EXPIRE_DAT,\n\tSEQ_NO,\n\tCREDIT_GRADE,\n\tARPU,\n\tMIN_REVIEW,\n\tSUM_MAIN,\n\tNEXT_BILL_DATE) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(empty(split(item().Prop_0,'|')[19]),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),',',\nif(empty(split(item().Prop_0,'|')[20]),'NULL',concat('''',split(item().Prop_0,'|')[20],'''')),',',\nif(empty(split(item().Prop_0,'|')[21]),'NULL',concat('''',split(item().Prop_0,'|')[21],'''')),',',\nif(empty(split(item().Prop_0,'|')[22]),'NULL',concat('''',split(item().Prop_0,'|')[22],'''')),',',\nif(empty(split(item().Prop_0,'|')[23]),'NULL',concat('''',split(item().Prop_0,'|')[23],'''')),',',\nif(empty(split(item().Prop_0,'|')[25]),'NULL',concat('''',split(item().Prop_0,'|')[25],'''')),');')\n\n,concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN\n    SET\n\tCREATED =',if(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',\n\tBILLING_ACCOUNT_NUM =',if(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',\n\tLIMIT_MNY =',if(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',\n\tGNV_LIMIT_MNY =',if(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',\n\tTHRESHOLD_ID =',if(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',\n\tREQUEST_ID =',if(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',\n\tACTION_TYPE =',if(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',\n\tACTION_DTM =',if(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',\n\tREASON_CODE =',if(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',\n\tREASON_SUBCODE =',if(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',\n\tLAST_UPDATE_BY =',if(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',\n\tLAST_UPDATE_DTM =',if(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',\n\tASSIGN_NO =',if(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',\n\tTEMP_EXPIRE_DAT =',if(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',\n\tSEQ_NO =',if(empty(split(item().Prop_0,'|')[19]),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),',\n\tCREDIT_GRADE =',if(empty(split(item().Prop_0,'|')[20]),'NULL',concat('''',split(item().Prop_0,'|')[20],'''')),',\n\tARPU =',if(empty(split(item().Prop_0,'|')[21]),'NULL',concat('''',split(item().Prop_0,'|')[21],'''')),',\n\tMIN_REVIEW =',if(empty(split(item().Prop_0,'|')[22]),'NULL',concat('''',split(item().Prop_0,'|')[22],'''')),',\n\tSUM_MAIN =',if(empty(split(item().Prop_0,'|')[23]),'NULL',concat('''',split(item().Prop_0,'|')[23],'''')),',\n\tNEXT_BILL_DATE =',if(empty(split(item().Prop_0,'|')[25]),'NULL',concat('''',split(item().Prop_0,'|')[25],'''')),'\n\tWHERE REF_ROW_ID = ''',split(item().Prop_0,'|')[1],''';'))",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Script Insert Table CC_DATA_FACTORY_HIST",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set haveErrorRow",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert or Update Table CC_CREDIT_ASSIGN').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set haveErrorRow",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Script Insert or Update Table CC_CREDIT_ASSIGN",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "haveErrorRow",
-										"value": {
-											"value": "@bool(true)",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "ForEach row",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "If have Error Record",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "ForEach row",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@variables('haveErrorRow')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Update CC_DATA_FACTORY Success",
-									"description": "",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "Update CC_DATA_FACTORY haveErrorRow is true",
-									"description": "",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					},
-					{
 						"name": "Move FIle Sync",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "If have Error Record",
+								"activity": "Update CC_DATA_FACTORY Success_copy1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5511,7 +5189,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "If have Error Record",
+								"activity": "Update CC_DATA_FACTORY Success_copy1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5613,6 +5291,769 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Exception",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),0,if(greater(length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),499),499,length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "insert 01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"additionalColumns": [
+									{
+										"name": "DATA_ID",
+										"value": {
+											"value": "@pipeline().parameters.dataId",
+											"type": "Expression"
+										}
+									}
+								],
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 1
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBatchSize": 1000,
+								"writeBatchTimeout": "00:30:00",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobStorage1",
+										"type": "LinkedServiceReference"
+									},
+									"path": "credit-control/logs"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "PROCESS_TYPE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 2
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 3
+										},
+										"sink": {
+											"name": "CREATED",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 4
+										},
+										"sink": {
+											"name": "CREATED_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 5
+										},
+										"sink": {
+											"name": "LAST_UPD",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 6
+										},
+										"sink": {
+											"name": "LAST_UPD_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 7
+										},
+										"sink": {
+											"name": "BILLING_ACCOUNT_NUM",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 8
+										},
+										"sink": {
+											"name": "LIMIT_MNY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 9
+										},
+										"sink": {
+											"name": "GNV_LIMIT_MNY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 10
+										},
+										"sink": {
+											"name": "THRESHOLD_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 11
+										},
+										"sink": {
+											"name": "REQUEST_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 12
+										},
+										"sink": {
+											"name": "ACTION_TYPE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 13
+										},
+										"sink": {
+											"name": "ACTION_DTM",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 14
+										},
+										"sink": {
+											"name": "REASON_CODE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 15
+										},
+										"sink": {
+											"name": "REASON_SUBCODE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 16
+										},
+										"sink": {
+											"name": "LAST_UPDATE_BY",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 17
+										},
+										"sink": {
+											"name": "LAST_UPDATE_DTM",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 18
+										},
+										"sink": {
+											"name": "ASSIGN_NO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 19
+										},
+										"sink": {
+											"name": "TEMP_EXPIRE_DAT",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 20
+										},
+										"sink": {
+											"name": "SEQ_NO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 21
+										},
+										"sink": {
+											"name": "CREDIT_GRADE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 22
+										},
+										"sink": {
+											"name": "ARPU",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 23
+										},
+										"sink": {
+											"name": "MIN_REVIEW",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 24
+										},
+										"sink": {
+											"name": "SUM_MAIN",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 25
+										},
+										"sink": {
+											"name": "NEXT_BILL",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 26
+										},
+										"sink": {
+											"name": "NEXT_BILL_DATE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 27
+										},
+										"sink": {
+											"name": "PHX_ROW_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CCLocalFileMasterSplitPipe",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileDatName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CC_TableDynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"Schema": {
+										"value": "@pipeline().parameters.SCHEMA",
+										"type": "Expression"
+									},
+									"Table": "CC_DATA_FACTORY_CREDIT_ASSIGN"
+								}
+							}
+						]
+					},
+					{
+						"name": "insert 01",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Read 01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Read 01",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileDatName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					},
+					{
+						"name": "SELECT old 09",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Update 09",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "SELECT old 09",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Success_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Merge cc_creditAssign PHX_ROW_ID insert or update",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Update 09",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "\n@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.ROW_ID = SOURCE.PHX_ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nINSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT GETDATE(),''DATA_FAC_INSERT_ASSIGN'',GETDATE(),''DATA_FAC_INSERT_ASSIGN'',DATA_ID,''E''\n,(CONCAT(PROCESS_TYPE,''|'',ROW_ID,''|'',CREATED,''|'',CREATED_BY,''|'',LAST_UPD,''|'',LAST_UPD_BY,''|''\n ,BILLING_ACCOUNT_NUM,''|'',LIMIT_MNY,''|'',GNV_LIMIT_MNY,''|'',THRESHOLD_ID,''|'',REQUEST_ID,''|''\n ,ACTION_TYPE,''|'',ACTION_DTM,''|'',REASON_CODE,''|'',REASON_SUBCODE,''|'',LAST_UPDATE_BY,''|'',LAST_UPDATE_DTM,''|''\n ,ASSIGN_NO,''|'',TEMP_EXPIRE_DAT,''|'',SEQ_NO,''|'',CREDIT_GRADE,''|'',ARPU,''|'',MIN_REVIEW,''|'',SUM_MAIN,''|''\n ,NEXT_BILL,''|'',NEXT_BILL_DATE,''|'',PHX_ROW_ID)) \n,''PHX_ROW_ID Data not found'' \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.REF_ROW_ID = SOURCE.ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,\nLAST_UPDATE_DTM,ASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE) \nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE.CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.BILLING_ACCOUNT_NUM,\n SOURCE.LIMIT_MNY,\n SOURCE.GNV_LIMIT_MNY,\n SOURCE.THRESHOLD_ID,\n SOURCE.REQUEST_ID,\n SOURCE.ACTION_TYPE,\n SOURCE.ACTION_DTM,\n SOURCE.REASON_CODE,\n SOURCE.REASON_SUBCODE,\n SOURCE.LAST_UPDATE_BY,\n SOURCE.LAST_UPDATE_DTM,\n SOURCE.ASSIGN_NO,\n SOURCE.TEMP_EXPIRE_DAT,\n SOURCE.SEQ_NO,\n SOURCE.CREDIT_GRADE,\n SOURCE.ARPU,\n SOURCE.MIN_REVIEW,\n SOURCE.SUM_MAIN,\n SOURCE.NEXT_BILL_DATE);\n')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Exception_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -5649,18 +6090,18 @@
 					"haveErrorRow": {
 						"type": "Boolean",
 						"defaultValue": false
-					},
-					"refRowId": {
-						"type": "String"
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableCurrent')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]",
+				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		},
 		{
@@ -26370,6 +26811,529 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/old_CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup File dat",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "CCLocalFileMasterNotSplit",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.inputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileDatName",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Filter Start With 02",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lookup File dat",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup File dat').output.value",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@startswith(item().Prop_0,'02')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEach row",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filter Start With 02",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filter Start With 02').output.Value",
+								"type": "Expression"
+							},
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "Get Exiting RefRowId",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT ''Y'' from ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE REF_ROW_ID = ''',split(item().Prop_0,'|')[1],'''')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "AzureSqlTableCurrent",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "Script Insert or Update Table CC_CREDIT_ASSIGN",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Get Exiting RefRowId",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(not(contains(string(activity('Get Exiting RefRowId').output),'firstRow'))\n,concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN \n    (REF_ROW_ID,\n\tCREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tBILLING_ACCOUNT_NUM,\n\tLIMIT_MNY,\n\tGNV_LIMIT_MNY,\n\tTHRESHOLD_ID,\n\tREQUEST_ID,\n\tACTION_TYPE,\n\tACTION_DTM,\n\tREASON_CODE,\n\tREASON_SUBCODE,\n\tLAST_UPDATE_BY,\n\tLAST_UPDATE_DTM,\n\tASSIGN_NO,\n\tTEMP_EXPIRE_DAT,\n\tSEQ_NO,\n\tCREDIT_GRADE,\n\tARPU,\n\tMIN_REVIEW,\n\tSUM_MAIN,\n\tNEXT_BILL_DATE) VALUES ('\n    ,if(empty(split(item().Prop_0,'|')[1]),'NULL',concat('''',split(item().Prop_0,'|')[1],'''')),',',\nif(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',',\nif(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',',\nif(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',',\nif(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',',\nif(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',',\nif(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',',\nif(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',',\nif(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',',\nif(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',',\nif(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',',\nif(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',',\nif(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',',\nif(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',',\nif(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',',\nif(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',',\nif(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',',\nif(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',',\nif(empty(split(item().Prop_0,'|')[19]),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),',',\nif(empty(split(item().Prop_0,'|')[20]),'NULL',concat('''',split(item().Prop_0,'|')[20],'''')),',',\nif(empty(split(item().Prop_0,'|')[21]),'NULL',concat('''',split(item().Prop_0,'|')[21],'''')),',',\nif(empty(split(item().Prop_0,'|')[22]),'NULL',concat('''',split(item().Prop_0,'|')[22],'''')),',',\nif(empty(split(item().Prop_0,'|')[23]),'NULL',concat('''',split(item().Prop_0,'|')[23],'''')),',',\nif(empty(split(item().Prop_0,'|')[25]),'NULL',concat('''',split(item().Prop_0,'|')[25],'''')),');')\n\n,concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN\n    SET\n\tCREATED =',if(empty(split(item().Prop_0,'|')[2]),concat('CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')'),concat('''',split(item().Prop_0,'|')[2],'''')),',\n\tCREATED_BY =',if(empty(split(item().Prop_0,'|')[3]),concat('''',pipeline().parameters.CREDIT_USER,''''),concat('''',split(item().Prop_0,'|')[3],'''')),',\n\tLAST_UPD =',if(empty(split(item().Prop_0,'|')[4]),'NULL',concat('''',split(item().Prop_0,'|')[4],'''')),',\n\tLAST_UPD_BY =',if(empty(split(item().Prop_0,'|')[5]),'NULL',concat('''',split(item().Prop_0,'|')[5],'''')),',\n\tBILLING_ACCOUNT_NUM =',if(empty(split(item().Prop_0,'|')[6]),'NULL',concat('''',split(item().Prop_0,'|')[6],'''')),',\n\tLIMIT_MNY =',if(empty(split(item().Prop_0,'|')[7]),'NULL',concat('''',split(item().Prop_0,'|')[7],'''')),',\n\tGNV_LIMIT_MNY =',if(empty(split(item().Prop_0,'|')[8]),'NULL',concat('''',split(item().Prop_0,'|')[8],'''')),',\n\tTHRESHOLD_ID =',if(empty(split(item().Prop_0,'|')[9]),'NULL',concat('''',split(item().Prop_0,'|')[9],'''')),',\n\tREQUEST_ID =',if(empty(split(item().Prop_0,'|')[10]),'NULL',concat('''',split(item().Prop_0,'|')[10],'''')),',\n\tACTION_TYPE =',if(empty(split(item().Prop_0,'|')[11]),'NULL',concat('''',split(item().Prop_0,'|')[11],'''')),',\n\tACTION_DTM =',if(empty(split(item().Prop_0,'|')[12]),'NULL',concat('''',split(item().Prop_0,'|')[12],'''')),',\n\tREASON_CODE =',if(empty(split(item().Prop_0,'|')[13]),'NULL',concat('''',split(item().Prop_0,'|')[13],'''')),',\n\tREASON_SUBCODE =',if(empty(split(item().Prop_0,'|')[14]),'NULL',concat('''',split(item().Prop_0,'|')[14],'''')),',\n\tLAST_UPDATE_BY =',if(empty(split(item().Prop_0,'|')[15]),'NULL',concat('''',split(item().Prop_0,'|')[15],'''')),',\n\tLAST_UPDATE_DTM =',if(empty(split(item().Prop_0,'|')[16]),'NULL',concat('''',split(item().Prop_0,'|')[16],'''')),',\n\tASSIGN_NO =',if(empty(split(item().Prop_0,'|')[17]),'NULL',concat('''',split(item().Prop_0,'|')[17],'''')),',\n\tTEMP_EXPIRE_DAT =',if(empty(split(item().Prop_0,'|')[18]),'NULL',concat('''',split(item().Prop_0,'|')[18],'''')),',\n\tSEQ_NO =',if(empty(split(item().Prop_0,'|')[19]),'NULL',concat('''',split(item().Prop_0,'|')[19],'''')),',\n\tCREDIT_GRADE =',if(empty(split(item().Prop_0,'|')[20]),'NULL',concat('''',split(item().Prop_0,'|')[20],'''')),',\n\tARPU =',if(empty(split(item().Prop_0,'|')[21]),'NULL',concat('''',split(item().Prop_0,'|')[21],'''')),',\n\tMIN_REVIEW =',if(empty(split(item().Prop_0,'|')[22]),'NULL',concat('''',split(item().Prop_0,'|')[22],'''')),',\n\tSUM_MAIN =',if(empty(split(item().Prop_0,'|')[23]),'NULL',concat('''',split(item().Prop_0,'|')[23],'''')),',\n\tNEXT_BILL_DATE =',if(empty(split(item().Prop_0,'|')[25]),'NULL',concat('''',split(item().Prop_0,'|')[25],'''')),'\n\tWHERE REF_ROW_ID = ''',split(item().Prop_0,'|')[1],''';'))",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Script Insert Table CC_DATA_FACTORY_HIST",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set haveErrorRow",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST \n    (CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_ID,\n\tDESCRIPTION,\n\tERROR_MSG,\n\tSTATUS) VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t',pipeline().parameters.dataId,',\n\t''',item().Prop_0,''',\n\t''',replace(activity('Script Insert or Update Table CC_CREDIT_ASSIGN').Error.Message,'''','\"'),''',\n\t''E''\n\t)')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set haveErrorRow",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script Insert or Update Table CC_CREDIT_ASSIGN",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "haveErrorRow",
+										"value": {
+											"value": "@bool(true)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "ForEach row",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If have Error Record",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "ForEach row",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@variables('haveErrorRow')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Update CC_DATA_FACTORY Success",
+									"description": "",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "Update CC_DATA_FACTORY haveErrorRow is true",
+									"description": "",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(activity('Lookup File dat').output.count),' record -> count process ',string(length(activity('Filter Start With 02').output.Value)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Move FIle Sync",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If have Error Record",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CC_MoveFile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"inDir": {
+									"value": "@pipeline().parameters.inputPath",
+									"type": "Expression"
+								},
+								"outDir": {
+									"value": "@pipeline().parameters.moveInputPath",
+									"type": "Expression"
+								},
+								"inName": {
+									"value": "@pipeline().parameters.fileSyncName",
+									"type": "Expression"
+								},
+								"outName": {
+									"value": "@pipeline().parameters.fileSyncName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Move FIle Dat",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If have Error Record",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CC_MoveFile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"inDir": {
+									"value": "@pipeline().parameters.inputPath",
+									"type": "Expression"
+								},
+								"outDir": {
+									"value": "@pipeline().parameters.moveInputPath",
+									"type": "Expression"
+								},
+								"inName": {
+									"value": "@pipeline().parameters.fileDatName",
+									"type": "Expression"
+								},
+								"outName": {
+									"value": "@pipeline().parameters.fileDatName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "update data facEnd Process Move file sync Error",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Move FIle Sync",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "update data fac End Process Move file dat Error",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Move FIle Dat",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"SCHEMA": {
+						"type": "string"
+					},
+					"DATA_TYPE": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"inputPath": {
+						"type": "string"
+					},
+					"moveInputPath": {
+						"type": "string"
+					},
+					"fileDatName": {
+						"type": "string"
+					},
+					"dataId": {
+						"type": "string"
+					},
+					"fileSyncName": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"haveErrorRow": {
+						"type": "Boolean",
+						"defaultValue": false
+					},
+					"refRowId": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
+				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableCurrent')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlMaster')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -29230,978 +30194,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage3')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Move FIle Sync",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Update CC_DATA_FACTORY Success_copy1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "CC_MoveFile",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"inDir": {
-									"value": "@pipeline().parameters.inputPath",
-									"type": "Expression"
-								},
-								"outDir": {
-									"value": "@pipeline().parameters.moveInputPath",
-									"type": "Expression"
-								},
-								"inName": {
-									"value": "@pipeline().parameters.fileSyncName",
-									"type": "Expression"
-								},
-								"outName": {
-									"value": "@pipeline().parameters.fileSyncName",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Move FIle Dat",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Update CC_DATA_FACTORY Success_copy1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "CC_MoveFile",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"inDir": {
-									"value": "@pipeline().parameters.inputPath",
-									"type": "Expression"
-								},
-								"outDir": {
-									"value": "@pipeline().parameters.moveInputPath",
-									"type": "Expression"
-								},
-								"inName": {
-									"value": "@pipeline().parameters.fileDatName",
-									"type": "Expression"
-								},
-								"outName": {
-									"value": "@pipeline().parameters.fileDatName",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "update data facEnd Process Move file sync Error",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Move FIle Sync",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "update data fac End Process Move file dat Error",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Move FIle Dat",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY \n\tSET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),''')\n\t, LAST_UPD_BY = ''',\n\tpipeline().parameters.CREDIT_USER,\n\t''', STATUS = ''E'',',\n\t' DESCRIPTION = ''Unable to move the file name : ',pipeline().parameters.fileSyncName,'''',\n\t' WHERE DATA_ID =',pipeline().parameters.dataId,';')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),0,if(greater(length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),499),499,length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "insert 01",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"additionalColumns": [
-									{
-										"name": "DATA_ID",
-										"value": {
-											"value": "@pipeline().parameters.dataId",
-											"type": "Expression"
-										}
-									}
-								],
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 1
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBatchSize": 1000,
-								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Warning",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorage1",
-										"type": "LinkedServiceReference"
-									},
-									"path": "credit-control/logs"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "DATA_ID"
-										},
-										"sink": {
-											"name": "DATA_ID",
-											"type": "Int64",
-											"physicalType": "bigint"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 2
-										},
-										"sink": {
-											"name": "ROW_ID ",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 3
-										},
-										"sink": {
-											"name": "CREATED",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 4
-										},
-										"sink": {
-											"name": "CREATED_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "LAST_UPD",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 6
-										},
-										"sink": {
-											"name": "LAST_UPD_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 7
-										},
-										"sink": {
-											"name": "BILLING_ACCNT_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 8
-										},
-										"sink": {
-											"name": "LIMIT_MNY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 9
-										},
-										"sink": {
-											"name": "GNV_LIMIT_MNY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 10
-										},
-										"sink": {
-											"name": "THRESHOLD_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 11
-										},
-										"sink": {
-											"name": "REQUEST_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 12
-										},
-										"sink": {
-											"name": "ACTION_TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 13
-										},
-										"sink": {
-											"name": "ACTION_DTM",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 14
-										},
-										"sink": {
-											"name": "REASON_CODE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 15
-										},
-										"sink": {
-											"name": "REASON_SUBCODE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 16
-										},
-										"sink": {
-											"name": "LAST_UPDATE_BY",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 17
-										},
-										"sink": {
-											"name": "LAST_UPDATE_DTM",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 18
-										},
-										"sink": {
-											"name": "ASSIGN_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 19
-										},
-										"sink": {
-											"name": "TEMP_EXPIRE_DAT",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 20
-										},
-										"sink": {
-											"name": "SEQ_NO",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 21
-										},
-										"sink": {
-											"name": "CREDIT_GRADE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 22
-										},
-										"sink": {
-											"name": "ARPU",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 23
-										},
-										"sink": {
-											"name": "MIN_REVIEW",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 24
-										},
-										"sink": {
-											"name": "SUM_MAIN",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 25
-										},
-										"sink": {
-											"name": "NEXT_BILL",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 26
-										},
-										"sink": {
-											"name": "NEXT_BILL_DATE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"physicalType": "String",
-											"ordinal": 27
-										},
-										"sink": {
-											"name": "PHX_ROW_ID",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"ordinal": 1
-										},
-										"sink": {
-											"name": "PROCESS_TYPE",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.inputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileDatName",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CC_TableDynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"Schema": {
-										"value": "@pipeline().parameters.SCHEMA",
-										"type": "Expression"
-									},
-									"Table": "CC_DATA_FACTORY_CREDIT_ASSIGN"
-								}
-							}
-						]
-					},
-					{
-						"name": "insert 01",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Read 01",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Read 01",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "CCLocalFileMasterNotSplit",
-								"type": "DatasetReference",
-								"parameters": {
-									"filePath": {
-										"value": "@pipeline().parameters.inputPath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.fileDatName",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					},
-					{
-						"name": "SELECT old 09",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AzureSqlMaster",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "Update 09",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "SELECT old 09",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Success_copy1",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Merge cc_creditAssign PHX_ROW_ID insert or update",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Update 09",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "\n@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.ROW_ID = SOURCE.PHX_ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nINSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT GETDATE(),''DATA_FAC_INSERT_ASSIGN'',GETDATE(),''DATA_FAC_INSERT_ASSIGN'',DATA_ID,''E''\n,(CONCAT(PROCESS_TYPE,''|'',ROW_ID,''|'',CREATED,''|'',CREATED_BY,''|'',LAST_UPD,''|'',LAST_UPD_BY,''|''\n ,BILLING_ACCOUNT_NUM,''|'',LIMIT_MNY,''|'',GNV_LIMIT_MNY,''|'',THRESHOLD_ID,''|'',REQUEST_ID,''|''\n ,ACTION_TYPE,''|'',ACTION_DTM,''|'',REASON_CODE,''|'',REASON_SUBCODE,''|'',LAST_UPDATE_BY,''|'',LAST_UPDATE_DTM,''|''\n ,ASSIGN_NO,''|'',TEMP_EXPIRE_DAT,''|'',SEQ_NO,''|'',CREDIT_GRADE,''|'',ARPU,''|'',MIN_REVIEW,''|'',SUM_MAIN,''|''\n ,NEXT_BILL,''|'',NEXT_BILL_DATE,''|'',PHX_ROW_ID)) \n,''PHX_ROW_ID Data not found'' \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.REF_ROW_ID = SOURCE.ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,\nLAST_UPDATE_DTM,ASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE) \nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE.CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.BILLING_ACCOUNT_NUM,\n SOURCE.LIMIT_MNY,\n SOURCE.GNV_LIMIT_MNY,\n SOURCE.THRESHOLD_ID,\n SOURCE.REQUEST_ID,\n SOURCE.ACTION_TYPE,\n SOURCE.ACTION_DTM,\n SOURCE.REASON_CODE,\n SOURCE.REASON_SUBCODE,\n SOURCE.LAST_UPDATE_BY,\n SOURCE.LAST_UPDATE_DTM,\n SOURCE.ASSIGN_NO,\n SOURCE.TEMP_EXPIRE_DAT,\n SOURCE.SEQ_NO,\n SOURCE.CREDIT_GRADE,\n SOURCE.ARPU,\n SOURCE.MIN_REVIEW,\n SOURCE.SUM_MAIN,\n SOURCE.NEXT_BILL_DATE);\n')",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy1",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"SCHEMA": {
-						"type": "string"
-					},
-					"DATA_TYPE": {
-						"type": "string"
-					},
-					"CREDIT_USER": {
-						"type": "string"
-					},
-					"inputPath": {
-						"type": "string"
-					},
-					"moveInputPath": {
-						"type": "string"
-					},
-					"fileDatName": {
-						"type": "string"
-					},
-					"dataId": {
-						"type": "string"
-					},
-					"fileSyncName": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"haveErrorRow": {
-						"type": "Boolean",
-						"defaultValue": false
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterSplitPipe')]",
-				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
-				"[concat(variables('factoryId'), '/datasets/CCLocalFileMasterNotSplit')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		}
 	]
