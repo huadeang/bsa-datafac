@@ -254,27 +254,29 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "DATA_ID"
+									"type": "String",
+									"ordinal": 1
 								},
 								"sink": {
-									"name": "DATA_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
-								}
-							},
-							{
-								"source": {
-									"physicalType": "String",
-									"ordinal": 2
-								},
-								"sink": {
-									"name": "ROW_ID ",
+									"name": "PROCESS_TYPE",
+									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
+									"ordinal": 2
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
 									"ordinal": 3
 								},
 								"sink": {
@@ -285,7 +287,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 4
 								},
 								"sink": {
@@ -296,7 +298,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 5
 								},
 								"sink": {
@@ -307,7 +309,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 6
 								},
 								"sink": {
@@ -318,18 +320,18 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 7
 								},
 								"sink": {
-									"name": "BILLING_ACCNT_ID",
+									"name": "BILLING_ACCOUNT_NUM",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 8
 								},
 								"sink": {
@@ -340,7 +342,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 9
 								},
 								"sink": {
@@ -351,7 +353,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 10
 								},
 								"sink": {
@@ -362,7 +364,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 11
 								},
 								"sink": {
@@ -373,7 +375,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 12
 								},
 								"sink": {
@@ -384,7 +386,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 13
 								},
 								"sink": {
@@ -395,7 +397,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 14
 								},
 								"sink": {
@@ -406,7 +408,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 15
 								},
 								"sink": {
@@ -417,7 +419,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 16
 								},
 								"sink": {
@@ -428,7 +430,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 17
 								},
 								"sink": {
@@ -439,7 +441,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 18
 								},
 								"sink": {
@@ -450,7 +452,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 19
 								},
 								"sink": {
@@ -461,7 +463,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 20
 								},
 								"sink": {
@@ -472,7 +474,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 21
 								},
 								"sink": {
@@ -483,7 +485,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 22
 								},
 								"sink": {
@@ -494,7 +496,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 23
 								},
 								"sink": {
@@ -505,7 +507,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 24
 								},
 								"sink": {
@@ -516,7 +518,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 25
 								},
 								"sink": {
@@ -527,7 +529,7 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 26
 								},
 								"sink": {
@@ -538,21 +540,11 @@
 							},
 							{
 								"source": {
-									"physicalType": "String",
+									"type": "String",
 									"ordinal": 27
 								},
 								"sink": {
 									"name": "PHX_ROW_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"ordinal": 1
-								},
-								"sink": {
-									"name": "PROCESS_TYPE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
