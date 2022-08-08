@@ -216,7 +216,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "cc_data_fac_credit_assign"
+				"defaultValue": "cc_data_fac_insert_credit_assign"
 			},
 			"LOV_TYPE": {
 				"type": "String",
@@ -224,11 +224,11 @@
 			},
 			"DATA_TYPE": {
 				"type": "String",
-				"defaultValue": "INSERT_UPDATE_CREDIT_ASSIGN"
+				"defaultValue": "INSERT_ASSIGN"
 			},
 			"CREDIT_USER": {
 				"type": "String",
-				"defaultValue": "DATA_FAC_INSERT_UPDATE_CREDIT_ASSIGN"
+				"defaultValue": "DATA_FAC_INSERT_ASSIGN"
 			},
 			"inputPath": {
 				"type": "String"
