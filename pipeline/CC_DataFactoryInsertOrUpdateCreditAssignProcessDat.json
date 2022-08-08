@@ -548,6 +548,17 @@
 									"type": "String",
 									"physicalType": "varchar"
 								}
+							},
+							{
+								"source": {
+									"name": "DATA_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
 							}
 						],
 						"typeConversion": true,
