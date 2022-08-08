@@ -4993,7 +4993,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
+			"name": "[concat(parameters('factoryName'), '/old_CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -9157,7 +9157,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(string(activity('Switch case movefile').Error),'''','\"')),0,if(less(length(replace(string(activity('Switch case movefile').Error),'''','\"')),499),length(replace(string(activity('Switch case movefile').Error),'''','\"')),499)),''');')",
+										"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',substring(concat('Data factory Exception :',replace(string(activity('Switch case movefile').Error),'''','\"')),0,if(less(length(replace(string(activity('Switch case movefile').Error),'''','\"')),499),length(replace(string(activity('Switch case movefile').Error),'''','\"')),499)),''');')",
 										"type": "Expression"
 									}
 								}
@@ -9193,7 +9193,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('CC_ReviewDataFactorySendBilingNoProcessAccountNoList Exception :',replace(string(activity('Switch case movefile').Error),'''','\"')),0,if(less(length(replace(string(activity('Switch case movefile').Error),'''','\"')),499),length(replace(string(activity('Switch case movefile').Error),'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+										"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('Data factory Exception :',replace(string(activity('Switch case movefile').Error),'''','\"')),0,if(less(length(replace(string(activity('Switch case movefile').Error),'''','\"')),499),length(replace(string(activity('Switch case movefile').Error),'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
 										"type": "Expression"
 									}
 								}
