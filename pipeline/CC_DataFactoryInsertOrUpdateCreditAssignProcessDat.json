@@ -154,7 +154,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+						"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -177,7 +177,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_TEMP_FILE_DETAIL').Error),0,if(greater(length(activity('Copy data to CC_TEMP_FILE_DETAIL').Error),499),499,length(activity('Copy data to CC_TEMP_FILE_DETAIL').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),0,if(greater(length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error),499),499,length(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
@@ -185,7 +185,7 @@
 				}
 			},
 			{
-				"name": "Copy data to CC_TEMP_FILE_DETAIL",
+				"name": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -254,8 +254,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "DATA_ID",
-									"type": "String"
+									"name": "DATA_ID"
 								},
 								"sink": {
 									"name": "DATA_ID",
@@ -265,31 +264,16 @@
 							},
 							{
 								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								},
-								"sink": {
-									"name": "PROCESS_TYPE",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 2
 								},
 								"sink": {
-									"name": "ROW_ID",
-									"type": "String",
+									"name": "ROW_ID ",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 3
 								},
@@ -301,7 +285,6 @@
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 4
 								},
@@ -313,7 +296,6 @@
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 5
 								},
@@ -325,7 +307,6 @@
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 6
 								},
@@ -337,21 +318,8 @@
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 7
-								},
-								"sink": {
-									"name": "ACCNT_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 8
 								},
 								"sink": {
 									"name": "BILLING_ACCNT_ID",
@@ -361,227 +329,173 @@
 							},
 							{
 								"source": {
+									"physicalType": "String",
+									"ordinal": 8
+								},
+								"sink": {
+									"name": "LIMIT_MNY",
 									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
 									"physicalType": "String",
 									"ordinal": 9
 								},
 								"sink": {
-									"name": "ACCNT_NO",
+									"name": "GNV_LIMIT_MNY",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 10
 								},
 								"sink": {
-									"name": "CL_LEVEL",
+									"name": "THRESHOLD_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 11
 								},
 								"sink": {
-									"name": "SCORE_RANGE",
+									"name": "REQUEST_ID",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 12
 								},
 								"sink": {
-									"name": "CL_TYPE",
+									"name": "ACTION_TYPE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 13
 								},
 								"sink": {
-									"name": "CL_CHANGE_REASON",
+									"name": "ACTION_DTM",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 14
 								},
 								"sink": {
-									"name": "OUTCOME_CD",
+									"name": "REASON_CODE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 15
 								},
 								"sink": {
-									"name": "OUTCOME_REASON",
+									"name": "REASON_SUBCODE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 16
 								},
 								"sink": {
-									"name": "CREDIT_LIMIT",
-									"type": "Decimal",
-									"physicalType": "decimal",
-									"scale": 7,
-									"precision": 22
+									"name": "LAST_UPDATE_BY",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 17
 								},
 								"sink": {
-									"name": "PERM_CREDIT_LIMIT",
+									"name": "LAST_UPDATE_DTM",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 18
 								},
 								"sink": {
-									"name": "TEMP_CREDIT_LIMIT",
+									"name": "ASSIGN_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 19
 								},
 								"sink": {
-									"name": "PREV_CREDIT_LIMIT",
+									"name": "TEMP_EXPIRE_DAT",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 20
 								},
 								"sink": {
-									"name": "PREV_SCORE_RANGE",
+									"name": "SEQ_NO",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 21
 								},
 								"sink": {
-									"name": "ACTUAL",
+									"name": "CREDIT_GRADE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 22
 								},
 								"sink": {
-									"name": "ACTUAL_PERM",
+									"name": "ARPU",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
 									"ordinal": 23
-								},
-								"sink": {
-									"name": "BILLING_CREDIT_LIMIT",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 24
-								},
-								"sink": {
-									"name": "BILLING_THRESHOLD_SET_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 25
-								},
-								"sink": {
-									"name": "FBB_FLAG",
-									"type": "String",
-									"physicalType": "char"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 26
-								},
-								"sink": {
-									"name": "LAST_REVIEW_DAT",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 27
 								},
 								"sink": {
 									"name": "MIN_REVIEW",
@@ -591,36 +505,54 @@
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
-									"ordinal": 28
+									"ordinal": 24
 								},
 								"sink": {
-									"name": "AVAILABLE_CREDIT",
+									"name": "SUM_MAIN",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
-									"ordinal": 29
+									"ordinal": 25
 								},
 								"sink": {
-									"name": "PAYMENT_FLG",
+									"name": "NEXT_BILL",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"type": "String",
 									"physicalType": "String",
-									"ordinal": 30
+									"ordinal": 26
 								},
 								"sink": {
-									"name": "BA_REGISTER_DT",
+									"name": "NEXT_BILL_DATE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"physicalType": "String",
+									"ordinal": 27
+								},
+								"sink": {
+									"name": "PHX_ROW_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"ordinal": 1
+								},
+								"sink": {
+									"name": "PROCESS_TYPE",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -658,7 +590,7 @@
 								"value": "@pipeline().parameters.SCHEMA",
 								"type": "Expression"
 							},
-							"Table": "CC_DATA_FACTORY_SCORE_VALUE"
+							"Table": "CC_DATA_FACTORY_CREDIT_ASSIGN"
 						}
 					}
 				]
@@ -691,7 +623,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN (DATA_ID,PROCESS_TYPE) VALUES (',pipeline().parameters.dataId,',''',activity('Read 01').output.firstRow.Prop_0,''')')",
 								"type": "Expression"
 							}
 						}
@@ -743,7 +675,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Copy data to CC_TEMP_FILE_DETAIL",
+						"activity": "Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -761,7 +693,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+							"value": "@concat('SELECT ROW_ID AS OLD_COUNT FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -801,7 +733,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN\n    SET PROCESS_TYPE = ''09|',activity('SELECT old 09').output.firstrow.OLD_COUNT,'''\n    ,ROW_ID = NULL \n    WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE = ''09''')",
 								"type": "Expression"
 							}
 						}
@@ -814,13 +746,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge ca To cc_scorevalue",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Merge Ba To cc_scorevalue",
+						"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -843,7 +769,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_TEMP_FILE_DETAIL').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
@@ -851,7 +777,7 @@
 				}
 			},
 			{
-				"name": "Merge Ba To cc_scorevalue",
+				"name": "Merge cc_creditAssign PHX_ROW_ID insert or update",
 				"type": "Script",
 				"dependsOn": [
 					{
@@ -878,7 +804,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('WITH SCORE AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND CL_LEVEL = ''BA'' AND PROCESS_TYPE LIKE ''02%'')\nMERGE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE AS TARGET\nUSING SCORE AS SOURCE\nON (TARGET.ACCNT_ID = SOURCE.ACCNT_ID)\nWHEN MATCHED AND TARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID \nTHEN \nUPDATE\nSET\n TARGET.REF_ROW_ID = SOURCE.ROW_ID ,\n TARGET.CREATED = SOURCE.CREATED ,\n TARGET.CREATED_BY = SOURCE. CREATED_BY,\n TARGET.LAST_UPD = SOURCE.LAST_UPD ,\n TARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\n TARGET.ACCNT_ID = SOURCE.ACCNT_ID ,\n TARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID,\n TARGET.ACCNT_NO = SOURCE.ACCNT_NO ,\n TARGET.CL_LEVEL = SOURCE.CL_LEVEL ,\n TARGET.SCORE_RANGE = SOURCE.SCORE_RANGE,\n TARGET.CL_TYPE = SOURCE.CL_TYPE ,\n TARGET.CL_CHANGE_REASON = SOURCE.CL_CHANGE_REASON,\n TARGET.OUTCOME_CD = SOURCE.OUTCOME_CD,\n TARGET.OUTCOME_REASON = SOURCE.OUTCOME_REASON,\n TARGET.CREDIT_LIMIT = SOURCE.CREDIT_LIMIT,\n TARGET.PERM_CREDIT_LIMIT = SOURCE.PERM_CREDIT_LIMIT,\n TARGET.TEMP_CREDIT_LIMIT = SOURCE.TEMP_CREDIT_LIMIT,\n TARGET.PREV_CREDIT_LIMIT = SOURCE.PREV_CREDIT_LIMIT,\n TARGET.PREV_SCORE_RANGE = SOURCE.PREV_SCORE_RANGE,\n TARGET.ACTUAL = SOURCE.ACTUAL,\n TARGET.ACTUAL_PERM = SOURCE.ACTUAL_PERM,\n TARGET.BILLING_CREDIT_LIMIT = SOURCE.BILLING_CREDIT_LIMIT ,\n TARGET.BILLING_THRESHOLD_SET_ID = SOURCE.BILLING_THRESHOLD_SET_ID ,\n TARGET.FBB_FLAG = SOURCE.FBB_FLAG ,\n TARGET.LAST_REVIEW_DAT = SOURCE.LAST_REVIEW_DAT ,\n TARGET.MIN_REVIEW = SOURCE.MIN_REVIEW ,\n TARGET.AVAILABLE_CREDIT = SOURCE.AVAILABLE_CREDIT ,\n TARGET.PAYMENT_FLG = SOURCE.PAYMENT_FLG ,\n TARGET.BA_REGISTER_DT = SOURCE.BA_REGISTER_DT\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID ,\n CREATED ,\n CREATED_BY ,\n LAST_UPD ,\n LAST_UPD_BY ,\n ACCNT_ID ,\n BILLING_ACCNT_ID ,\n ACCNT_NO ,\n CL_LEVEL ,\n SCORE_RANGE ,\n CL_TYPE ,\n CL_CHANGE_REASON ,\n OUTCOME_CD ,\n OUTCOME_REASON ,\n CREDIT_LIMIT ,\n PERM_CREDIT_LIMIT ,\n TEMP_CREDIT_LIMIT ,\n PREV_CREDIT_LIMIT ,\n PREV_SCORE_RANGE ,\n ACTUAL ,\n ACTUAL_PERM ,\n BILLING_CREDIT_LIMIT ,\n BILLING_THRESHOLD_SET_ID ,\n FBB_FLAG ,\n LAST_REVIEW_DAT ,\n MIN_REVIEW ,\n AVAILABLE_CREDIT ,\n PAYMENT_FLG ,\n BA_REGISTER_DT ) VALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE. CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.ACCNT_ID ,\n SOURCE.BILLING_ACCNT_ID,\n SOURCE.ACCNT_NO ,\n SOURCE.CL_LEVEL ,\n SOURCE.SCORE_RANGE,\n SOURCE.CL_TYPE ,\n SOURCE.CL_CHANGE_REASON,\n SOURCE.OUTCOME_CD,\n SOURCE.OUTCOME_REASON,\n SOURCE.CREDIT_LIMIT,\n SOURCE.PERM_CREDIT_LIMIT,\n SOURCE.TEMP_CREDIT_LIMIT,\n SOURCE.PREV_CREDIT_LIMIT,\n SOURCE.PREV_SCORE_RANGE,\n SOURCE.ACTUAL,\n SOURCE.ACTUAL_PERM,\n SOURCE.BILLING_CREDIT_LIMIT ,\n SOURCE.BILLING_THRESHOLD_SET_ID ,\n SOURCE.FBB_FLAG ,\n SOURCE.LAST_REVIEW_DAT ,\n SOURCE.MIN_REVIEW ,\n SOURCE.AVAILABLE_CREDIT ,\n SOURCE.PAYMENT_FLG ,\n SOURCE.BA_REGISTER_DT);')",
+								"value": "\n@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.ROW_ID = SOURCE.PHX_ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nINSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT GETDATE(),''DATA_FAC_INSERT_ASSIGN'',GETDATE(),''DATA_FAC_INSERT_ASSIGN'',DATA_ID,''E''\n,(CONCAT(PROCESS_TYPE,''|'',ROW_ID,''|'',CREATED,''|'',CREATED_BY,''|'',LAST_UPD,''|'',LAST_UPD_BY,''|''\n ,BILLING_ACCOUNT_NUM,''|'',LIMIT_MNY,''|'',GNV_LIMIT_MNY,''|'',THRESHOLD_ID,''|'',REQUEST_ID,''|''\n ,ACTION_TYPE,''|'',ACTION_DTM,''|'',REASON_CODE,''|'',REASON_SUBCODE,''|'',LAST_UPDATE_BY,''|'',LAST_UPDATE_DTM,''|''\n ,ASSIGN_NO,''|'',TEMP_EXPIRE_DAT,''|'',SEQ_NO,''|'',CREDIT_GRADE,''|'',ARPU,''|'',MIN_REVIEW,''|'',SUM_MAIN,''|''\n ,NEXT_BILL,''|'',NEXT_BILL_DATE,''|'',PHX_ROW_ID)) \n,''PHX_ROW_ID Data not found'' \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NOT NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
 								"type": "Expression"
 							}
 						}
@@ -886,11 +812,11 @@
 				}
 			},
 			{
-				"name": "Merge ca To cc_scorevalue",
+				"name": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Update 09",
+						"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -913,7 +839,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('WITH SCORE AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE DATA_ID = ',pipeline().parameters.dataId,' AND CL_LEVEL = ''CA'' AND PROCESS_TYPE LIKE ''02%'' ORDER BY DATA_SCORE_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_SCORE_VALUE AS TARGET\nUSING SCORE AS SOURCE\nON (TARGET.ACCNT_ID = SOURCE.ACCNT_ID)\nWHEN MATCHED \nTHEN \nUPDATE\nSET\n TARGET.REF_ROW_ID = SOURCE.ROW_ID ,\n TARGET.CREATED = SOURCE.CREATED ,\n TARGET.CREATED_BY = SOURCE. CREATED_BY,\n TARGET.LAST_UPD = SOURCE.LAST_UPD ,\n TARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\n TARGET.ACCNT_ID = SOURCE.ACCNT_ID ,\n TARGET.BILLING_ACCNT_ID = SOURCE.BILLING_ACCNT_ID,\n TARGET.ACCNT_NO = SOURCE.ACCNT_NO ,\n TARGET.CL_LEVEL = SOURCE.CL_LEVEL ,\n TARGET.SCORE_RANGE = SOURCE.SCORE_RANGE,\n TARGET.CL_TYPE = SOURCE.CL_TYPE ,\n TARGET.CL_CHANGE_REASON = SOURCE.CL_CHANGE_REASON,\n TARGET.OUTCOME_CD = SOURCE.OUTCOME_CD,\n TARGET.OUTCOME_REASON = SOURCE.OUTCOME_REASON,\n TARGET.CREDIT_LIMIT = SOURCE.CREDIT_LIMIT,\n TARGET.PERM_CREDIT_LIMIT = SOURCE.PERM_CREDIT_LIMIT,\n TARGET.TEMP_CREDIT_LIMIT = SOURCE.TEMP_CREDIT_LIMIT,\n TARGET.PREV_CREDIT_LIMIT = SOURCE.PREV_CREDIT_LIMIT,\n TARGET.PREV_SCORE_RANGE = SOURCE.PREV_SCORE_RANGE,\n TARGET.ACTUAL = SOURCE.ACTUAL,\n TARGET.ACTUAL_PERM = SOURCE.ACTUAL_PERM,\n TARGET.BILLING_CREDIT_LIMIT = SOURCE.BILLING_CREDIT_LIMIT ,\n TARGET.BILLING_THRESHOLD_SET_ID = SOURCE.BILLING_THRESHOLD_SET_ID ,\n TARGET.FBB_FLAG = SOURCE.FBB_FLAG ,\n TARGET.LAST_REVIEW_DAT = SOURCE.LAST_REVIEW_DAT ,\n TARGET.MIN_REVIEW = SOURCE.MIN_REVIEW ,\n TARGET.AVAILABLE_CREDIT = SOURCE.AVAILABLE_CREDIT ,\n TARGET.PAYMENT_FLG = SOURCE.PAYMENT_FLG ,\n TARGET.BA_REGISTER_DT = SOURCE.BA_REGISTER_DT\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID ,\n CREATED ,\n CREATED_BY ,\n LAST_UPD ,\n LAST_UPD_BY ,\n ACCNT_ID ,\n BILLING_ACCNT_ID ,\n ACCNT_NO ,\n CL_LEVEL ,\n SCORE_RANGE ,\n CL_TYPE ,\n CL_CHANGE_REASON ,\n OUTCOME_CD ,\n OUTCOME_REASON ,\n CREDIT_LIMIT ,\n PERM_CREDIT_LIMIT ,\n TEMP_CREDIT_LIMIT ,\n PREV_CREDIT_LIMIT ,\n PREV_SCORE_RANGE ,\n ACTUAL ,\n ACTUAL_PERM ,\n BILLING_CREDIT_LIMIT ,\n BILLING_THRESHOLD_SET_ID ,\n FBB_FLAG ,\n LAST_REVIEW_DAT ,\n MIN_REVIEW ,\n AVAILABLE_CREDIT ,\n PAYMENT_FLG ,\n BA_REGISTER_DT ) VALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE. CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.ACCNT_ID ,\n SOURCE.BILLING_ACCNT_ID,\n SOURCE.ACCNT_NO ,\n SOURCE.CL_LEVEL ,\n SOURCE.SCORE_RANGE,\n SOURCE.CL_TYPE ,\n SOURCE.CL_CHANGE_REASON,\n SOURCE.OUTCOME_CD,\n SOURCE.OUTCOME_REASON,\n SOURCE.CREDIT_LIMIT,\n SOURCE.PERM_CREDIT_LIMIT,\n SOURCE.TEMP_CREDIT_LIMIT,\n SOURCE.PREV_CREDIT_LIMIT,\n SOURCE.PREV_SCORE_RANGE,\n SOURCE.ACTUAL,\n SOURCE.ACTUAL_PERM,\n SOURCE.BILLING_CREDIT_LIMIT ,\n SOURCE.BILLING_THRESHOLD_SET_ID ,\n SOURCE.FBB_FLAG ,\n SOURCE.LAST_REVIEW_DAT ,\n SOURCE.MIN_REVIEW ,\n SOURCE.AVAILABLE_CREDIT ,\n SOURCE.PAYMENT_FLG ,\n SOURCE.BA_REGISTER_DT);')",
+								"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.REF_ROW_ID = SOURCE.ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,\nLAST_UPDATE_DTM,ASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE) \nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE.CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.BILLING_ACCOUNT_NUM,\n SOURCE.LIMIT_MNY,\n SOURCE.GNV_LIMIT_MNY,\n SOURCE.THRESHOLD_ID,\n SOURCE.REQUEST_ID,\n SOURCE.ACTION_TYPE,\n SOURCE.ACTION_DTM,\n SOURCE.REASON_CODE,\n SOURCE.REASON_SUBCODE,\n SOURCE.LAST_UPDATE_BY,\n SOURCE.LAST_UPDATE_DTM,\n SOURCE.ASSIGN_NO,\n SOURCE.TEMP_EXPIRE_DAT,\n SOURCE.SEQ_NO,\n SOURCE.CREDIT_GRADE,\n SOURCE.ARPU,\n SOURCE.MIN_REVIEW,\n SOURCE.SUM_MAIN,\n SOURCE.NEXT_BILL_DATE);\n')",
 								"type": "Expression"
 							}
 						}
@@ -926,7 +852,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge ca To cc_scorevalue",
+						"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -949,7 +875,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge ca To cc_scorevalue').Error),0,if(greater(length(activity('Merge ca To cc_scorevalue').Error),499),499,length(activity('Merge ca To cc_scorevalue').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
@@ -962,7 +888,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge Ba To cc_scorevalue",
+						"activity": "Merge cc_creditAssign PHX_ROW_ID insert or update",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -985,7 +911,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge Ba To cc_scorevalue').Error),0,if(greater(length(activity('Merge Ba To cc_scorevalue').Error),499),499,length(activity('Merge Ba To cc_scorevalue').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID insert or update').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
