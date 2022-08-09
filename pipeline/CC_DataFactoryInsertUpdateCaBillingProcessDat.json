@@ -299,7 +299,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge CC_BILLING_CAT_SUBCAT",
+						"activity": "Merge CC_CA_BILLING",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -330,7 +330,7 @@
 				}
 			},
 			{
-				"name": "Merge CC_BILLING_CAT_SUBCAT",
+				"name": "Merge CC_CA_BILLING",
 				"type": "Script",
 				"dependsOn": [
 					{
@@ -370,7 +370,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge CC_BILLING_CAT_SUBCAT",
+						"activity": "Merge CC_CA_BILLING",
 						"dependencyConditions": [
 							"Failed"
 						]
