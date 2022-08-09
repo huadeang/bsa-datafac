@@ -167,7 +167,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@if(activity('Get All FIle in Config directory').output.exists,activity('Get All FIle in Config directory').output.childItems,array(''))",
+								"value": "@if(activity('Get All FIle in Config directory').output.exists,activity('Get All FIle in Config directory').output.childItems,variables('emptyArray'))",
 								"type": "Expression"
 							},
 							"condition": {
@@ -208,6 +208,12 @@
 					},
 					"oldDataIdList": {
 						"type": "string"
+					}
+				},
+				"variables": {
+					"emptyArray": {
+						"type": "Array",
+						"defaultValue": []
 					}
 				},
 				"annotations": []
@@ -697,7 +703,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get All FIle in Config directory').output.childItems",
+								"value": "@if(activity('Get All FIle in Config directory').output.exists,activity('Get All FIle in Config directory').output.childItems,variables('emptyArray'))",
 								"type": "Expression"
 							},
 							"condition": {
@@ -741,6 +747,12 @@
 					},
 					"processDatName": {
 						"type": "string"
+					}
+				},
+				"variables": {
+					"emptyArray": {
+						"type": "Array",
+						"defaultValue": []
 					}
 				},
 				"annotations": []
