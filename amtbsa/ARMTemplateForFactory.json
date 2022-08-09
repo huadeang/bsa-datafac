@@ -8884,7 +8884,7 @@
 				"variables": {
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
+						"defaultValue": "CREDIT_DEV"
 					},
 					"LOV_NAME": {
 						"type": "String",
