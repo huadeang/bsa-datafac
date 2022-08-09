@@ -423,7 +423,7 @@
 									"ordinal": 16
 								},
 								"sink": {
-									"name": "LAST_UPD_BY",
+									"name": "LAST_UPDATE_BY",
 									"type": "String",
 									"physicalType": "varchar"
 								}
