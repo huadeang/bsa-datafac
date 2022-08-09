@@ -393,7 +393,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error),'''','\"')),0,if(greater(length(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error)),499 ),499,length(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge CC_CA_BILLING').Error),'''','\"')),0,if(greater(length(string(activity('Merge CC_CA_BILLING').Error)),499 ),499,length(string(activity('Merge CC_CA_BILLING').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
