@@ -6172,7 +6172,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = dataId AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
 										"type": "Expression"
 									}
 								}
@@ -6207,7 +6207,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
+										"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.REF_ROW_ID = A.ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
 										"type": "Expression"
 									}
 								}
