@@ -5547,6 +5547,17 @@
 									},
 									{
 										"source": {
+											"type": "String",
+											"ordinal": 28
+										},
+										"sink": {
+											"name": "PHX_OPERATION",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
 											"name": "DATA_ID",
 											"type": "String"
 										},
