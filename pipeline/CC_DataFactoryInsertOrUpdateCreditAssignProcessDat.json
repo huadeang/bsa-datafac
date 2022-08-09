@@ -423,7 +423,7 @@
 									"ordinal": 16
 								},
 								"sink": {
-									"name": "LAST_UPDATE_BY",
+									"name": "LAST_UPD_BY",
 									"type": "String",
 									"physicalType": "varchar"
 								}
@@ -545,6 +545,17 @@
 								},
 								"sink": {
 									"name": "PHX_ROW_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"type": "String",
+									"ordinal": 28
+								},
+								"sink": {
+									"name": "PHX_OPERATION",
 									"type": "String",
 									"physicalType": "varchar"
 								}
