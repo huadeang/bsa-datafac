@@ -3080,7 +3080,7 @@
 					},
 					"LOV_NAME": {
 						"type": "String",
-						"defaultValue": "sff_cc_ba_accnt_id_res"
+						"defaultValue": "cc_data_fac_insert_ca_billing"
 					},
 					"LOV_TYPE": {
 						"type": "String",
@@ -3088,11 +3088,11 @@
 					},
 					"DATA_TYPE": {
 						"type": "String",
-						"defaultValue": "CA_CL_INSERT_CA"
+						"defaultValue": "INSERT_CA_BILLING"
 					},
 					"CREDIT_USER": {
 						"type": "String",
-						"defaultValue": "DATA_FAC_INSERT_CA"
+						"defaultValue": "DATA_FAC_INSERT_CA_BILLING"
 					},
 					"inputPath": {
 						"type": "String"
