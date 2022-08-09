@@ -7,7 +7,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Update CC_DATA_FACTORY Success_copy1",
+						"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,7 +45,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Update CC_DATA_FACTORY Success_copy1",
+						"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -744,43 +744,7 @@
 				}
 			},
 			{
-				"name": "Update CC_DATA_FACTORY Success_copy1",
-				"description": "",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record -> count process ',string(sub(activity('Copy data to CC_DATA_FACTORY_CREDIT_ASSIGN').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Merge cc_creditAssign",
+				"name": "Insert into CC_DATA_FACTORY_HIST SQL9",
 				"type": "Script",
 				"dependsOn": [
 					{
@@ -807,7 +771,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'''') IS NOT NULL  AND PROCESS_TYPE LIKE ''02%'' ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.ROW_ID = SOURCE.PHX_ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE;\n')",
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT TEMP.CREATED,TEMP.CREATED_BY,TEMP.LAST_UPD,TEMP.LAST_UPD_BY,TEMP.STATUS,TEMP.DESCRIPTION,TEMP.ERROR_MSG\nFROM (SELECT GETDATE() AS CREATED ,''DATA_FAC_INSERT_ASSIGN'' AS CREATED_BY ,GETDATE() AS LAST_UPD ,''DATA_FAC_INSERT_ASSIGN'' AS LAST_UPD_BY ,A.DATA_ID,''E'' AS STATUS\n,(CONCAT(A.PROCESS_TYPE,''|'',A.ROW_ID,''|'',A.CREATED,''|'',A.CREATED_BY,''|'',A.LAST_UPD,''|'',A.LAST_UPD_BY,''|''\n ,A.BILLING_ACCOUNT_NUM,''|'',A.LIMIT_MNY,''|'',A.GNV_LIMIT_MNY,''|'',A.THRESHOLD_ID,''|'',A.REQUEST_ID,''|''\n ,A.ACTION_TYPE,''|'',A.ACTION_DTM,''|'',A.REASON_CODE,''|'',A.REASON_SUBCODE,''|'',A.LAST_UPDATE_BY,''|'',A.LAST_UPDATE_DTM,''|''\n ,A.ASSIGN_NO,''|'',A.TEMP_EXPIRE_DAT,''|'',A.SEQ_NO,''|'',A.CREDIT_GRADE,''|'',A.ARPU,''|'',A.MIN_REVIEW,''|'',A.SUM_MAIN,''|''\n ,A.NEXT_BILL,''|'',A.NEXT_BILL_DATE,''|'',A.PHX_ROW_ID,''|'', A.PHX_OPERATION)) AS DESCRIPTION\n,''PHX_ROW_ID Data not found'' AS ERROR_MSG,CA.ROW_ID AS REF_ID \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nLEFT JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete''\nORDER BY A.DATA_ASSIGN_ID ASC OFFSET 0 ROWS)TEMP WHERE NULLIF(TEMP.REF_ID,'') IS NULL\n')",
 								"type": "Expression"
 							}
 						}
@@ -815,11 +779,11 @@
 				}
 			},
 			{
-				"name": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
+				"name": "Insert into CC_DATA_FACTORY_HIST SQL12",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Insert cc_creditAssign",
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL9",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -842,7 +806,252 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID =  ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'''') IS NULL  AND PROCESS_TYPE LIKE ''02%'' ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.REF_ROW_ID = SOURCE.ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,\nLAST_UPDATE_DTM,ASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE) \nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE.CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.BILLING_ACCOUNT_NUM,\n SOURCE.LIMIT_MNY,\n SOURCE.GNV_LIMIT_MNY,\n SOURCE.THRESHOLD_ID,\n SOURCE.REQUEST_ID,\n SOURCE.ACTION_TYPE,\n SOURCE.ACTION_DTM,\n SOURCE.REASON_CODE,\n SOURCE.REASON_SUBCODE,\n SOURCE.LAST_UPDATE_BY,\n SOURCE.LAST_UPDATE_DTM,\n SOURCE.ASSIGN_NO,\n SOURCE.TEMP_EXPIRE_DAT,\n SOURCE.SEQ_NO,\n SOURCE.CREDIT_GRADE,\n SOURCE.ARPU,\n SOURCE.MIN_REVIEW,\n SOURCE.SUM_MAIN,\n SOURCE.NEXT_BILL_DATE);\n')",
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT TEMP.CREATED,TEMP.CREATED_BY,TEMP.LAST_UPD,TEMP.LAST_UPD_BY,TEMP.STATUS,TEMP.DESCRIPTION,TEMP.ERROR_MSG\nFROM (SELECT GETDATE() AS CREATED ,''DATA_FAC_INSERT_ASSIGN'' AS CREATED_BY ,GETDATE() AS LAST_UPD ,''DATA_FAC_INSERT_ASSIGN'' AS LAST_UPD_BY ,A.DATA_ID,''E'' AS STATUS\n,(CONCAT(A.PROCESS_TYPE,''|'',A.ROW_ID,''|'',A.CREATED,''|'',A.CREATED_BY,''|'',A.LAST_UPD,''|'',A.LAST_UPD_BY,''|''\n ,A.BILLING_ACCOUNT_NUM,''|'',A.LIMIT_MNY,''|'',A.GNV_LIMIT_MNY,''|'',A.THRESHOLD_ID,''|'',A.REQUEST_ID,''|''\n ,A.ACTION_TYPE,''|'',A.ACTION_DTM,''|'',A.REASON_CODE,''|'',A.REASON_SUBCODE,''|'',A.LAST_UPDATE_BY,''|'',A.LAST_UPDATE_DTM,''|''\n ,A.ASSIGN_NO,''|'',A.TEMP_EXPIRE_DAT,''|'',A.SEQ_NO,''|'',A.CREDIT_GRADE,''|'',A.ARPU,''|'',A.MIN_REVIEW,''|'',A.SUM_MAIN,''|''\n ,A.NEXT_BILL,''|'',A.NEXT_BILL_DATE,''|'',A.PHX_ROW_ID,''|'', A.PHX_OPERATION)) AS DESCRIPTION\n,''ROW_ID Data not found'' AS ERROR_MSG,CA.ROW_ID AS REF_ID \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nLEFT JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.REF_ROW_ID = A.ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NULL AND A.PHX_OPERATION = ''Delete'' \nORDER BY A.DATA_ASSIGN_ID ASC OFFSET 0 ROWS)TEMP WHERE NULLIF(TEMP.REF_ID,'''') IS NULL\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Insert into CC_DATA_FACTORY_HIST SQL7",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL12",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT GETDATE(),''DATA_FAC_INSERT_ASSIGN'',GETDATE(),''DATA_FAC_INSERT_ASSIGN'',DATA_ID,''E''\n,(CONCAT(PROCESS_TYPE,''|'',ROW_ID,''|'',CREATED,''|'',CREATED_BY,''|'',LAST_UPD,''|'',LAST_UPD_BY,''|''\n ,BILLING_ACCOUNT_NUM,''|'',LIMIT_MNY,''|'',GNV_LIMIT_MNY,''|'',THRESHOLD_ID,''|'',REQUEST_ID,''|''\n ,ACTION_TYPE,''|'',ACTION_DTM,''|'',REASON_CODE,''|'',REASON_SUBCODE,''|'',LAST_UPDATE_BY,''|'',LAST_UPDATE_DTM,''|''\n ,ASSIGN_NO,''|'',TEMP_EXPIRE_DAT,''|'',SEQ_NO,''|'',CREDIT_GRADE,''|'',ARPU,''|'',MIN_REVIEW,''|'',SUM_MAIN,''|''\n ,NEXT_BILL,''|'',NEXT_BILL_DATE,''|'',PHX_ROW_ID,''|'', PHX_OPERATION)) \n,''PHX_ROW_ID Data not found''\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE =''02'' AND NULLIF(PHX_ROW_ID,'''') IS NOT NULL AND NULLIF(PHX_OPERATION ,'''') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Insert into CC_CREDIT_ASSIGN_AT SQL10",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL7",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN_AT(REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,\nBATCH_CREATED,BATCH_CREATED_BY,ASSIGN_ROW_ID,ASSIGN_REF_ROW_ID,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,LAST_UPDATE_DTM,\nASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE)\nSELECT A.ROW_ID,A.CREATED,A.LAST_UPD,A.LAST_UPD_BY,\nGETDATE() AS BATCH_LAST_UPD ,''DATA_FAC_INSERT_ASSIGN'' AS BATCH_LAST_UPD_BY,A.PHX_ROW_ID,A.ROW_ID,A.BILLING_ACCOUNT_NUM,A.LIMIT_MNY,\nA.GNV_LIMIT_MNY,A.THRESHOLD_ID,A.REQUEST_ID,A.ACTION_TYPE,A.ACTION_DTM,A.REASON_CODE,A.REASON_SUBCODE,A.LAST_UPDATE_BY,A.LAST_UPDATE_DTM,\nA.ASSIGN_NO,A.TEMP_EXPIRE_DAT,A.SEQ_NO,A.CREDIT_GRADE,A.ARPU,A.MIN_REVIEW,A.SUM_MAIN,A.NEXT_BILL_DATE\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' \nORDER BY A.DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Insert into CC_CREDIT_ASSIGN_AT SQL13",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL10",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN_AT(REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,\nBATCH_CREATED,BATCH_CREATED_BY,ASSIGN_ROW_ID,ASSIGN_REF_ROW_ID,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,LAST_UPDATE_DTM,\nASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE)\nSELECT A.ROW_ID,A.CREATED,A.LAST_UPD,A.LAST_UPD_BY,\nGETDATE() AS BATCH_LAST_UPD ,''DATA_FAC_INSERT_ASSIGN'' AS BATCH_LAST_UPD_BY,A.PHX_ROW_ID,A.ROW_ID,A.BILLING_ACCOUNT_NUM,A.LIMIT_MNY,\nA.GNV_LIMIT_MNY,A.THRESHOLD_ID,A.REQUEST_ID,A.ACTION_TYPE,A.ACTION_DTM,A.REASON_CODE,A.REASON_SUBCODE,A.LAST_UPDATE_BY,A.LAST_UPDATE_DTM,\nA.ASSIGN_NO,A.TEMP_EXPIRE_DAT,A.SEQ_NO,A.CREDIT_GRADE,A.ARPU,A.MIN_REVIEW,A.SUM_MAIN,A.NEXT_BILL_DATE\nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.REF_ROW_ID = A.ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NULL AND A.PHX_OPERATION = ''Delete'' \nORDER BY A.DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "MERGE Update CC_CREDIT_ASSIGN SQL6",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL13",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE =''02'' AND NULLIF(PHX_ROW_ID,'''') IS NOT NULL AND NULLIF(PHX_OPERATION ,'''') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.ROW_ID = SOURCE.PHX_ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE;\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "MERGE Update or Insert CC_CREDIT_ASSIGN SQL8",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "MERGE Update CC_CREDIT_ASSIGN SQL6",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('WITH ASSIGN AS (SELECT * FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND PROCESS_TYPE =''02'' AND NULLIF(PHX_ROW_ID,'''') IS NULL AND NULLIF(PHX_OPERATION ,'''') IS NULL ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS)\nMERGE ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN AS TARGET\nUSING ASSIGN AS SOURCE\nON (TARGET.REF_ROW_ID = SOURCE.ROW_ID)\nWHEN MATCHED\nTHEN \nUPDATE\nSET\nTARGET.REF_ROW_ID = SOURCE.ROW_ID,\nTARGET.CREATED = SOURCE.CREATED,\nTARGET.CREATED_BY = SOURCE.CREATED_BY,\nTARGET.LAST_UPD = SOURCE.LAST_UPD,\nTARGET.LAST_UPD_BY = SOURCE.LAST_UPD_BY,\nTARGET.BILLING_ACCOUNT_NUM = SOURCE.BILLING_ACCOUNT_NUM,\nTARGET.LIMIT_MNY = SOURCE.LIMIT_MNY,\nTARGET.GNV_LIMIT_MNY = SOURCE.GNV_LIMIT_MNY,\nTARGET.THRESHOLD_ID = SOURCE.THRESHOLD_ID,\nTARGET.REQUEST_ID = SOURCE.REQUEST_ID,\nTARGET.ACTION_TYPE = SOURCE.ACTION_TYPE,\nTARGET.ACTION_DTM = SOURCE.ACTION_DTM,\nTARGET.REASON_CODE = SOURCE.REASON_CODE,\nTARGET.REASON_SUBCODE = SOURCE.REASON_SUBCODE,\nTARGET.LAST_UPDATE_BY = SOURCE.LAST_UPDATE_BY,\nTARGET.LAST_UPDATE_DTM = SOURCE.LAST_UPDATE_DTM,\nTARGET.ASSIGN_NO = SOURCE.ASSIGN_NO,\nTARGET.TEMP_EXPIRE_DAT = SOURCE.TEMP_EXPIRE_DAT,\nTARGET.SEQ_NO = SOURCE.SEQ_NO,\nTARGET.CREDIT_GRADE = SOURCE.CREDIT_GRADE,\nTARGET.ARPU = SOURCE.ARPU,\nTARGET.MIN_REVIEW = SOURCE.MIN_REVIEW,\nTARGET.SUM_MAIN = SOURCE.SUM_MAIN,\nTARGET.NEXT_BILL_DATE = SOURCE.NEXT_BILL_DATE\nWHEN NOT MATCHED BY TARGET \nTHEN INSERT (REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,BILLING_ACCOUNT_NUM,LIMIT_MNY,\nGNV_LIMIT_MNY,THRESHOLD_ID,REQUEST_ID,ACTION_TYPE,ACTION_DTM,REASON_CODE,REASON_SUBCODE,LAST_UPDATE_BY,\nLAST_UPDATE_DTM,ASSIGN_NO,TEMP_EXPIRE_DAT,SEQ_NO,CREDIT_GRADE,ARPU,MIN_REVIEW,SUM_MAIN,NEXT_BILL_DATE) \nVALUES (SOURCE.ROW_ID ,\n SOURCE.CREATED ,\n SOURCE.CREATED_BY,\n SOURCE.LAST_UPD ,\n SOURCE.LAST_UPD_BY,\n SOURCE.BILLING_ACCOUNT_NUM,\n SOURCE.LIMIT_MNY,\n SOURCE.GNV_LIMIT_MNY,\n SOURCE.THRESHOLD_ID,\n SOURCE.REQUEST_ID,\n SOURCE.ACTION_TYPE,\n SOURCE.ACTION_DTM,\n SOURCE.REASON_CODE,\n SOURCE.REASON_SUBCODE,\n SOURCE.LAST_UPDATE_BY,\n SOURCE.LAST_UPDATE_DTM,\n SOURCE.ASSIGN_NO,\n SOURCE.TEMP_EXPIRE_DAT,\n SOURCE.SEQ_NO,\n SOURCE.CREDIT_GRADE,\n SOURCE.ARPU,\n SOURCE.MIN_REVIEW,\n SOURCE.SUM_MAIN,\n SOURCE.NEXT_BILL_DATE);\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "DELETE CC_CREDIT_ASSIGN SQL11",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "MERGE Update or Insert CC_CREDIT_ASSIGN SQL8",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = dataId AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "DELETE CC_CREDIT_ASSIGN SQL14",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "DELETE CC_CREDIT_ASSIGN SQL11",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('DELETE FROM ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN WHERE ROW_ID IN(SELECT CA.ROW_ID FROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN A  \nINNER JOIN ',pipeline().parameters.SCHEMA,'.CC_CREDIT_ASSIGN CA ON CA.ROW_ID = A.PHX_ROW_ID \nWHERE A.DATA_ID = ',pipeline().parameters.dataId,' AND A.PROCESS_TYPE =''02'' AND NULLIF(A.PHX_ROW_ID,'''') IS NOT NULL AND A.PHX_OPERATION = ''Delete'' )\n')",
 								"type": "Expression"
 							}
 						}
@@ -855,7 +1064,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null",
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL9",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -878,7 +1087,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),0,if(greater(length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error),499),499,length(activity('Merge cc_creditAssign PHX_ROW_ID null ROW_ID not null').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
@@ -891,7 +1100,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Merge cc_creditAssign",
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL12",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -914,7 +1123,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge cc_creditAssign').Error),0,if(greater(length(activity('Merge cc_creditAssign').Error),499),499,length(activity('Merge cc_creditAssign').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
@@ -922,47 +1131,12 @@
 				}
 			},
 			{
-				"name": "Insert cc_creditAssign",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Merge cc_creditAssign",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_HIST(CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,DATA_ID,STATUS,DESCRIPTION,ERROR_MSG )\nSELECT GETDATE(),''DATA_FAC_INSERT_ASSIGN'',GETDATE(),''DATA_FAC_INSERT_ASSIGN'',DATA_ID,''E''\n,(CONCAT(PROCESS_TYPE,''|'',ROW_ID,''|'',CREATED,''|'',CREATED_BY,''|'',LAST_UPD,''|'',LAST_UPD_BY,''|''\n ,BILLING_ACCOUNT_NUM,''|'',LIMIT_MNY,''|'',GNV_LIMIT_MNY,''|'',THRESHOLD_ID,''|'',REQUEST_ID,''|''\n ,ACTION_TYPE,''|'',ACTION_DTM,''|'',REASON_CODE,''|'',REASON_SUBCODE,''|'',LAST_UPDATE_BY,''|'',LAST_UPDATE_DTM,''|''\n ,ASSIGN_NO,''|'',TEMP_EXPIRE_DAT,''|'',SEQ_NO,''|'',CREDIT_GRADE,''|'',ARPU,''|'',MIN_REVIEW,''|'',SUM_MAIN,''|''\n ,NEXT_BILL,''|'',NEXT_BILL_DATE,''|'',PHX_ROW_ID)) \n,''PHX_ROW_ID Data not found'' \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_CREDIT_ASSIGN WHERE DATA_ID = ',pipeline().parameters.dataId,' AND NULLIF(PHX_ROW_ID,'''') IS NULL  AND PROCESS_TYPE LIKE ''02%'' ORDER BY DATA_ASSIGN_ID ASC OFFSET 0 ROWS\n')",
-								"type": "Expression"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Update CC_DATA_FACTORY Catch Exception_copy2",
+				"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy2",
 				"description": "",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Insert cc_creditAssign",
+						"activity": "Insert into CC_DATA_FACTORY_HIST SQL7",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -985,7 +1159,151 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert cc_creditAssign').Error),0,if(greater(length(activity('Insert cc_creditAssign').Error),499),499,length(activity('Insert cc_creditAssign').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy3",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL10",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error),0,if(greater(length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error),499),499,length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy4",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL13",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error),0,if(greater(length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error),499),499,length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy5",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "MERGE Update CC_CREDIT_ASSIGN SQL6",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error),0,if(greater(length(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error),499),499,length(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy6",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "MERGE Update or Insert CC_CREDIT_ASSIGN SQL8",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error),0,if(greater(length(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error),499),499,length(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 								"type": "Expression"
 							}
 						}
