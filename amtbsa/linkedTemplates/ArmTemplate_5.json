@@ -295,7 +295,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get All FIle in Config directory').output.childItems",
+								"value": "@if(activity('Get All FIle in Config directory').output.exists,activity('Get All FIle in Config directory').output.childItems,array(''))",
 								"type": "Expression"
 							},
 							"condition": {
