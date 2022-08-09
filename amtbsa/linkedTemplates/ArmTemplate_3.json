@@ -5003,7 +5003,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
+								"activity": "Update CC_DATA_FACTORY Success",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5041,7 +5041,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
+								"activity": "Update CC_DATA_FACTORY Success",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6067,12 +6067,48 @@
 						}
 					},
 					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1",
+						"name": "Update CC_DATA_FACTORY Success",
 						"description": "",
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Insert into CC_DATA_FACTORY_HIST SQL9",
+								"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''Process file name : ',pipeline().parameters.fileDatName,' total count ',string(add(activity('DELETE CC_CREDIT_ASSIGN SQL14').output.rowsRead,1)),' record -> count process ',string(sub(activity('DELETE CC_CREDIT_ASSIGN SQL14').output.rowsRead,1)),' record.''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "DELETE CC_CREDIT_ASSIGN SQL14",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -6095,7 +6131,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('DELETE CC_CREDIT_ASSIGN SQL14').Error),'''','\"')),0,if(greater(length(string(activity('DELETE CC_CREDIT_ASSIGN SQL14').Error)),499 ),499,length(string(activity('DELETE CC_CREDIT_ASSIGN SQL14').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -6103,12 +6139,12 @@
 						}
 					},
 					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy1",
+						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy3",
 						"description": "",
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Insert into CC_DATA_FACTORY_HIST SQL12",
+								"activity": "DELETE CC_CREDIT_ASSIGN SQL11",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -6131,7 +6167,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('DELETE CC_CREDIT_ASSIGN SQL11').Error),'''','\"')),0,if(greater(length(string(activity('DELETE CC_CREDIT_ASSIGN SQL11').Error)),499 ),499,length(string(activity('DELETE CC_CREDIT_ASSIGN SQL11').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -6139,151 +6175,7 @@
 						}
 					},
 					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy2",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Insert into CC_DATA_FACTORY_HIST SQL7",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error),0,if(greater(length(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error),499),499,length(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy3",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL10",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error),0,if(greater(length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error),499),499,length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy4",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL13",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error),0,if(greater(length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error),499),499,length(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy5",
-						"description": "",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "MERGE Update CC_CREDIT_ASSIGN SQL6",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzureSqlDatabase1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error),0,if(greater(length(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error),499),499,length(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
-										"type": "Expression"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy6",
+						"name": "Update CC_DATA_FACTORY Catch Loop Insert HIST_copy4",
 						"description": "",
 						"type": "Script",
 						"dependsOn": [
@@ -6311,7 +6203,223 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error),0,if(greater(length(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error),499),499,length(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error),'''','\"')),0,if(greater(length(string(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error)),499 ),499,length(string(activity('MERGE Update or Insert CC_CREDIT_ASSIGN SQL8').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Insert into CC_DATA_FACTORY_HIST SQL9",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error),'''','\"')),0,if(greater(length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error)),499 ),499,length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL9').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Insert into CC_DATA_FACTORY_HIST SQL12",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error),'''','\"')),0,if(greater(length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error)),499 ),499,length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL12').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception_copy2",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Insert into CC_DATA_FACTORY_HIST SQL7",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error),'''','\"')),0,if(greater(length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error)),499 ),499,length(string(activity('Insert into CC_DATA_FACTORY_HIST SQL7').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception_copy3",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL10",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error),'''','\"')),0,if(greater(length(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error)),499 ),499,length(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL10').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception_copy4",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Insert into CC_CREDIT_ASSIGN_AT SQL13",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error),'''','\"')),0,if(greater(length(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error)),499 ),499,length(string(activity('Insert into CC_CREDIT_ASSIGN_AT SQL13').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Exception_copy5",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "MERGE Update CC_CREDIT_ASSIGN SQL6",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error),'''','\"')),0,if(greater(length(string(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error)),499 ),499,length(string(activity('MERGE Update CC_CREDIT_ASSIGN SQL6').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -8562,7 +8670,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Merge CC_BILLING_CAT_SUBCAT",
+								"activity": "Merge CC_CA_BILLING",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -8593,7 +8701,7 @@
 						}
 					},
 					{
-						"name": "Merge CC_BILLING_CAT_SUBCAT",
+						"name": "Merge CC_CA_BILLING",
 						"type": "Script",
 						"dependsOn": [
 							{
@@ -8633,7 +8741,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Merge CC_BILLING_CAT_SUBCAT",
+								"activity": "Merge CC_CA_BILLING",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -8656,7 +8764,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error),'''','\"')),0,if(greater(length(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error)),499 ),499,length(string(activity('Merge CC_BILLING_CAT_SUBCAT').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge CC_CA_BILLING').Error),'''','\"')),0,if(greater(length(string(activity('Merge CC_CA_BILLING').Error)),499 ),499,length(string(activity('Merge CC_CA_BILLING').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
