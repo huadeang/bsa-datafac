@@ -251,7 +251,7 @@
 			},
 			"LOV_NAME": {
 				"type": "String",
-				"defaultValue": "sff_cc_ba_accnt_id_res"
+				"defaultValue": "cc_data_fac_insert_ca_billing"
 			},
 			"LOV_TYPE": {
 				"type": "String",
