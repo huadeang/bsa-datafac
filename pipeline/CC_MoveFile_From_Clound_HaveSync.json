@@ -546,6 +546,198 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Delete old and  default",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Copy file sync to backup path",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "CC_CloundFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@concat(replace(pipeline().parameters.MoveBackupPath,pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureFileStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Copy file data to backup path_default_copy1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Delete old and  default",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureFileStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureFileStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "CC_CloundFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@pipeline().parameters.fileName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CC_CloundFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@concat(replace('/bsaaksfileshare/credtibackup/default-move-folder',pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameOnly)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Copy file sync to backup path_default_copy1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Copy file data to backup path_default_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureFileStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureFileStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "CC_CloundFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@pipeline().parameters.fileNameSync",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "CC_CloundFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@concat(replace('/bsaaksfileshare/credtibackup/default-move-folder',pipeline().parameters.rootFolder,''),'/',formatDateTime(convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'yyyyMMdd' ),'/',pipeline().parameters.fileNameSyncOnly)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
