@@ -3607,6 +3607,16 @@
 								"mappings": [
 									{
 										"source": {
+											"name": "DATA_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_ID",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
 											"type": "String",
 											"ordinal": 1
 										},
@@ -3884,23 +3894,13 @@
 											"name": "PHX_OPERATION",
 											"type": "String"
 										}
-									},
-									{
-										"source": {
-											"name": "DATA_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "DATA_ID",
-											"type": "Int64"
-										}
 									}
 								]
 							}
 						},
 						"inputs": [
 							{
-								"referenceName": "CC_LocalFileMasterNotSplit",
+								"referenceName": "CC_LocalFileMasterSplitPipe",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -4748,6 +4748,35 @@
 								}
 							}
 						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch_copy1",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Copy data to CC_TEMP_FILE_DETAIL').Error),'''','\"')),0,if(greater(length(string(activity('Copy data to CC_TEMP_FILE_DETAIL').Error)),499 ),499,length(string(activity('Copy data to CC_TEMP_FILE_DETAIL').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -4791,9 +4820,10 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/CC_MoveFile')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterSplitPipe')]",
 				"[concat(variables('factoryId'), '/datasets/CC_TableDynamic')]",
-				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlMaster')]",
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterNotSplit')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		},
