@@ -102,7 +102,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileToWrite",
+						"referenceName": "CC_LocalFileToWrite",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {

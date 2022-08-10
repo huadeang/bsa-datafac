@@ -97,7 +97,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -196,7 +196,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -206,7 +206,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -274,7 +274,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -284,7 +284,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -336,7 +336,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
@@ -346,7 +346,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": "C:\\export\\home\\oper\\sffinput\\sff_cc_arpu",
