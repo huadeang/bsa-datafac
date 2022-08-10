@@ -259,8 +259,7 @@
 								},
 								"sink": {
 									"name": "PROCESS_TYPE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -270,8 +269,7 @@
 								},
 								"sink": {
 									"name": "ROW_ID",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -281,8 +279,7 @@
 								},
 								"sink": {
 									"name": "CREATED",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -292,8 +289,7 @@
 								},
 								"sink": {
 									"name": "CREATED_BY",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -303,8 +299,7 @@
 								},
 								"sink": {
 									"name": "LAST_UPD",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -314,8 +309,7 @@
 								},
 								"sink": {
 									"name": "LAST_UPD_BY",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -325,8 +319,7 @@
 								},
 								"sink": {
 									"name": "BILLING_ACCOUNT_NUM",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -336,8 +329,7 @@
 								},
 								"sink": {
 									"name": "LIMIT_MNY",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -347,8 +339,7 @@
 								},
 								"sink": {
 									"name": "GNV_LIMIT_MNY",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -358,8 +349,7 @@
 								},
 								"sink": {
 									"name": "THRESHOLD_ID",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -369,8 +359,7 @@
 								},
 								"sink": {
 									"name": "REQUEST_ID",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -380,8 +369,7 @@
 								},
 								"sink": {
 									"name": "ACTION_TYPE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -391,8 +379,7 @@
 								},
 								"sink": {
 									"name": "ACTION_DTM",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -402,8 +389,7 @@
 								},
 								"sink": {
 									"name": "REASON_CODE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -413,8 +399,7 @@
 								},
 								"sink": {
 									"name": "REASON_SUBCODE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -424,8 +409,7 @@
 								},
 								"sink": {
 									"name": "LAST_UPDATE_BY",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -435,8 +419,7 @@
 								},
 								"sink": {
 									"name": "LAST_UPDATE_DTM",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -446,8 +429,7 @@
 								},
 								"sink": {
 									"name": "ASSIGN_NO",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -457,8 +439,7 @@
 								},
 								"sink": {
 									"name": "TEMP_EXPIRE_DAT",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -468,8 +449,7 @@
 								},
 								"sink": {
 									"name": "SEQ_NO",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -479,8 +459,7 @@
 								},
 								"sink": {
 									"name": "CREDIT_GRADE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -490,8 +469,7 @@
 								},
 								"sink": {
 									"name": "ARPU",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -501,8 +479,7 @@
 								},
 								"sink": {
 									"name": "MIN_REVIEW",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -512,8 +489,7 @@
 								},
 								"sink": {
 									"name": "SUM_MAIN",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -523,8 +499,7 @@
 								},
 								"sink": {
 									"name": "NEXT_BILL",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -534,8 +509,7 @@
 								},
 								"sink": {
 									"name": "NEXT_BILL_DATE",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -545,8 +519,7 @@
 								},
 								"sink": {
 									"name": "PHX_ROW_ID",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -556,8 +529,7 @@
 								},
 								"sink": {
 									"name": "PHX_OPERATION",
-									"type": "String",
-									"physicalType": "varchar"
+									"type": "String"
 								}
 							},
 							{
@@ -567,34 +539,12 @@
 								},
 								"sink": {
 									"name": "DATA_ID",
-									"type": "Int64",
-									"physicalType": "bigint"
+									"type": "Int64"
 								}
 							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
+						]
 					}
 				},
-				"inputs": [
-					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "CC_TableDynamic",
@@ -669,18 +619,8 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.inputPath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.fileDatName",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "CC_LocalFileMasterNotSplit",
+						"type": "DatasetReference"
 					}
 				}
 			},
