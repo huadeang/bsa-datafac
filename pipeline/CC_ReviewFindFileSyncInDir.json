@@ -146,7 +146,7 @@
 				"type": "Filter",
 				"dependsOn": [
 					{
-						"activity": "Get All FIle in Config directory",
+						"activity": "If path not exist",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -155,13 +155,62 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get All FIle in Config directory').output.childItems",
+						"value": "@if(activity('Get All FIle in Config directory').output.exists,activity('Get All FIle in Config directory').output.childItems,variables('emptyArray'))",
 						"type": "Expression"
 					},
 					"condition": {
 						"value": "@and(startswith(item().name,pipeline().parameters.prefixInputFile),endswith(item().name,pipeline().parameters.fileTypeInputFile))",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "If path not exist",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get All FIle in Config directory",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(activity('Get All FIle in Config directory').output.exists)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "insert when path not exist",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_REVIEW \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tREVIEW_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.REVIEW_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''',pipeline().parameters.LOV_TYPE_REVIEW,''',\n\t''E'',''Path not exist'');')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					]
 				}
 			}
 		],
@@ -195,6 +244,12 @@
 			},
 			"processDatName": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"emptyArray": {
+				"type": "Array",
+				"defaultValue": []
 			}
 		},
 		"annotations": []
