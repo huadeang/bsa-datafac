@@ -1,5 +1,5 @@
 {
-	"name": "CCLocalFileMasterPath",
+	"name": "CC_LocalFileMasterNotSplit",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
@@ -7,8 +7,10 @@
 		},
 		"parameters": {
 			"filePath": {
-				"type": "string",
-				"defaultValue": "*"
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -16,15 +18,19 @@
 		"typeProperties": {
 			"location": {
 				"type": "FileServerLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@dataset().filePath",
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "|",
+			"columnDelimiter": "''",
+			"encodingName": "TIS-620",
 			"escapeChar": "\\",
-			"firstRowAsHeader": false,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}

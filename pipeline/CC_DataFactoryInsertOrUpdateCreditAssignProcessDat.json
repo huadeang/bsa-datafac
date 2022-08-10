@@ -581,7 +581,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -669,7 +669,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {

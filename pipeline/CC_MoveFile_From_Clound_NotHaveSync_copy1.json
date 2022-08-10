@@ -132,7 +132,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -213,7 +213,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileMasterSplitPipe",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -305,7 +305,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": {
@@ -386,7 +386,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "CCLocalFileMasterSplitPipe",
+									"referenceName": "CC_LocalFileMasterSplitPipe",
 									"type": "DatasetReference",
 									"parameters": {
 										"filePath": {

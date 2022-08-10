@@ -34,7 +34,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -71,7 +71,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {

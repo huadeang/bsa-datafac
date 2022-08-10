@@ -67,7 +67,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileToWrite",
+						"referenceName": "CC_LocalFileToWrite",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -103,7 +103,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "CCLocalFileMasterNotSplit",
+						"referenceName": "CC_LocalFileMasterNotSplit",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
@@ -207,7 +207,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CCLocalFileToWrite",
+						"referenceName": "CC_LocalFileToWrite",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
