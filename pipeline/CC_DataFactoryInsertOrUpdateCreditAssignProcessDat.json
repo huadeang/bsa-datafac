@@ -254,6 +254,16 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "DATA_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_ID",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
 									"type": "String",
 									"ordinal": 1
 								},
@@ -531,23 +541,13 @@
 									"name": "PHX_OPERATION",
 									"type": "String"
 								}
-							},
-							{
-								"source": {
-									"name": "DATA_ID",
-									"type": "String"
-								},
-								"sink": {
-									"name": "DATA_ID",
-									"type": "Int64"
-								}
 							}
 						]
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CC_LocalFileMasterNotSplit",
+						"referenceName": "CC_LocalFileMasterSplitPipe",
 						"type": "DatasetReference",
 						"parameters": {
 							"filePath": {
