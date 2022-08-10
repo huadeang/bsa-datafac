@@ -1,5 +1,5 @@
 {
-	"name": "CCLocalFileMasterNotSplit",
+	"name": "CC_LocalFileMasterNotSplit",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
