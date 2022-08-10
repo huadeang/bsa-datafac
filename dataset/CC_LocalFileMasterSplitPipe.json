@@ -1,5 +1,5 @@
 {
-	"name": "CCLocalFileMasterSplitPipe",
+	"name": "CC_LocalFileMasterSplitPipe",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LocalFileServer",
