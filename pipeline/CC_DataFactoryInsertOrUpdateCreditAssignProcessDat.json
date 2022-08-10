@@ -595,36 +595,6 @@
 				}
 			},
 			{
-				"name": "Read 01",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "CC_LocalFileMasterNotSplit",
-						"type": "DatasetReference"
-					}
-				}
-			},
-			{
 				"name": "SELECT old 09",
 				"type": "Lookup",
 				"dependsOn": [
@@ -1367,6 +1337,46 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Read 01",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "CC_LocalFileMasterNotSplit",
+						"type": "DatasetReference",
+						"parameters": {
+							"filePath": {
+								"value": "@pipeline().parameters.inputPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileDatName",
+								"type": "Expression"
+							}
+						}
+					}
 				}
 			}
 		],
