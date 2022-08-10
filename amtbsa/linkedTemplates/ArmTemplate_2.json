@@ -13,334 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "FILE_DTL_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "FILE_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "FILE_LINE",
-						"type": "varchar"
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "REMARK",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_UAT",
-					"table": "CC_TEMP_FILE_DETAIL"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHist')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CHANGE_HIST_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "CHANGE_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "BILLING_ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "NEW_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "OLD_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "PROFILE_CHANGE_DATE",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PROFILE_CHANGE_ROWID",
-						"type": "varchar"
-					},
-					{
-						"name": "MAIL_PERIOD",
-						"type": "decimal",
-						"precision": 2,
-						"scale": 0
-					},
-					{
-						"name": "SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "PREV_SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "AVAILABLE_CL",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 2
-					},
-					{
-						"name": "CHANGE_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "REF_REQ_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "REMARK",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					},
-					{
-						"name": "REGISTER_DT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "NEW_ACCNT_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "ACCNT_ID",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_DEV",
-					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHistUAT')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CHANGE_HIST_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "CHANGE_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "REGISTER_DT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "NEW_ACCNT_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "NEW_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "OLD_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "PROFILE_CHANGE_DATE",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PROFILE_CHANGE_ROWID",
-						"type": "varchar"
-					},
-					{
-						"name": "MAIL_PERIOD",
-						"type": "decimal",
-						"precision": 2,
-						"scale": 0
-					},
-					{
-						"name": "SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "PREV_SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "AVAILABLE_CL",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 2
-					},
-					{
-						"name": "CHANGE_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "REF_REQ_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "REMARK",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_UAT",
-					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CC_DatasetTableBillingReviewSchemaDataFac')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -473,6 +145,119 @@
 					"encodingName": "TIS-620",
 					"escapeChar": "\\",
 					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_LocalFileMasterPath')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string",
+						"defaultValue": "*"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_LocalFileMasterSplitPipe')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_LocalFileToWrite')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LocalFileServer",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filePath": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().filePath",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "",
+					"quoteChar": ""
 				},
 				"schema": []
 			},
@@ -1122,7 +907,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -1263,7 +1048,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -1323,6 +1108,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterNotSplit')]"
 			]
 		},
@@ -1398,7 +1184,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -1539,7 +1325,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -1576,6 +1362,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterNotSplit')]"
 			]
 		},
@@ -3275,7 +3062,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
+								"referenceName": "CC_LocalFileMasterSplitPipe",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -3356,7 +3143,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileMasterSplitPipe",
+								"referenceName": "CC_LocalFileMasterSplitPipe",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -3448,7 +3235,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CCLocalFileMasterSplitPipe",
+											"referenceName": "CC_LocalFileMasterSplitPipe",
 											"type": "DatasetReference",
 											"parameters": {
 												"filePath": {
@@ -3529,7 +3316,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "CCLocalFileMasterSplitPipe",
+											"referenceName": "CC_LocalFileMasterSplitPipe",
 											"type": "DatasetReference",
 											"parameters": {
 												"filePath": {
@@ -3662,7 +3449,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterSplitPipe')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewCreateFileOutputAndArchive')]",
@@ -3771,7 +3560,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -4052,7 +3841,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -4139,6 +3928,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileToWrite')]",
 				"[concat(variables('factoryId'), '/datasets/CC_LocalFileMasterNotSplit')]"
 			]
 		},
@@ -4249,7 +4039,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "CCLocalFileToWrite",
+								"referenceName": "CC_LocalFileToWrite",
 								"type": "DatasetReference",
 								"parameters": {
 									"filePath": {
@@ -4437,7 +4227,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CC_LocalFileToWrite')]"
+			]
 		}
 	]
 }

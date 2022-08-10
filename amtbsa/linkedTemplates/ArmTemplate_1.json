@@ -1119,125 +1119,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterPath')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LocalFileServer",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filePath": {
-						"type": "string",
-						"defaultValue": "*"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"folderPath": {
-							"value": "@dataset().filePath",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": ""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CCLocalFileMasterSplitPipe')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LocalFileServer",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filePath": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().filePath",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": ""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CCLocalFileToWrite')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LocalFileServer",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filePath": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().filePath",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "",
-					"quoteChar": ""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LocalFileServer')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/CCLocalFileToWrite_copy1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1375,6 +1256,340 @@
 				"typeProperties": {
 					"schema": "CREDIT_DEV",
 					"table": "CC_TEMP_FILE_DETAIL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CCTableFileTempDetailSchemaUAT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FILE_DTL_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "FILE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "FILE_LINE",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_UAT",
+					"table": "CC_TEMP_FILE_DETAIL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHist')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CHANGE_HIST_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "CHANGE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "BILLING_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "NEW_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "OLD_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "PROFILE_CHANGE_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PROFILE_CHANGE_ROWID",
+						"type": "varchar"
+					},
+					{
+						"name": "MAIL_PERIOD",
+						"type": "decimal",
+						"precision": 2,
+						"scale": 0
+					},
+					{
+						"name": "SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "PREV_SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "AVAILABLE_CL",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 2
+					},
+					{
+						"name": "CHANGE_REASON",
+						"type": "varchar"
+					},
+					{
+						"name": "REF_REQ_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "NEW_ACCNT_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "ACCNT_ID",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_DEV",
+					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHistUAT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CHANGE_HIST_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CREATED",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CREATED_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "LAST_UPD",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LAST_UPD_BY",
+						"type": "varchar"
+					},
+					{
+						"name": "CHANGE_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "BILLING_ACCNT_NO",
+						"type": "varchar"
+					},
+					{
+						"name": "REGISTER_DT",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "NEW_ACCNT_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "NEW_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "OLD_ACCNT_SUB_CAT",
+						"type": "varchar"
+					},
+					{
+						"name": "PROFILE_CHANGE_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PROFILE_CHANGE_ROWID",
+						"type": "varchar"
+					},
+					{
+						"name": "MAIL_PERIOD",
+						"type": "decimal",
+						"precision": 2,
+						"scale": 0
+					},
+					{
+						"name": "SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "PREV_SET_CL_STATUS",
+						"type": "varchar"
+					},
+					{
+						"name": "AVAILABLE_CL",
+						"type": "decimal",
+						"precision": 22,
+						"scale": 2
+					},
+					{
+						"name": "CHANGE_REASON",
+						"type": "varchar"
+					},
+					{
+						"name": "REF_REQ_ID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "STATUS",
+						"type": "char"
+					},
+					{
+						"name": "REMARK",
+						"type": "varchar"
+					},
+					{
+						"name": "ERROR_MSG",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "CREDIT_UAT",
+					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
 				}
 			},
 			"dependsOn": [
