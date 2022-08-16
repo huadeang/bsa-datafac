@@ -45,6 +45,39 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ResReviewCreditLimitDataMatadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filleName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filleName",
+							"type": "Expression"
+						},
+						"container": "credit-control"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ResReviewSyncFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1456,139 +1489,6 @@
 				],
 				"typeProperties": {
 					"schema": "CREDIT_DEV",
-					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_DatasetChangeCatSubcatHistUAT')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CHANGE_HIST_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "CREATED",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CREATED_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "LAST_UPD",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "LAST_UPD_BY",
-						"type": "varchar"
-					},
-					{
-						"name": "CHANGE_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_ID",
-						"type": "varchar"
-					},
-					{
-						"name": "BILLING_ACCNT_NO",
-						"type": "varchar"
-					},
-					{
-						"name": "REGISTER_DT",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "NEW_ACCNT_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "NEW_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "OLD_ACCNT_SUB_CAT",
-						"type": "varchar"
-					},
-					{
-						"name": "PROFILE_CHANGE_DATE",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PROFILE_CHANGE_ROWID",
-						"type": "varchar"
-					},
-					{
-						"name": "MAIL_PERIOD",
-						"type": "decimal",
-						"precision": 2,
-						"scale": 0
-					},
-					{
-						"name": "SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "PREV_SET_CL_STATUS",
-						"type": "varchar"
-					},
-					{
-						"name": "AVAILABLE_CL",
-						"type": "decimal",
-						"precision": 22,
-						"scale": 2
-					},
-					{
-						"name": "CHANGE_REASON",
-						"type": "varchar"
-					},
-					{
-						"name": "REF_REQ_ID",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "STATUS",
-						"type": "char"
-					},
-					{
-						"name": "REMARK",
-						"type": "varchar"
-					},
-					{
-						"name": "ERROR_MSG",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "CREDIT_UAT",
 					"table": "CC_CHANGE_CAT_SUBCAT_HIST"
 				}
 			},

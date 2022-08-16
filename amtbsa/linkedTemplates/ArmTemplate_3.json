@@ -13,6 +13,303 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/CC_ReviewCreateFileOutputNotArchive')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Update RESPONSE_FILE not have input file_copy1",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''P'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record'' WHERE RES_ID =',pipeline().parameters.resId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "create file output",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update RESPONSE_FILE not have input file_copy1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT COALESCE(FILE_LINE+''|''+ERROR_MSG ,FILE_LINE) AS errorLine, STATUS AS status \n        FROM ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL \n        WHERE FILE_ID = ',pipeline().parameters.fileId,' ORDER BY FILE_DTL_ID;')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "FileServerWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "errorLine",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"type": "String",
+											"physicalType": "String",
+											"ordinal": 1
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlMaster",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CC_LocalFileToWrite",
+								"type": "DatasetReference",
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.outputPath",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Clear temp file detail",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Creste file Success",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE_DETAIL\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Clear temp file",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Clear temp file detail",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('DELETE ',pipeline().parameters.SCHEMA,'.CC_TEMP_FILE\n        WHERE FILE_ID = ',pipeline().parameters.fileId,'')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Creste file Success",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "create file output",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''S'',\n\tDESCRIPTION = ''Query response detail ',string(pipeline().parameters.countRecord),' record | create file ',pipeline().parameters.fileName,' in path ',pipeline().parameters.outputPath,' complete'' WHERE RES_ID =',pipeline().parameters.resId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Creste file Error",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "create file output",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('Datafactory Exception :',replace(activity('create file output').Error.Message,'''','\"')),0,if(less(length(replace(activity('create file output').Error.Message,'''','\"')),499),length(replace(activity('create file output').Error.Message,'''','\"')),499)),''' WHERE RES_ID =',pipeline().parameters.resId,';')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"SCHEMA": {
+						"type": "string"
+					},
+					"CREDIT_USER": {
+						"type": "string"
+					},
+					"fileType": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					},
+					"outputPath": {
+						"type": "string"
+					},
+					"fileId": {
+						"type": "string"
+					},
+					"countRecord": {
+						"type": "string"
+					},
+					"resId": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CC_TEMPLATEMOVE')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -6726,13 +7023,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Merge ca To cc_scorevalue",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Merge Ba To cc_scorevalue",
+								"activity": "INSERT INTO CC_SCORE_REQUEST",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -6898,6 +7189,47 @@
 									"type": "Query",
 									"text": {
 										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge Ba To cc_scorevalue').Error),0,if(greater(length(activity('Merge Ba To cc_scorevalue').Error),499),499,length(activity('Merge Ba To cc_scorevalue').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "INSERT INTO CC_SCORE_REQUEST",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Merge Ba To cc_scorevalue",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Merge ca To cc_scorevalue",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_REQUEST(REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_ID,BILLING_ACCNT_ID,CL_LEVEL,\nSCORE_RANGE,CL_TYPE,CL_CHANGE_REASON,OUTCOME_CD,OUTCOME_REASON,CREDIT_LIMIT,PERM_CREDIT_LIMIT,\nTEMP_CREDIT_LIMIT,PREV_CREDIT_LIMIT,PREV_SCORE_RANGE,ACTUAL,ACTUAL_PERM,BILLING_CREDIT_LIMIT,\nBILLING_THRESHOLD_SET_ID,FBB_FLAG,LAST_REVIEW_DAT,MIN_REVIEW,STATUS_CD,PROFILE_COMPLETE_FLG)\nSELECT CONCAT(''SV_ID-'',ROW_ID) AS ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_ID,BILLING_ACCNT_ID,CL_LEVEL,\nSCORE_RANGE,CL_TYPE,CL_CHANGE_REASON,OUTCOME_CD,OUTCOME_REASON,CREDIT_LIMIT,PERM_CREDIT_LIMIT,\nTEMP_CREDIT_LIMIT,PREV_CREDIT_LIMIT,PREV_SCORE_RANGE,ACTUAL,ACTUAL_PERM,BILLING_CREDIT_LIMIT,\nBILLING_THRESHOLD_SET_ID,FBB_FLAG,LAST_REVIEW_DAT,MIN_REVIEW,''Completed'' AS STATUS_CD,PROFILE_COMPLETE_FLG \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE PROCESS_TYPE = ''02'' AND DATA_ID  = ',pipeline().parameters.dataId,'\nORDER BY CREATED ASC OFFSET 0 ROWS')",
 										"type": "Expression"
 									}
 								}
@@ -8069,6 +8401,77 @@
 													}
 												}
 											}
+										},
+										{
+											"name": "insert CC_DATA_FACTORY exception_copy1",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_MoveFile_From_Clound_HaveSync",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',substring(concat('Data factory Exception :',replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),0,if(less(length(replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),499),length(replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),499)),''');')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Update response file error_copy1",
+											"description": "",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_MoveFile_From_Clound_HaveSync",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('Data factory Exception :',replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),0,if(less(length(replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),499),length(replace(string(activity('CC_MoveFile_From_Clound_HaveSync').Error),'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
 										}
 									]
 								},
@@ -8124,6 +8527,77 @@
 														"type": "Expression"
 													}
 												}
+											}
+										},
+										{
+											"name": "insert CC_DATA_FACTORY exception_copy1_copy1",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_MoveFile_From_Clound_NotHaveSync",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('INSERT INTO ',variables('SCHEMA'),'.CC_DATA_FACTORY \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tDATA_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.DATA_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',variables('CREDIT_USER'),''',\n\t''',variables('DATA_TYPE'),''',\n\t''E'',''',substring(concat('Data factory Exception :',replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),0,if(less(length(replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),499),length(replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),499)),''');')",
+															"type": "Expression"
+														}
+													}
+												]
+											}
+										},
+										{
+											"name": "Update response file error_copy1_copy1",
+											"description": "",
+											"type": "Script",
+											"dependsOn": [
+												{
+													"activity": "CC_MoveFile_From_Clound_NotHaveSync",
+													"dependencyConditions": [
+														"Failed"
+													]
+												}
+											],
+											"policy": {
+												"timeout": "7.00:00:00",
+												"retry": 0,
+												"retryIntervalInSeconds": 30,
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"linkedServiceName": {
+												"referenceName": "AzureSqlDatabase1",
+												"type": "LinkedServiceReference"
+											},
+											"typeProperties": {
+												"scripts": [
+													{
+														"type": "Query",
+														"text": {
+															"value": "@concat('UPDATE ',variables('SCHEMA'),'.CC_RESPONSE_FILE \n\tSET LAST_UPD = CONVERT(DATETIME2(0),''',convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY = ''',variables('CREDIT_USER'),''',\n\tSTATUS = ''E'',\n\tDESCRIPTION = ''',substring(concat('Data factory Exception :',replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),0,if(less(length(replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),499),length(replace(string(activity('CC_MoveFile_From_Clound_NotHaveSync').Error),'''','\"')),499)),'''\n\tWHERE RES_ID =',pipeline().parameters.resId,';')",
+															"type": "Expression"
+														}
+													}
+												]
 											}
 										}
 									]
@@ -8657,7 +9131,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CC_ReviewCreateFileOutputNotArchive')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CC_ReviewDataFacInsertBillingProfileProcessDat')]",
@@ -13244,279 +13720,6 @@
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertOrUpdateScoreValueProcessDat')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertOrUpdateCreditAssignProcessDat')]",
 				"[concat(variables('factoryId'), '/pipelines/CC_DataFactoryInsertUpdateCaBillingProcessDat')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CC_ReviewFileOutputValidateChildren')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Set fileId",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileId",
-							"value": {
-								"value": "@string(if(equals(trim(coalesce(string(pipeline().parameters.fileId),'')),''),null,string(pipeline().parameters.fileId)))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "If Some val is Null",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Set fileOutputpath",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@or(or(or(equals(variables('fileId'),string(null)),equals(variables('fileName'),string(null))),equals(variables('outputPath'),string(null))),equals(variables('fileType'),string(null)))",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Execute CreateFileOutPut",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "CC_ReviewCreateFileOutput",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"SCHEMA": {
-												"value": "@pipeline().parameters.SCHEMA",
-												"type": "Expression"
-											},
-											"CREDIT_USER": {
-												"value": "@pipeline().parameters.CREDIT_USER",
-												"type": "Expression"
-											},
-											"fileType": {
-												"value": "@variables('fileType')",
-												"type": "Expression"
-											},
-											"fileName": {
-												"value": "@variables('fileName')",
-												"type": "Expression"
-											},
-											"outputPath": {
-												"value": "@variables('outputPath')",
-												"type": "Expression"
-											},
-											"fileId": {
-												"value": "@variables('fileId')",
-												"type": "Expression"
-											},
-											"fileNameArchive": {
-												"value": "@variables('fileNameArchive')",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "insert error when config val error",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set errorMsg",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "AzureSqlDatabase1",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_RESPONSE_FILE \n\t(CREATED,\n\tCREATED_BY,\n\tLAST_UPD,\n\tLAST_UPD_BY,\n\tRES_TYPE,\n\tSTATUS,\n\tDESCRIPTION) OUTPUT INSERTED.RES_ID VALUES (CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\t''',pipeline().parameters.CREDIT_USER,''',\n\t''RESPONSE_FILE'',\n\t''E'',''Temp file Val ',if(startswith(\n\tvariables('errorMessage'),','),substring(\n\tvariables('errorMessage'),1,sub(length(\n\tvariables('errorMessage')),1)),\n\tvariables('errorMessage')),' data not found.'');')",
-													"type": "Expression"
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "Set errorMsg",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorMessage",
-										"value": {
-											"value": "@concat(if(equals(variables('fileId'),string(null)),',file id',''),if(equals(variables('fileName'),string(null)),',file name',''),if(equals(variables('outputPath'),string(null)),',output path',''),if(equals(variables('fileType'),string(null)),',file type',''))",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Set fileOutputpath",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileId",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "outputPath",
-							"value": {
-								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.outputPath,'')),''),null,pipeline().parameters.outputPath))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileName",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileType",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileName",
-							"value": {
-								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileName,'')),''),null,pipeline().parameters.fileName))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileType",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Set fileAchriveName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileType",
-							"value": {
-								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileType,'')),''),null,pipeline().parameters.fileType))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set fileAchriveName",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "fileNameArchive",
-							"value": {
-								"value": "@string(if(equals(trim(coalesce(pipeline().parameters.fileNameArchive,'')),''),null,pipeline().parameters.fileNameArchive))",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"CREDIT_USER": {
-						"type": "string"
-					},
-					"SCHEMA": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					},
-					"fileId": {
-						"type": "string"
-					},
-					"outputPath": {
-						"type": "string"
-					},
-					"fileType": {
-						"type": "string"
-					},
-					"fileNameArchive": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"resId": {
-						"type": "String"
-					},
-					"fileName": {
-						"type": "String"
-					},
-					"fileId": {
-						"type": "String"
-					},
-					"outputPath": {
-						"type": "String"
-					},
-					"errorMessage": {
-						"type": "String"
-					},
-					"fileType": {
-						"type": "String"
-					},
-					"fileNameArchive": {
-						"type": "String"
-					},
-					"switchCaseValue": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/CC_ReviewCreateFileOutput')]"
 			]
 		}
 	]
