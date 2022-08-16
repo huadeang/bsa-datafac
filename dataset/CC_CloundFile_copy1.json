@@ -1,0 +1,31 @@
+{
+	"name": "CC_CloundFile_copy1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CC_AzureFileStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureFileStorageLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": "\u0001",
+			"rowDelimiter": "`",
+			"encodingName": "TIS-620",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
