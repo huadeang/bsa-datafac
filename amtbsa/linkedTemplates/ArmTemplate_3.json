@@ -7152,7 +7152,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge ca To cc_scorevalue').Error),0,if(greater(length(activity('Merge ca To cc_scorevalue').Error),499),499,length(activity('Merge ca To cc_scorevalue').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge ca To cc_scorevalue').Error),'''','\"')),0,if(greater(length(string(activity('Merge ca To cc_scorevalue').Error)),499 ),499,length(string(activity('Merge ca To cc_scorevalue').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -7188,7 +7188,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',activity('Merge Ba To cc_scorevalue').Error),0,if(greater(length(activity('Merge Ba To cc_scorevalue').Error),499),499,length(activity('Merge Ba To cc_scorevalue').Error))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('Merge Ba To cc_scorevalue').Error),'''','\"')),0,if(greater(length(string(activity('Merge Ba To cc_scorevalue').Error)),499 ),499,length(string(activity('Merge Ba To cc_scorevalue').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
@@ -7230,6 +7230,42 @@
 									"type": "Query",
 									"text": {
 										"value": "@concat('INSERT INTO ',pipeline().parameters.SCHEMA,'.CC_SCORE_REQUEST(REF_ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_ID,BILLING_ACCNT_ID,CL_LEVEL,\nSCORE_RANGE,CL_TYPE,CL_CHANGE_REASON,OUTCOME_CD,OUTCOME_REASON,CREDIT_LIMIT,PERM_CREDIT_LIMIT,\nTEMP_CREDIT_LIMIT,PREV_CREDIT_LIMIT,PREV_SCORE_RANGE,ACTUAL,ACTUAL_PERM,BILLING_CREDIT_LIMIT,\nBILLING_THRESHOLD_SET_ID,FBB_FLAG,LAST_REVIEW_DAT,MIN_REVIEW,STATUS_CD,PROFILE_COMPLETE_FLG)\nSELECT CONCAT(''SV_ID-'',ROW_ID) AS ROW_ID,CREATED,CREATED_BY,LAST_UPD,LAST_UPD_BY,ACCNT_ID,BILLING_ACCNT_ID,CL_LEVEL,\nSCORE_RANGE,CL_TYPE,CL_CHANGE_REASON,OUTCOME_CD,OUTCOME_REASON,CREDIT_LIMIT,PERM_CREDIT_LIMIT,\nTEMP_CREDIT_LIMIT,PREV_CREDIT_LIMIT,PREV_SCORE_RANGE,ACTUAL,ACTUAL_PERM,BILLING_CREDIT_LIMIT,\nBILLING_THRESHOLD_SET_ID,FBB_FLAG,LAST_REVIEW_DAT,MIN_REVIEW,''Completed'' AS STATUS_CD,PROFILE_COMPLETE_FLG \nFROM ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY_SCORE_VALUE WHERE PROCESS_TYPE = ''02'' AND DATA_ID  = ',pipeline().parameters.dataId,'\nORDER BY CREATED ASC OFFSET 0 ROWS')",
+										"type": "Expression"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Update CC_DATA_FACTORY Catch Exception_copy1_copy2",
+						"description": "",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "INSERT INTO CC_SCORE_REQUEST",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzureSqlDatabase1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('UPDATE ',pipeline().parameters.SCHEMA,'.CC_DATA_FACTORY\n    SET LAST_UPD = CONVERT(DATETIME2(0),'''\n\t,convertTimeZone(utcNow(),'UTC','SE Asia Standard Time'),'''),\n\tLAST_UPD_BY =''',pipeline().parameters.CREDIT_USER,''',\n\tSTATUS = ''E'',\n\tFILE_NAME = ''',pipeline().parameters.fileDatName,''',\n\tDESCRIPTION = ''',substring(concat('Datafactories Exception : ',replace(string(activity('INSERT INTO CC_SCORE_REQUEST').Error),'''','\"')),0,if(greater(length(string(activity('INSERT INTO CC_SCORE_REQUEST').Error)),499 ),499,length(string(activity('INSERT INTO CC_SCORE_REQUEST').Error)))),'''\n\tWHERE DATA_ID = ',pipeline().parameters.dataId)",
 										"type": "Expression"
 									}
 								}
