@@ -2390,7 +2390,7 @@
 				"variables": {
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
+						"defaultValue": "cc_factory"
 					},
 					"LOV_NAME": {
 						"type": "String",
