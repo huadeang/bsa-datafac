@@ -3774,7 +3774,7 @@
 				"variables": {
 					"SCHEMA": {
 						"type": "String",
-						"defaultValue": "CREDIT_DATA_FAC"
+						"defaultValue": "cc_factory"
 					},
 					"LOV_TYPE": {
 						"type": "String",
@@ -3782,7 +3782,7 @@
 					},
 					"LOV_NAME": {
 						"type": "String",
-						"defaultValue": "cc_data_fac_review_Insert_billing_no"
+						"defaultValue": "cc_data_fac_review_insert_billing_profile"
 					},
 					"CREDIT_USER": {
 						"type": "String",
